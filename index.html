@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>COFAS — Tournoi</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0e0c09;--bg3:#1e1a12;--bg4:#252118;
+  --parch:#E8DCC8;--gl:#D4AF37;--gl2:#F0CC55;--gold:#B8973A;
+  --red2:#e07070;--red3:#8B1A1A;--green2:#6dca8a;--blue2:#87CEEB;
+  --bdr:rgba(184,151,58,.35);--bdr2:rgba(184,151,58,.18);
+  --txt:#c8b98a;--txt2:#a89060;--txt3:#6a5830;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--txt);font-family:"Crimson Text",serif;min-height:100vh;}
+body::before{content:"";position:fixed;inset:0;background:
+  radial-gradient(ellipse at 20% 20%,rgba(139,100,0,.07) 0%,transparent 50%),
+  radial-gradient(ellipse at 80% 80%,rgba(80,50,0,.07) 0%,transparent 50%);
+pointer-events:none;z-index:0;}
+header{text-align:center;padding:1.2rem 1rem .8rem;background:linear-gradient(180deg,rgba(14,12,9,1),rgba(22,19,16,.95));border-bottom:1px solid var(--bdr);position:sticky;top:0;z-index:50;}
+header h1{font-family:"Cinzel",serif;font-size:1.35rem;font-weight:900;color:var(--gl);letter-spacing:.22em;text-transform:uppercase;text-shadow:0 0 30px rgba(212,175,55,.4);}
+header .sub{font-family:"Cinzel",serif;font-size:.56rem;color:var(--txt3);letter-spacing:.16em;text-transform:uppercase;margin-top:.2rem;}
+.dv{height:1px;background:linear-gradient(to right,transparent,var(--gold),var(--gl2),var(--gold),transparent);margin:.45rem auto 0;max-width:320px;}
+.nav-main{display:flex;justify-content:center;gap:2px;background:rgba(0,0,0,.4);border-bottom:2px solid var(--bdr);padding:.3rem .5rem 0;position:sticky;top:68px;z-index:49;}
+.nav-tab{font-family:"Cinzel",serif;font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;padding:.5rem 1.3rem;cursor:pointer;color:var(--txt3);background:none;border:none;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;}
+.nav-tab:hover{color:var(--gl);}
+.nav-tab.active{color:var(--gl);border-bottom-color:var(--gl);}
+.wrap{max-width:1120px;margin:0 auto;padding:1.2rem 1rem;position:relative;z-index:1;}
+.view{display:none;}.view.active{display:block;}
+.panel{background:linear-gradient(145deg,var(--bg3),var(--bg4));border:1px solid var(--bdr);border-radius:3px;padding:.9rem 1rem;margin-bottom:.7rem;position:relative;}
+.panel::before{content:"";position:absolute;inset:3px;border:1px solid var(--bdr2);border-radius:2px;pointer-events:none;}
+.panel-title{font-family:"Cinzel",serif;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--gl);margin-bottom:.65rem;padding-bottom:.32rem;border-bottom:1px solid var(--bdr2);}
+/* FICHES */
+.fiches-ctrl{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-bottom:.9rem;}
+.srch{flex:1;min-width:130px;background:rgba(0,0,0,.3);border:1px solid var(--bdr2);border-radius:2px;padding:.28rem .5rem;font-family:"Crimson Text",serif;font-size:.88rem;color:var(--txt);outline:none;}
+.srch:focus{border-color:var(--gl);}
+.add-btn{font-family:"Cinzel",serif;font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;padding:.28rem .75rem;border-radius:2px;cursor:pointer;border:1px solid var(--bdr);background:rgba(212,175,55,.07);color:var(--gl);white-space:nowrap;}
+.add-btn:hover{background:rgba(212,175,55,.15);}
+.fiches-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:.7rem;}
+.fiche{background:linear-gradient(145deg,var(--bg3),var(--bg4));border:1px solid var(--bdr2);border-radius:3px;padding:.9rem 1rem;position:relative;overflow:hidden;}
+.fiche::before{content:"";position:absolute;inset:3px;border:1px solid var(--bdr2);border-radius:2px;pointer-events:none;}
+.fiche.sel-a{border-color:rgba(192,57,43,.7);}
+.fiche.sel-b{border-color:rgba(36,113,163,.7);}
+.fn{font-family:"Cinzel",serif;font-size:.9rem;font-weight:700;color:var(--parch);margin-bottom:.1rem;}
+.fd{font-size:.7rem;color:var(--txt3);font-style:italic;margin-bottom:.3rem;}
+.fstats{display:grid;grid-template-columns:repeat(5,1fr);gap:.14rem;margin:.3rem 0;}
+.fs{background:rgba(0,0,0,.22);border-radius:2px;padding:.16rem .18rem;text-align:center;}
+.fsl{font-family:"Cinzel",serif;font-size:.34rem;text-transform:uppercase;letter-spacing:.04em;color:var(--txt3);}
+.fsv{font-family:"Cinzel",serif;font-size:.72rem;font-weight:700;color:var(--gl);}
+.fpv{font-family:"Cinzel",serif;font-size:.58rem;color:var(--txt2);margin:.22rem 0;}
+.fbtns{display:flex;gap:.28rem;margin-top:.42rem;justify-content:flex-end;}
+.fbtn{font-family:"Cinzel",serif;font-size:.5rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding:.18rem .5rem;border-radius:2px;cursor:pointer;border:1px solid var(--bdr2);background:transparent;color:var(--txt3);transition:all .18s;}
+.fbtn:hover{color:var(--txt);}
+.fbtn.fa{border-color:rgba(192,57,43,.45);color:#e07070;}.fbtn.fa:hover{background:rgba(192,57,43,.1);}
+.fbtn.fb{border-color:rgba(36,113,163,.45);color:#87CEEB;}.fbtn.fb:hover{background:rgba(36,113,163,.1);}
+/* BADGES */
+.badge{font-family:"Cinzel",serif;font-size:.42rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:.06rem .28rem;border-radius:2px;display:inline-block;margin-right:.2rem;margin-bottom:.18rem;}
+.badge-joute{color:var(--gl2);background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.28);}
+.badge-melee{color:#e07070;background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.25);}
+.badge-equip{color:var(--txt2);background:rgba(0,0,0,.18);border:1px solid var(--bdr2);}
+/* ARENE */
+.arena{display:grid;grid-template-columns:1fr 48px 1fr;gap:.7rem;align-items:start;margin-bottom:.7rem;}
+@media(max-width:640px){.arena{grid-template-columns:1fr;}}
+.slot{background:linear-gradient(145deg,var(--bg3),var(--bg4));border:1px solid var(--bdr2);border-radius:3px;padding:.9rem 1rem;position:relative;}
+.slot::before{content:"";position:absolute;inset:3px;border:1px solid var(--bdr2);border-radius:2px;pointer-events:none;}
+.slot-a{border-color:rgba(192,57,43,.4);}
+.slot-b{border-color:rgba(36,113,163,.4);}
+.slot-lbl{font-family:"Cinzel",serif;font-size:.54rem;font-weight:700;text-transform:uppercase;letter-spacing:.11em;padding:.13rem .4rem;border-radius:2px;display:inline-block;margin-bottom:.4rem;}
+.slot-a .slot-lbl{color:#e07070;background:rgba(192,57,43,.1);border:1px solid rgba(192,57,43,.28);}
+.slot-b .slot-lbl{color:#87CEEB;background:rgba(36,113,163,.1);border:1px solid rgba(36,113,163,.28);}
+.slot-sel{width:100%;background:#1a1814;border:1px solid var(--bdr2);border-radius:2px;padding:.28rem .45rem;font-family:"Cinzel",serif;font-size:.78rem;color:var(--txt);margin-bottom:.5rem;outline:none;color-scheme:dark;cursor:pointer;}
+.slot-sel:focus{border-color:var(--gl);}
+.slot-name{font-family:"Cinzel",serif;font-size:.88rem;font-weight:700;color:var(--parch);border-left:3px solid;padding-left:.4rem;margin-bottom:.12rem;}
+.slot-sub{font-size:.7rem;color:var(--txt3);font-style:italic;margin-bottom:.35rem;}
+.pairs{display:grid;grid-template-columns:repeat(3,1fr);gap:.2rem;margin:.32rem 0;}
+.pair-box{background:rgba(0,0,0,.22);border-radius:2px;padding:.2rem .25rem;text-align:center;}
+.pair-lbl{font-family:"Cinzel",serif;font-size:.38rem;text-transform:uppercase;letter-spacing:.04em;color:var(--txt3);}
+.pair-val{font-family:"Cinzel",serif;font-size:.8rem;font-weight:700;color:var(--gl);}
+.pair-sub{font-size:.54rem;color:var(--txt3);}
+.vs-sep{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:.3rem 0;}
+.vs-txt{font-family:"Cinzel",serif;font-size:1.4rem;font-weight:900;color:var(--gl);text-shadow:0 0 18px rgba(212,175,55,.4);}
+.vs-line{width:1px;flex:1;background:linear-gradient(to bottom,transparent,var(--bdr),transparent);}
+/* PV */
+.pv-section{background:rgba(0,0,0,.18);border:1px solid var(--bdr2);border-radius:2px;padding:.5rem .65rem;margin-bottom:.45rem;}
+.pv-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:.25rem;}
+.pv-lbl{font-family:"Cinzel",serif;font-size:.52rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--txt3);}
+.pv-val{font-family:"Cinzel",serif;font-size:.82rem;font-weight:700;color:var(--parch);}
+.pv-bar-wrap{height:8px;background:rgba(0,0,0,.38);border-radius:2px;border:1px solid var(--bdr2);overflow:hidden;}
+.pv-bar{height:100%;border-radius:2px;transition:width .4s,background .3s;}
+.pv-bar-a{background:linear-gradient(90deg,#8B1A1A,#e07070);}
+.pv-bar-b{background:linear-gradient(90deg,#1a4a7a,#87CEEB);}
+.sbadge{font-family:"Cinzel",serif;font-size:.56rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:.1rem .42rem;border-radius:2px;display:inline-block;margin-top:.25rem;}
+.st-ok{color:var(--green2);background:rgba(45,122,62,.1);border:1px solid rgba(45,122,62,.28);}
+.st-low{color:#e0a030;background:rgba(224,160,48,.1);border:1px solid rgba(224,160,48,.28);}
+.st-crit{color:var(--red2);background:rgba(192,57,43,.1);border:1px solid rgba(192,57,43,.28);}
+.st-dead{color:#666;background:rgba(0,0,0,.28);border:1px solid #444;}
+/* JETS */
+.jb{background:rgba(0,0,0,.2);border:1px solid var(--bdr2);border-radius:2px;padding:.5rem .6rem;margin-bottom:.5rem;}
+.jb-a .jbn{color:#e07070;}.jb-b .jbn{color:#87CEEB;}
+.jb.jb-att{border-color:rgba(212,175,55,.45);box-shadow:0 0 12px rgba(212,175,55,.1);}
+.jbn{font-family:"Cinzel",serif;font-size:.54rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;margin-bottom:.28rem;}
+.jf{font-size:.67rem;color:var(--txt3);margin-bottom:.28rem;font-style:italic;}
+.die-wrap{display:flex;align-items:center;gap:.32rem;}
+.jlbl{font-family:"Cinzel",serif;font-size:.56rem;color:var(--txt3);}
+.jinp{width:50px;background:rgba(0,0,0,.32);border:1px solid rgba(212,175,55,.28);border-radius:2px;padding:.2rem .25rem;font-family:"Cinzel",serif;font-size:.92rem;font-weight:700;color:var(--gl);text-align:center;outline:none;}
+.jinp:focus{border-color:var(--gl);}
+.jinp:disabled{opacity:.4;cursor:not-allowed;}
+.jplus{color:var(--txt3);font-size:.72rem;}
+.jmod{font-family:"Cinzel",serif;font-size:.8rem;font-weight:700;}
+.jtw{margin-left:auto;text-align:right;}
+.jtl{font-family:"Cinzel",serif;font-size:.44rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.06em;}
+.jt{font-family:"Cinzel",serif;font-size:1.1rem;font-weight:900;color:var(--parch);}
+.mod-pos{color:var(--green2);}.mod-neg{color:var(--red2);}.mod-zer{color:var(--txt3);}
+.die-btn{background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.3);border-radius:3px;color:var(--gl);cursor:pointer;font-size:1rem;padding:.1rem .32rem;line-height:1;transition:all .15s;user-select:none;}
+.die-btn:hover{background:rgba(212,175,55,.2);border-color:var(--gl);transform:rotate(-15deg) scale(1.15);}
+.die-btn:disabled{opacity:.3;cursor:not-allowed;transform:none;}
+.die-btn.rolling{animation:dieRoll .25s ease;}
+@keyframes dieRoll{0%{transform:rotate(0) scale(1)}40%{transform:rotate(-25deg) scale(1.2)}70%{transform:rotate(15deg) scale(1.1)}100%{transform:rotate(0) scale(1)}}
+.res-box{background:rgba(0,0,0,.28);border:1px solid var(--bdr);border-radius:2px;padding:.55rem .75rem;margin:.5rem 0;text-align:center;}
+.res-win{font-family:"Cinzel",serif;font-size:.82rem;font-weight:700;margin-bottom:.13rem;}
+.res-sub{font-family:"Cinzel",serif;font-size:.62rem;color:var(--txt2);}
+.bonus-box{display:none;margin-top:.45rem;background:rgba(0,0,0,.15);border:1px solid rgba(212,175,55,.2);border-radius:2px;padding:.4rem .55rem;}
+.bonus-lbl{font-family:"Cinzel",serif;font-size:.58rem;color:var(--gl);margin-bottom:.28rem;}
+.btn{font-family:"Cinzel",serif;font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;padding:.35rem .85rem;border-radius:2px;cursor:pointer;border:1px solid var(--bdr2);background:transparent;color:var(--txt2);transition:all .18s;}
+.btn:hover{border-color:var(--bdr);color:var(--txt);}
+.btn-pri{border-color:rgba(212,175,55,.45);background:rgba(212,175,55,.08);color:var(--gl);}
+.btn-pri:hover{background:rgba(212,175,55,.18);}
+.btn-pri:disabled{opacity:.35;cursor:not-allowed;}
+.btn-dan{border-color:rgba(192,57,43,.38);background:rgba(192,57,43,.06);color:var(--red2);}
+.miss-hint{font-family:"Cinzel",serif;font-size:.52rem;color:var(--txt3);font-style:italic;margin-top:.25rem;min-height:.9rem;}
+.miss-hint.active{color:#e0a030;}
+/* LOG */
+.log-wrap{background:rgba(0,0,0,.25);border:1px solid var(--bdr2);border-radius:2px;max-height:300px;overflow-y:auto;padding:.45rem .6rem;}
+.log-entry{padding:.3rem 0;border-bottom:1px solid rgba(184,151,58,.06);font-size:.78rem;line-height:1.5;}
+.log-entry:last-child{border-bottom:none;}
+.log-round{font-family:"Cinzel",serif;font-size:.62rem;font-weight:700;color:var(--gl);text-transform:uppercase;letter-spacing:.09em;padding:.3rem 0 .08rem;}
+.log-empty{color:var(--txt3);font-style:italic;font-size:.78rem;text-align:center;padding:.7rem 0;}
+.log-a{color:#e07070;}.log-b{color:#87CEEB;}.log-dmg{color:var(--parch);font-weight:600;}
+.log-dead{font-family:"Cinzel",serif;font-size:.72rem;font-weight:700;text-transform:uppercase;padding:.35rem;text-align:center;border-radius:2px;margin:.25rem 0;}
+.log-dead-a{color:#e07070;background:rgba(192,57,43,.1);border:1px solid rgba(192,57,43,.28);}
+.log-dead-b{color:#87CEEB;background:rgba(36,113,163,.1);border:1px solid rgba(36,113,163,.28);}
+/* STEP BANNERS */
+.step-banner{display:flex;align-items:center;gap:.55rem;background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.2);border-radius:3px;padding:.42rem .75rem;margin-bottom:.6rem;font-family:"Cinzel",serif;font-size:.6rem;color:var(--gl);letter-spacing:.08em;}
+.step-banner .step-num{background:rgba(212,175,55,.15);border:1px solid rgba(212,175,55,.35);border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0;}
+.step-banner.done{background:rgba(45,122,62,.06);border-color:rgba(45,122,62,.25);color:var(--green2);}
+.step-banner.done .step-num{background:rgba(45,122,62,.15);border-color:rgba(45,122,62,.35);}
+.step-banner.waiting{background:rgba(0,0,0,.15);border-color:var(--bdr2);color:var(--txt3);}
+.step-banner.waiting .step-num{background:rgba(0,0,0,.2);border-color:var(--bdr2);}
+/* MODAL */
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:center;justify-content:center;}
+.mo.open{display:flex;}
+.mb{background:linear-gradient(145deg,#1e1a12,#252118);border:1px solid var(--bdr);border-radius:4px;padding:1.3rem 1.5rem;width:min(640px,95vw);max-height:90vh;overflow-y:auto;position:relative;}
+.mb::before{content:"";position:absolute;inset:4px;border:1px solid var(--bdr2);border-radius:3px;pointer-events:none;}
+.mt{font-family:"Cinzel",serif;font-size:.82rem;font-weight:700;color:var(--gl);text-transform:uppercase;letter-spacing:.13em;margin-bottom:.9rem;padding-bottom:.45rem;border-bottom:1px solid var(--bdr2);}
+.fl{font-family:"Cinzel",serif;font-size:.56rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--txt3);display:block;margin-bottom:.22rem;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.6rem;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.45rem;margin-bottom:.6rem;}
+input[type=text],input[type=number],select,textarea{width:100%;background:#1a1814;border:1px solid rgba(184,151,58,.28);border-radius:2px;padding:.28rem .45rem;font-family:"Crimson Text",serif;font-size:.88rem;color:var(--txt);outline:none;color-scheme:dark;}
+input:focus,select:focus,textarea:focus{border-color:var(--gl);}
+textarea{resize:vertical;min-height:55px;}
+.stat-row{display:grid;grid-template-columns:1fr 65px 42px;gap:.35rem;align-items:center;background:rgba(0,0,0,.18);border-radius:2px;padding:.28rem .45rem;margin-bottom:.22rem;}
+.stat-name{font-family:"Cinzel",serif;font-size:.63rem;color:var(--txt2);}
+.stat-mod{font-family:"Cinzel",serif;font-size:.68rem;font-weight:700;text-align:right;}
+.section-title{font-family:"Cinzel",serif;font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gl);margin:.7rem 0 .4rem;padding-bottom:.25rem;border-bottom:1px solid var(--bdr2);}
+.equip-row{background:rgba(0,0,0,.15);border:1px solid var(--bdr2);border-radius:2px;padding:.45rem .6rem;margin-bottom:.35rem;}
+.equip-row-header{display:grid;grid-template-columns:1fr 70px;gap:.5rem;margin-bottom:.3rem;align-items:end;}
+.equip-mode{display:flex;gap:.35rem;align-items:center;flex-wrap:wrap;margin-top:.28rem;}
+.equip-mode label{font-family:"Cinzel",serif;font-size:.52rem;color:var(--txt2);display:flex;align-items:center;gap:.2rem;cursor:pointer;}
+.equip-mode input[type=checkbox]{width:auto;cursor:pointer;}
+.comp-row{display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:.5rem;}
+.comp-item{display:flex;align-items:center;gap:.4rem;background:rgba(0,0,0,.15);border:1px solid var(--bdr2);border-radius:2px;padding:.35rem .55rem;}
+.comp-item label{font-family:"Cinzel",serif;font-size:.58rem;color:var(--txt2);cursor:pointer;}
+.comp-item input[type=checkbox]{width:auto;cursor:pointer;}
+.stat-total{font-family:"Cinzel",serif;font-size:.58rem;color:var(--txt3);margin-top:.45rem;}
+.stat-total span{color:var(--gl);font-weight:700;}
+.mact{display:flex;gap:.5rem;justify-content:flex-end;margin-top:.9rem;padding-top:.6rem;border-top:1px solid var(--bdr2);}
+/* LOGIN */
+#login-screen{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 40%,rgba(30,20,10,.97),rgba(10,8,5,1));}
+.login-box{background:linear-gradient(145deg,var(--bg3),var(--bg4));border:1px solid var(--bdr);border-radius:4px;padding:2rem 2.2rem;width:min(380px,92vw);position:relative;text-align:center;}
+.login-box::before{content:"";position:absolute;inset:4px;border:1px solid var(--bdr2);border-radius:3px;pointer-events:none;}
+.login-icon{font-size:2.8rem;margin-bottom:.6rem;line-height:1;}
+.login-title{font-family:"Cinzel",serif;font-size:1rem;font-weight:900;color:var(--gl);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.2rem;}
+.login-sub{font-family:"Cinzel",serif;font-size:.5rem;color:var(--txt3);letter-spacing:.14em;text-transform:uppercase;margin-bottom:1.6rem;}
+.login-field{margin-bottom:.75rem;text-align:left;}
+.login-field label{font-family:"Cinzel",serif;font-size:.52rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--txt3);display:block;margin-bottom:.3rem;}
+.login-field input{width:100%;background:rgba(0,0,0,.28);border:1px solid var(--bdr2);border-radius:2px;padding:.42rem .6rem;font-family:"Crimson Text",serif;font-size:.95rem;color:var(--txt);outline:none;}
+.login-field input:focus{border-color:var(--gl);}
+.login-btn-main{width:100%;margin-top:.4rem;font-family:"Cinzel",serif;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:.55rem 1rem;border-radius:2px;cursor:pointer;border:1px solid rgba(212,175,55,.5);background:rgba(212,175,55,.12);color:var(--gl);transition:all .2s;}
+.login-btn-main:hover{background:rgba(212,175,55,.22);}
+.login-btn-main:disabled{opacity:.4;cursor:not-allowed;}
+.login-err{font-family:"Cinzel",serif;font-size:.54rem;color:var(--red2);min-height:1.1rem;margin-top:.5rem;text-align:center;}
+#user-bar{position:fixed;bottom:.6rem;left:.75rem;z-index:300;display:flex;align-items:center;gap:.5rem;font-family:"Cinzel",serif;font-size:.48rem;color:var(--txt3);}
+#user-label{color:var(--txt2);}
+#logout-btn{font-family:"Cinzel",serif;font-size:.48rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;padding:.18rem .45rem;border-radius:2px;cursor:pointer;border:1px solid var(--bdr2);background:transparent;color:var(--txt3);transition:all .18s;}
+#logout-btn:hover{color:var(--red2);border-color:rgba(192,57,43,.35);}
+#fb-status{font-family:"Cinzel",serif;font-size:.52rem;letter-spacing:.06em;}
+#theme-toggle{position:fixed;top:.5rem;right:.75rem;z-index:300;font-family:"Cinzel",serif;font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;padding:.35rem .85rem;border-radius:2px;cursor:pointer;border:1px solid var(--bdr);background:rgba(0,0,0,.35);color:var(--txt2);transition:all .2s;backdrop-filter:blur(4px);}
+#theme-toggle:hover{color:var(--gl);}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:rgba(0,0,0,.18);}
+::-webkit-scrollbar-thumb{background:rgba(184,151,58,.28);border-radius:2px;}
+/* MODE CLAIR */
+html.light{--bg:#f5f0e8;--bg3:#ede6d8;--bg4:#e6deca;--parch:#2a1f0e;--gl:#8B6914;--gl2:#A07820;--gold:#7a5a10;--red2:#b03030;--red3:#7a1a1a;--green2:#2d7a42;--blue2:#1a5a8a;--bdr:rgba(100,70,20,.35);--bdr2:rgba(100,70,20,.18);--txt:#3a2a10;--txt2:#6a4820;--txt3:#9a7840;}
+html.light body{background:var(--bg);}
+html.light header{background:linear-gradient(180deg,rgba(240,232,210,1),rgba(230,220,195,.97));}
+html.light .nav-main{background:rgba(255,255,255,.5);}
+html.light .slot-sel,html.light select{background:#ede6d8;color-scheme:light;}
+html.light input[type=text],html.light input[type=number],html.light textarea{background:#ede6d8;}
+html.light .jinp{background:rgba(255,255,255,.6);}
+html.light .jb{background:rgba(255,255,255,.25);}
+html.light .panel,html.light .slot,html.light .fiche,html.light .mb{background:linear-gradient(145deg,var(--bg3),var(--bg4));}
+html.light .fs{background:rgba(0,0,0,.06);}
+html.light .pair-box{background:rgba(0,0,0,.06);}
+html.light .equip-row{background:rgba(255,255,255,.3);}
+html.light .stat-row{background:rgba(255,255,255,.3);}
+html.light .die-btn{background:rgba(180,130,30,.1);border-color:rgba(180,130,30,.35);}
+html.light .slot-a .slot-lbl{color:#b03030;}
+html.light .slot-b .slot-lbl{color:#1a5a8a;}
+html.light .jb-a .jbn{color:#b03030;}
+html.light .jb-b .jbn{color:#1a5a8a;}
+html.light #login-screen{background:radial-gradient(ellipse at 50% 40%,rgba(240,232,210,.98),rgba(220,210,185,1));}
+html.light .login-field input{background:rgba(255,255,255,.6);}
+html.light #theme-toggle{background:rgba(255,255,255,.6);border-color:rgba(100,70,20,.35);}
+
+/* ── Mode clair : compléments ── */
+html.light body::before{background:radial-gradient(ellipse at 20% 20%,rgba(180,130,40,.06) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(40,80,140,.05) 0%,transparent 50%);}
+html.light .log-wrap{background:rgba(255,255,255,.4);}
+html.light .res-box{background:rgba(255,255,255,.35);border-color:rgba(100,70,20,.3);}
+html.light .bonus-box{background:rgba(255,255,255,.35);}
+html.light .pv-section{background:rgba(255,255,255,.35);}
+html.light .pv-bar-wrap{background:rgba(0,0,0,.12);}
+html.light .comp-item{background:rgba(255,255,255,.35);}
+html.light .badge-equip{background:rgba(255,255,255,.4);border-color:rgba(100,70,20,.25);}
+html.light .badge-joute{background:rgba(180,130,30,.12);border-color:rgba(180,130,30,.3);}
+html.light .badge-melee{background:rgba(180,30,30,.08);border-color:rgba(180,30,30,.25);}
+html.light .step-banner{background:rgba(180,130,30,.08);border-color:rgba(180,130,30,.25);}
+html.light .step-banner.done{background:rgba(30,100,50,.07);border-color:rgba(30,100,50,.25);}
+html.light .step-banner.waiting{background:rgba(0,0,0,.04);border-color:rgba(100,70,20,.15);}
+html.light .jb.jb-att{border-color:rgba(100,70,20,.5);box-shadow:0 0 10px rgba(100,70,20,.12);}
+html.light ::-webkit-scrollbar-track{background:rgba(0,0,0,.06);}
+html.light ::-webkit-scrollbar-thumb{background:rgba(100,70,20,.3);}
+html.light .log-a{color:#b03030;}
+html.light .log-b{color:#1a5a8a;}
+html.light .log-dead-a{color:#b03030;background:rgba(180,30,30,.1);border-color:rgba(180,30,30,.28);}
+html.light .log-dead-b{color:#1a5a8a;background:rgba(30,90,160,.1);border-color:rgba(30,90,160,.28);}
+html.light [style*="color:#e07070"]{color:#b03030 !important;}
+html.light [style*="color:#87CEEB"]{color:#1a5a8a !important;}
+html.light [style*="color:#90ee90"]{color:#1a6a30 !important;}
+html.light [style*="color:#e0a030"]{color:#8a6010 !important;}
+html.light .mo{background:rgba(0,0,0,.55);}
+</style>
+
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  const firebaseConfig={apiKey:"AIzaSyB6FT3KQWP-Mysvsshwfi0MispI64qB9TA",authDomain:"cofas-mj.firebaseapp.com",databaseURL:"https://cofas-mj-default-rtdb.europe-west1.firebasedatabase.app",projectId:"cofas-mj",storageBucket:"cofas-mj.firebasestorage.app",messagingSenderId:"48749901019",appId:"1:48749901019:web:6c18e9b4eb7e61ce8688fe"};
+  const app=initializeApp(firebaseConfig);
+  const db=getDatabase(app);
+  const auth=getAuth(app);
+  function setStatus(ok){var el=document.getElementById("fb-status");if(el){el.textContent=ok?"🟢 Connecté":"🔴 Hors ligne";el.style.color=ok?"var(--green2)":"var(--red2)";}}
+  var saveTimer=null,localWrite=false;
+  window.fbSave=function(path,data){clearTimeout(saveTimer);saveTimer=setTimeout(function(){localWrite=true;set(ref(db,path),data).then(function(){setTimeout(function(){localWrite=false;},800);}).catch(function(e){console.error(e);localWrite=false;});},300);};
+  function listenPath(path,cb){onValue(ref(db,path),function(snap){if(localWrite)return;var v=snap.val();if(v!==null)cb(v);},function(e){setStatus(false);console.error(e);});}
+  window.fbLogin=function(){
+    var email=document.getElementById("login-email").value.trim();
+    var pass=document.getElementById("login-pass").value;
+    var err=document.getElementById("login-err");
+    var btn=document.getElementById("login-btn");
+    if(!email||!pass){err.textContent="Email et mot de passe requis.";return;}
+    btn.disabled=true;btn.textContent="Connexion…";
+    signInWithEmailAndPassword(auth,email,pass).catch(function(e){
+      btn.disabled=false;btn.textContent="Se connecter";
+      var msg;switch(e.code){case"auth/invalid-email":msg="Email invalide.";break;case"auth/user-not-found":msg="Compte introuvable.";break;case"auth/wrong-password":msg="Mot de passe incorrect.";break;case"auth/invalid-credential":msg="Identifiants incorrects.";break;case"auth/too-many-requests":msg="Trop de tentatives.";break;default:msg="Erreur : "+e.code;}
+      err.textContent=msg;console.error("Auth:",e.code,e.message);
+    });
+  };
+  window.fbLogout=function(){signOut(auth);};
+  document.addEventListener("DOMContentLoaded",function(){
+    document.getElementById("login-pass").addEventListener("keydown",function(e){if(e.key==="Enter")window.fbLogin();});
+    document.getElementById("login-email").addEventListener("keydown",function(e){if(e.key==="Enter")document.getElementById("login-pass").focus();});
+  });
+  window.fbInit=function(){
+    setStatus(true);
+    listenPath("tournoi/combattants",function(data){
+      var arr=Array.isArray(data)?data:(data&&typeof data==="object"?Object.values(data).filter(Boolean):[]);
+      combattants_perso=arr;renderFiches();popSelects();
+    });
+    listenPath("tournoi/combat",function(data){
+      TC.round=data.round||1;TC.a=data.a||null;TC.b=data.b||null;
+      TC.pv=data.pv||{a:0,b:0};TC.pvMax=data.pvMax||{a:0,b:0};
+      TC.att=data.att||null;TC.rd=data.rd||{};TC.eB=data.eB||{maxDe:0,de:"",label:""};
+      rounds=data.rounds||[];logs=data.logs||[];
+      document.getElementById("rlbl").textContent="P"+TC.round;
+      popSelects();updMods();updPvArena();renderLog();renderRecap();
+      ["a","b"].forEach(function(s){renderSlot(s);});chkBtn();
+    });
+  };
+  window.fbSaveCombattants=function(){window.fbSave("tournoi/combattants",combattants_perso.length?combattants_perso:null);};
+  window.fbSaveCombat=function(){window.fbSave("tournoi/combat",{round:TC.round,a:TC.a,b:TC.b,pv:TC.pv,pvMax:TC.pvMax,att:TC.att,rd:TC.rd,eB:TC.eB,rounds:rounds,logs:logs});};
+  onAuthStateChanged(auth,function(user){
+    var ls=document.getElementById("login-screen"),as=document.getElementById("app-screen"),ul=document.getElementById("user-label"),ub=document.getElementById("user-bar");
+    if(user){if(ls)ls.style.display="none";if(as)as.style.display="";if(ul)ul.textContent=user.email;if(ub)ub.style.display="flex";window.fbInit();}
+    else{if(ls)ls.style.display="flex";if(as)as.style.display="none";if(ub)ub.style.display="none";}
+  });
+</script>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-icon">⚔️</div>
+    <div class="login-title">COFAS</div>
+    <div class="login-sub">Tournoi — Joutes &amp; Mêlées</div>
+    <div class="login-field"><label for="login-email">Adresse email</label><input type="email" id="login-email" placeholder="votre@email.com" autocomplete="email"></div>
+    <div class="login-field"><label for="login-pass">Mot de passe</label><input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"></div>
+    <button class="login-btn-main" id="login-btn" onclick="fbLogin()">Se connecter</button>
+    <div class="login-err" id="login-err"></div>
+  </div>
+</div>
+
+<div id="app-screen" style="display:none">
+<header>
+  <h1>⚔ Tournoi</h1>
+  <div class="sub">Joutes &amp; Mêlées — COFAS</div>
+  <div class="dv"></div>
+  <div style="position:absolute;top:.5rem;left:.75rem" id="fb-status">⏳ Connexion...</div>
+</header>
+<nav class="nav-main">
+  <button class="nav-tab active" onclick="showMain('fiches',this)">📜 Combattants</button>
+  <button class="nav-tab" onclick="showMain('joute',this)">🏇 Combat</button>
+  <button class="nav-tab" onclick="showMain('log',this)">📖 Journal</button>
+</nav>
+<div class="wrap">
+
+<!-- FICHES -->
+<div class="view active" id="view-fiches">
+  <div class="fiches-ctrl">
+    <input class="srch" id="srch" placeholder="Rechercher..." oninput="renderFiches()">
+    <button class="add-btn" onclick="openModal(null)">+ Nouveau combattant</button>
+  </div>
+  <div class="fiches-grid" id="fiches-grid"></div>
+</div>
+
+<!-- COMBAT -->
+<div class="view" id="view-joute">
+  <div class="arena" id="pv-arena" style="display:none;margin-bottom:.7rem">
+    <div class="pv-section">
+      <div class="pv-hdr"><span class="pv-lbl" id="pvna">A</span><span class="pv-val"><span id="pva">-</span>/<span id="pvma">-</span></span></div>
+      <div class="pv-bar-wrap"><div class="pv-bar pv-bar-a" id="pvba" style="width:100%"></div></div>
+      <span class="sbadge st-ok" id="sta">En lice</span>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center"><span style="font-family:Cinzel,serif;font-size:.55rem;color:var(--txt3)">PV</span></div>
+    <div class="pv-section">
+      <div class="pv-hdr"><span class="pv-lbl" id="pvnb">B</span><span class="pv-val"><span id="pvb">-</span>/<span id="pvmb">-</span></span></div>
+      <div class="pv-bar-wrap"><div class="pv-bar pv-bar-b" id="pvbb" style="width:100%"></div></div>
+      <span class="sbadge st-ok" id="stb">En lice</span>
+    </div>
+  </div>
+
+  <div class="arena">
+    <div class="slot slot-a">
+      <div class="slot-lbl">Combattant A</div>
+      <select class="slot-sel" id="sel-a" onchange="selC('a',this.value)"><option value="">-- Choisir --</option></select>
+      <div id="slot-a-info"></div>
+    </div>
+    <div class="vs-sep"><div class="vs-line"></div><div class="vs-txt">VS</div><div class="vs-line"></div></div>
+    <div class="slot slot-b">
+      <div class="slot-lbl">Combattant B</div>
+      <select class="slot-sel" id="sel-b" onchange="selC('b',this.value)"><option value="">-- Choisir --</option></select>
+      <div id="slot-b-info"></div>
+    </div>
+  </div>
+
+  <div class="panel" style="display:flex;align-items:center;gap:1rem;padding:.6rem 1rem;flex-wrap:wrap">
+    <div style="display:flex;align-items:center;gap:.5rem">
+      <span style="font-family:Cinzel,serif;font-size:.58rem;color:var(--txt3)">Passe</span>
+      <span style="font-family:Cinzel,serif;font-size:1.1rem;font-weight:900;color:var(--gl)" id="rlbl">P1</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:.4rem">
+      <span style="font-family:Cinzel,serif;font-size:.56rem;color:var(--txt3)">Mode :</span>
+      <select id="mode-sel" style="font-family:Cinzel,serif;font-size:.65rem;background:#1a1814;border:1px solid var(--bdr2);border-radius:2px;padding:.2rem .4rem;color:var(--txt);color-scheme:dark" onchange="updMods()">
+        <option value="joute">🏇 Joute</option>
+        <option value="melee">⚔ Mêlée</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">⚡ Initiative</div>
+    <div class="step-banner waiting" id="step-init-banner"><span class="step-num">1</span>Lancez le D20 d'initiative pour chaque combattant</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
+      <div class="jb jb-a" id="jb-init-a">
+        <div class="jbn" id="in-na">Combattant A</div>
+        <div class="jf" id="in-fa">D20 + mod(Agi+Joute)</div>
+        <div class="die-wrap">
+          <span class="jlbl">D20</span>
+          <div style="display:flex;align-items:center;gap:.28rem;flex:1">
+            <input class="jinp" id="in-a" type="number" min="1" max="20" oninput="calcInit()" style="width:46px">
+            <button class="die-btn" onclick="rollDie('in-a',20)">🎲</button>
+          </div>
+          <span class="jplus">+</span><span class="jmod mod-zer" id="in-ma">0</span>
+          <div class="jtw"><div class="jtl">Total</div><div class="jt" id="in-ta">—</div></div>
+        </div>
+      </div>
+      <div class="jb jb-b" id="jb-init-b">
+        <div class="jbn" id="in-nb">Combattant B</div>
+        <div class="jf" id="in-fb">D20 + mod(Agi+Joute)</div>
+        <div class="die-wrap">
+          <span class="jlbl">D20</span>
+          <div style="display:flex;align-items:center;gap:.28rem;flex:1">
+            <input class="jinp" id="in-b" type="number" min="1" max="20" oninput="calcInit()" style="width:46px">
+            <button class="die-btn" onclick="rollDie('in-b',20)">🎲</button>
+          </div>
+          <span class="jplus">+</span><span class="jmod mod-zer" id="in-mb">0</span>
+          <div class="jtw"><div class="jtl">Total</div><div class="jt" id="in-tb">—</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="res-box" id="in-res" style="display:none">
+      <div class="res-win" id="in-win"></div>
+      <div class="res-sub" id="in-sub"></div>
+      <div style="font-family:Cinzel,serif;font-size:.65rem;color:var(--gl);margin-top:.22rem" id="in-bon"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">💥 Dégâts</div>
+    <div class="step-banner waiting" id="step-dmg-banner"><span class="step-num">2</span>Résolvez l'initiative d'abord</div>
+    <div style="font-family:Cinzel,serif;font-size:.62rem;color:var(--txt2);margin-bottom:.55rem;display:none" id="att-lbl"></div>
+    <div class="jb" id="dmg-blk" style="max-width:400px;display:none">
+      <div class="jbn" id="dmg-n">Attaquant</div>
+      <div class="jf" id="dmg-f">D20 + mod(Pui+Cbt)</div>
+      <div class="die-wrap">
+        <span class="jlbl">D20</span>
+        <div style="display:flex;align-items:center;gap:.28rem;flex:1">
+          <input class="jinp" id="dmg-d" type="number" min="1" max="20" oninput="calcDmg()" style="width:46px">
+          <button class="die-btn" onclick="rollDie('dmg-d',20)">🎲</button>
+        </div>
+        <span class="jplus">+</span><span class="jmod mod-zer" id="dmg-m">0</span>
+        <div class="jtw"><div class="jtl">Brut</div><div class="jt" id="dmg-t">—</div></div>
+      </div>
+    </div>
+    <div class="bonus-box" id="bon-box" style="display:none">
+      <div class="bonus-lbl" id="bon-lbl">Bonus d'écart</div>
+      <div class="die-wrap" style="margin-top:.28rem">
+        <span class="jlbl" id="bon-type">D4</span>
+        <div style="display:flex;align-items:center;gap:.28rem">
+          <input class="jinp" id="bon-d" type="number" min="1" oninput="calcDmg()" style="width:46px">
+          <button class="die-btn" id="bon-die-btn" onclick="rollBonusDie()">🎲</button>
+        </div>
+      </div>
+    </div>
+    <div class="res-box" id="dmg-res" style="display:none">
+      <div class="res-win" id="dmg-win"></div>
+      <div class="res-sub" id="dmg-sub"></div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:.5rem;justify-content:center;align-items:center;margin:.6rem 0;flex-wrap:wrap">
+    <button class="btn btn-pri" id="next-btn" onclick="nextRound()" disabled>Valider la passe ➜</button>
+    <button class="btn" onclick="resetCombat()">↺ Réinitialiser</button>
+  </div>
+  <div class="miss-hint" id="next-hint" style="text-align:center;margin-bottom:.4rem"></div>
+
+  <div class="panel" id="recap-panel" style="display:none">
+    <div class="panel-title">📋 Récapitulatif des passes</div>
+    <div id="recap"></div>
+  </div>
+
+  <!-- Échelle de référence -->
+  <div style="background:rgba(0,0,0,.15);border:1px solid var(--bdr2);border-radius:2px;padding:.55rem .7rem;margin-top:.5rem">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+      <div>
+        <div style="font-family:Cinzel,serif;font-size:.52rem;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--txt3);margin-bottom:.28rem">Écart init → bonus dés</div>
+        <div style="font-size:.72rem;color:var(--txt2);line-height:1.7">1–3 → Aucun &nbsp;·&nbsp; 4–6 → +1D4 &nbsp;·&nbsp; 7–10 → +1D6<br>11–15 → +1D8 &nbsp;·&nbsp; 16+ → +1D10</div>
+      </div>
+      <div>
+        <div style="font-family:Cinzel,serif;font-size:.52rem;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--txt3);margin-bottom:.28rem">Modificateurs (stat 1→10)</div>
+        <div style="font-size:.72rem;color:var(--txt2);line-height:1.7">1→−4 &nbsp;·&nbsp; 2-3→−2 &nbsp;·&nbsp; 4-5→−1 &nbsp;·&nbsp; 6→0<br>7-8→+1 &nbsp;·&nbsp; 9→+2 &nbsp;·&nbsp; 10→+3</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LOG -->
+<div class="view" id="view-log">
+  <div class="panel">
+    <div class="panel-title">📖 Journal de combat</div>
+    <div class="log-wrap" id="log-wrap"><div class="log-empty">Aucun combat enregistré.</div></div>
+  </div>
+</div>
+
+</div>
+</div><!-- app-screen -->
+
+<div id="user-bar" style="display:none">
+  <span>👤</span><span id="user-label"></span>
+  <button id="logout-btn" onclick="fbLogout()">Déconnexion</button>
+</div>
+
+<!-- MODAL -->
+<div class="mo" id="mo">
+  <div class="mb">
+    <div class="mt" id="mo-title">Nouveau combattant</div>
+    <div class="g2">
+      <div><label class="fl">Nom</label><input type="text" id="m-nom" placeholder="Ser Criston Cole"></div>
+      <div><label class="fl">Titre / Maison</label><input type="text" id="m-titre" placeholder="Chevalier de la Garde Royale"></div>
+    </div>
+
+    <div class="section-title">📊 Caractéristiques (1–10)</div>
+    <div class="stat-total">Total réparti : <span id="m-total">0</span> points</div>
+    <div style="margin-top:.4rem">
+      <div class="stat-row"><span class="stat-name">⚔ Attaque</span><input type="number" id="m-att" min="1" max="10" value="6" oninput="updModal()"><span class="stat-mod" id="mod-att">0</span></div>
+      <div class="stat-row"><span class="stat-name">🛡 Défense</span><input type="number" id="m-def" min="1" max="10" value="6" oninput="updModal()"><span class="stat-mod" id="mod-def">0</span></div>
+      <div class="stat-row"><span class="stat-name">🐎 Agilité</span><input type="number" id="m-agi" min="1" max="10" value="6" oninput="updModal()"><span class="stat-mod" id="mod-agi">0</span></div>
+      <div class="stat-row"><span class="stat-name">❤ Endurance</span><input type="number" id="m-end" min="1" max="10" value="6" oninput="updModal()"><span class="stat-mod" id="mod-end">0</span></div>
+      <div class="stat-row"><span class="stat-name">🏰 Constitution</span><input type="number" id="m-con" min="1" max="10" value="6" oninput="updModal()"><span class="stat-mod" id="mod-con">0</span></div>
+      <div class="stat-row"><span class="stat-name">📏 Taille</span><input type="number" id="m-tai" min="1" max="10" value="6" oninput="updModal()"><span class="stat-mod" id="mod-tai">0</span></div>
+      <div class="stat-row"><span class="stat-name">🏇 Joute</span><input type="number" id="m-jou" min="1" max="10" value="6" oninput="updModal()"><span class="stat-mod" id="mod-jou">0</span></div>
+      <div class="stat-row"><span class="stat-name">⚔ Mêlée (comp.)</span><input type="number" id="m-mel" min="1" max="10" value="6" oninput="updModal()"><span class="stat-mod" id="mod-mel">0</span></div>
+      <div class="stat-row"><span class="stat-name">💥 Combativité</span><input type="number" id="m-cbt" min="1" max="10" value="6" oninput="updModal()"><span class="stat-mod" id="mod-cbt">0</span></div>
+      <div class="stat-row"><span class="stat-name">⚡ Puissance</span><input type="number" id="m-pui" min="1" max="10" value="6" oninput="updModal()"><span class="stat-mod" id="mod-pui">0</span></div>
+    </div>
+
+    <div class="section-title">🎖 Compétences</div>
+    <div class="comp-row">
+      <div class="comp-item">
+        <input type="checkbox" id="m-comp-joute">
+        <label for="m-comp-joute">🏇 Compétence Tournoi <span style="color:var(--gl2);font-size:.7em">(+2 init. joute)</span></label>
+      </div>
+      <div class="comp-item">
+        <input type="checkbox" id="m-comp-melee">
+        <label for="m-comp-melee">⚔ Compétence Mêlée <span style="color:#e07070;font-size:.7em">(+2 init. mêlée)</span></label>
+      </div>
+    </div>
+
+    <div class="section-title">🗡 Équipement</div>
+    <!-- Arme -->
+    <div class="equip-row">
+      <div class="equip-row-header">
+        <div><label class="fl">Arme (nom)</label><input type="text" id="m-arme-nom" placeholder="Lance de tournoi, Épée longue..."></div>
+        <div><label class="fl">Bonus dégâts</label><input type="number" id="m-arme-bon" min="0" max="10" value="0"></div>
+      </div>
+      <div class="equip-mode">
+        <span style="font-family:Cinzel,serif;font-size:.52rem;color:var(--txt3)">Mode :</span>
+        <label><input type="checkbox" id="m-arme-joute" checked> 🏇 Joute</label>
+        <label><input type="checkbox" id="m-arme-melee" checked> ⚔ Mêlée</label>
+      </div>
+    </div>
+    <!-- Armure -->
+    <div class="equip-row">
+      <div class="equip-row-header">
+        <div><label class="fl">Armure (nom)</label><input type="text" id="m-armure-nom" placeholder="Harnois complet, Cotte de mailles..."></div>
+        <div><label class="fl">Bonus résistance</label><input type="number" id="m-armure-bon" min="0" max="10" value="0"></div>
+      </div>
+    </div>
+    <!-- Monture -->
+    <div class="equip-row">
+      <div class="equip-row-header">
+        <div><label class="fl">Monture (nom)</label><input type="text" id="m-mont-nom" placeholder="Destrier de guerre, Palefroi..."></div>
+        <div><label class="fl">Bonus init. joute</label><input type="number" id="m-mont-bon" min="0" max="5" value="0"></div>
+      </div>
+    </div>
+
+    <div style="margin-top:.6rem"><label class="fl">Notes</label><textarea id="m-desc" placeholder="Chevalier renommé..."></textarea></div>
+
+    <div class="mact">
+      <button class="btn btn-dan" id="m-del" style="display:none;margin-right:auto" onclick="delCombattant()">Supprimer</button>
+      <button class="btn" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-pri" onclick="saveCombattant()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<button id="theme-toggle" onclick="toggleTheme()">🌙 Sombre</button>
+
+<script>
+// ================================================================
+// TABLE MODIFICATEURS 1-10
+// ================================================================
+var MOD_TABLE={1:-4,2:-2,3:-2,4:-1,5:-1,6:0,7:1,8:1,9:2,10:3};
+function gm(v){return MOD_TABLE[+v]||0;}
+function ms(v){return v>0?"+"+v:(v<0?""+v:"0");}
+var BT=[{min:0,max:3,label:"Aucun",maxDe:0,de:""},{min:4,max:6,label:"+1D4",maxDe:4,de:"D4"},{min:7,max:10,label:"+1D6",maxDe:6,de:"D6"},{min:11,max:15,label:"+1D8",maxDe:8,de:"D8"},{min:16,max:999,label:"+1D10",maxDe:10,de:"D10"}];
+function gBon(e){for(var i=0;i<BT.length;i++)if(e>=BT[i].min&&e<=BT[i].max)return BT[i];return BT[0];}
+function h(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+
+var STATS_LIST=["att","def","agi","end","con","tai","jou","mel","cbt","pui"];
+
+// ================================================================
+// COMBATTANTS DE BASE — La Danse des Dragons
+// ================================================================
+var COMBATTANTS_BASE=[
+  {id:"criston_cole",nom:"Criston Cole",titre:"Chevalier de la Garde Royale — Le Faiseur de Rois",att:9,def:8,agi:8,end:9,con:8,tai:8,jou:9,mel:9,cbt:9,pui:8,
+   compJoute:true,compMelee:true,
+   armeNom:"Masse de guerre",armeBon:2,armeJoute:false,armeMelee:true,
+   armureNom:"Armure blanche de la Garde Royale",armureBon:2,
+   montNom:"Destrier de guerre",montBon:1,desc:"Chevalier légendaire de la Garde Royale. Invaincu pendant des années. Faiseur et défaiseur de rois lors de la Danse."},
+  {id:"daemon_t",nom:"Daemon Targaryen",titre:"Prince Rogue — Seigneur des Marches",att:10,def:7,agi:9,end:8,con:7,tai:7,jou:8,mel:10,cbt:10,pui:9,
+   compJoute:false,compMelee:true,
+   armeNom:"Dame Noire (Valyrian)",armeBon:3,armeJoute:false,armeMelee:true,
+   armureNom:"Demi-armure légère",armureBon:1,
+   montNom:"Caraxes (à pied : sans)",montBon:0,desc:"Prince Rogue. Combattant redoutable à l'épée valyrian Dame Noire. Préfère la mêlée à la joute."},
+  {id:"aemond_t",nom:"Aemond Targaryen",titre:"Prince — Chevalier de la Garde",att:9,def:8,agi:8,end:9,con:8,tai:9,jou:8,mel:9,cbt:8,pui:9,
+   compJoute:true,compMelee:true,
+   armeNom:"Épée longue",armeBon:2,armeJoute:false,armeMelee:true,
+   armureNom:"Armure lourde gravée",armureBon:2,
+   montNom:"Destrier noir",montBon:2,desc:"Prince borgne, redoutable guerrier. Pilote de Vhagar. Concurrent sérieux dans tous les tournois."},
+  {id:"aegon_ii",nom:"Aegon II Targaryen",titre:"Roi des Sept Couronnes",att:7,def:6,agi:6,end:7,con:7,tai:7,jou:7,mel:7,cbt:6,pui:7,
+   compJoute:true,compMelee:false,
+   armeNom:"Épée royale",armeBon:1,armeJoute:false,armeMelee:true,
+   armureNom:"Armure dorée royale",armureBon:2,
+   montNom:"Sunfyre (monture de tournoi)",montBon:2,desc:"Roi des Verts. Bon chevalier, pas exceptionnel. Sa confiance dépasse parfois ses capacités."},
+  {id:"harwin_strong",nom:"Harwin Strong",titre:"Briseur-de-Bonds — Capitaine de la Garde",att:10,def:7,agi:7,end:10,con:10,tai:9,jou:7,mel:10,cbt:9,pui:10,
+   compJoute:false,compMelee:true,
+   armeNom:"Masse lourde",armeBon:2,armeJoute:false,armeMelee:true,
+   armureNom:"Cotte de mailles renforcée",armureBon:2,
+   montNom:"Cheval de guerre robuste",montBon:1,desc:"L'homme le plus fort de Westeros. Capitaine de la Garde de la Fossedragon. Force brute redoutable en mêlée."},
+  {id:"ser_laenor",nom:"Laenor Velaryon",titre:"Seigneur des Marées — Fils du Seigneur des Marées",att:7,def:6,agi:8,end:6,con:6,tai:7,jou:8,mel:6,cbt:6,pui:6,
+   compJoute:true,compMelee:false,
+   armeNom:"Lance de tournoi",armeBon:1,armeJoute:true,armeMelee:false,
+   armureNom:"Armure des Velaryons",armureBon:1,
+   montNom:"Seasmoke (à cheval : bon)",montBon:2,desc:"Fils de Corlys Velaryon. Meilleur jouteur que guerrier. Pilote de Seasmoke."},
+  {id:"corlys_v",nom:"Corlys Velaryon",titre:"Le Serpent de Mer — Seigneur du Flot",att:8,def:8,agi:7,end:9,con:8,tai:7,jou:7,mel:8,cbt:8,pui:7,
+   compJoute:false,compMelee:true,
+   armeNom:"Épée de marin",armeBon:1,armeJoute:false,armeMelee:true,
+   armureNom:"Armure de l'amiral",armureBon:2,
+   montNom:"Destrier gris",montBon:1,desc:"Le plus grand amiral de l'histoire. Vieux lion, encore redoutable à l'épée."},
+  {id:"rhaenys_t",nom:"Rhaenys Targaryen",titre:"La Reine qui n'était pas — Dame des Driftmark",att:7,def:8,agi:8,end:7,con:6,tai:6,jou:8,mel:7,cbt:7,pui:6,
+   compJoute:true,compMelee:false,
+   armeNom:"Lance fine",armeBon:1,armeJoute:true,armeMelee:false,
+   armureNom:"Armure légère argentée",armureBon:1,
+   montNom:"Meleys (destrier rapide)",montBon:3,desc:"Cavalière hors pair et pilote de Meleys. À l'aise en lice, redoutable sur sa monture."},
+  {id:"otto_hight",nom:"Otto Hightower",titre:"Main du Roi — Seigneur de la Citadelle",att:5,def:7,agi:5,end:6,con:6,tai:6,jou:5,mel:5,cbt:5,pui:5,
+   compJoute:false,compMelee:false,
+   armeNom:"Épée de cour",armeBon:0,armeJoute:true,armeMelee:true,
+   armureNom:"Armure de cérémonie",armureBon:1,
+   montNom:"Palefroi",montBon:0,desc:"Politicien avant tout. Jadis bon chevalier, ses années l'ont usé. Dangereux en intrigue, moins en lice."},
+  {id:"lyonel_strong",nom:"Lyonel Strong",titre:"Lord Harrenhal — Main du Roi",att:8,def:8,agi:7,end:8,con:8,tai:8,jou:7,mel:8,cbt:7,pui:8,
+   compJoute:false,compMelee:true,
+   armeNom:"Épée bâtarde",armeBon:1,armeJoute:false,armeMelee:true,
+   armureNom:"Armure de lord",armureBon:2,
+   montNom:"Cheval de guerre",montBon:1,desc:"Lord Harrenhal, homme d'honneur. Chevalier solide et respecté, père de Harwin et Larys."},
+  {id:"ser_cole_young",nom:"Arryk Cargyll",titre:"Chevalier de la Garde Royale",att:8,def:8,agi:8,end:8,con:8,tai:8,jou:8,mel:8,cbt:8,pui:8,
+   compJoute:true,compMelee:true,
+   armeNom:"Épée blanche",armeBon:1,armeJoute:false,armeMelee:true,
+   armureNom:"Armure blanche de la Garde",armureBon:2,
+   montNom:"Destrier blanc",montBon:1,desc:"Jumeau d'Erryk. Chevalier de la Garde Royale, compétent en tout, exceptionnel en rien."},
+  {id:"erryk_cargyll",nom:"Erryk Cargyll",titre:"Chevalier de la Garde Royale — Camp Noir",att:8,def:8,agi:8,end:8,con:8,tai:8,jou:8,mel:8,cbt:8,pui:8,
+   compJoute:true,compMelee:true,
+   armeNom:"Épée longue",armeBon:1,armeJoute:false,armeMelee:true,
+   armureNom:"Armure noire (Noirs)",armureBon:2,
+   montNom:"Destrier bai",montBon:1,desc:"Jumeau d'Arryk. A rejoint les Noirs. Destin tragique contre son propre frère."},
+  {id:"lorent_marbrand",nom:"Lorent Marbrand",titre:"Chevalier de la Garde Royale",att:7,def:8,agi:8,end:7,con:7,tai:7,jou:7,mel:7,cbt:7,pui:7,
+   compJoute:true,compMelee:false,
+   armeNom:"Lance de tournoi",armeBon:1,armeJoute:true,armeMelee:false,
+   armureNom:"Armure blanche de la Garde",armureBon:2,
+   montNom:"Destrier roux",montBon:2,desc:"Chevalier de la Garde Royale. Spécialisé en joute, présence honorable en tournoi."},
+  {id:"ser_tyland",nom:"Tyland Lannister",titre:"Maître des Navires — Camp des Verts",att:6,def:7,agi:7,end:6,con:6,tai:6,jou:7,mel:6,cbt:6,pui:6,
+   compJoute:true,compMelee:false,
+   armeNom:"Lance dorée",armeBon:1,armeJoute:true,armeMelee:false,
+   armureNom:"Armure dorée des Lannister",armureBon:1,
+   montNom:"Étalon doré",montBon:2,desc:"Lannister fidèle aux Verts. Bon jouteur, politique habile. Frère jumeau de Jason Lannister."},
+  {id:"jason_lannister",nom:"Jason Lannister",titre:"Seigneur de Castral Roc",att:7,def:6,agi:7,end:7,con:7,tai:7,jou:8,mel:7,cbt:7,pui:7,
+   compJoute:true,compMelee:false,
+   armeNom:"Lance des Lions",armeBon:2,armeJoute:true,armeMelee:false,
+   armureNom:"Harnois doré des Lannister",armureBon:2,
+   montNom:"Faucon d'or (destrier)",montBon:2,desc:"Seigneur de Castral Roc. Excellent jouteur, mort lors de la Danse en campagne militaire."},
+  {id:"ser_steffon",nom:"Steffon Darklyn",titre:"Chevalier de la Garde Royale",att:7,def:8,agi:7,end:8,con:8,tai:8,jou:7,mel:8,cbt:7,pui:8,
+   compJoute:false,compMelee:true,
+   armeNom:"Épée longue",armeBon:1,armeJoute:false,armeMelee:true,
+   armureNom:"Armure blanche de la Garde",armureBon:2,
+   montNom:"Cheval de guerre sombre",montBon:1,desc:"Chevalier de la Garde Royale fidèle aux Verts. Solide défenseur, plus à l'aise en mêlée qu'en lice."},
+  {id:"cole_richard",nom:"Rickard Thorne",titre:"Chevalier — Camp des Verts",att:7,def:7,agi:7,end:7,con:7,tai:7,jou:7,mel:7,cbt:7,pui:7,
+   compJoute:true,compMelee:true,
+   armeNom:"Épée",armeBon:1,armeJoute:false,armeMelee:true,
+   armureNom:"Armure standard",armureBon:1,
+   montNom:"Destrier",montBon:1,desc:"Chevalier vert solide. Compétence équilibrée, sans point faible ni excellence particulière."},
+  {id:"daeron_t",nom:"Daeron Targaryen",titre:"Le Courageux — Prince cadet",att:7,def:7,agi:8,end:7,con:7,tai:7,jou:8,mel:7,cbt:7,pui:7,
+   compJoute:true,compMelee:false,
+   armeNom:"Lance princière",armeBon:1,armeJoute:true,armeMelee:false,
+   armureNom:"Armure verte aux éclairs",armureBon:1,
+   montNom:"Tessarion (destrier en tournoi)",montBon:2,desc:"Le plus jeune fils d'Alicent. Courageux et loyal aux Verts. Pilote de Tessarion."},
+  {id:"ser_royce",nom:"Ser Cregan Stark",titre:"Lord de Winterfell — L'Ancien du Nord",att:9,def:8,agi:7,end:10,con:9,tai:9,jou:6,mel:9,cbt:9,pui:9,
+   compJoute:false,compMelee:true,
+   armeNom:"Épée du Nord (acier du Nord)",armeBon:2,armeJoute:false,armeMelee:true,
+   armureNom:"Cotte de mailles du Nord",armureBon:2,
+   montNom:"Étalon du Nord",montBon:0,desc:"Lord Stark. Pas un jouteur mais redoutable en mêlée. Arrivé trop tard pour la Danse mais imposa sa loi à la Cour du Dragon."},
+  {id:"ser_gwayne",nom:"Gwayne Hightower",titre:"Seigneur de la Tour Haute — Camp des Verts",att:8,def:8,agi:8,end:8,con:7,tai:8,jou:9,mel:8,cbt:8,pui:8,
+   compJoute:true,compMelee:false,
+   armeNom:"Lance de la Tour Haute",armeBon:2,armeJoute:true,armeMelee:false,
+   armureNom:"Armure blanche et verte",armureBon:2,
+   montNom:"Destrier de la Tour",montBon:2,desc:"Fils d'Otto Hightower, frère d'Alicent. Excellent jouteur, pilier des Verts en tournoi."}
+];
+
+var combattants_perso = [];
+var editId = null;
+var TC = {round:1,a:null,b:null,pv:{a:0,b:0},pvMax:{a:0,b:0},att:null,eB:{maxDe:0,de:"",label:""},rd:{}};
+var rounds = [], logs = [];
+
+function allC(){
+  // Les perso remplacent les bases si même id
+  var baseFiltered=COMBATTANTS_BASE.filter(function(b){return !combattants_perso.some(function(p){return p.id===b.id;});});
+  return baseFiltered.concat(combattants_perso);
+}
+function getC(id){return allC().find(function(c){return c.id===id;});}
+
+// ================================================================
+// NAVIGATION
+// ================================================================
+function showMain(v,btn){
+  document.querySelectorAll(".view").forEach(function(e){e.classList.remove("active");});
+  document.getElementById("view-"+v).classList.add("active");
+  document.querySelectorAll(".nav-tab").forEach(function(e){e.classList.remove("active");});
+  if(btn)btn.classList.add("active");
+  if(v==="fiches")renderFiches();
+}
+
+// ================================================================
+// FICHES
+// ================================================================
+function renderFiches(){
+  var q=(document.getElementById("srch").value||"").toLowerCase();
+  var mode=document.getElementById("mode-sel")?document.getElementById("mode-sel").value:"joute";
+  var all=allC().filter(function(c){return !q||c.nom.toLowerCase().indexOf(q)>=0||(c.titre||"").toLowerCase().indexOf(q)>=0;});
+  var g=document.getElementById("fiches-grid");
+  if(!all.length){g.innerHTML="<div style='color:var(--txt3);font-style:italic;padding:1.2rem'>Aucun combattant trouvé.</div>";return;}
+  g.innerHTML=all.map(function(c){
+    var pv=c.con*c.tai;
+    var initMod=gm(c.agi)+(mode==="joute"?gm(c.jou):gm(c.mel));
+    if(mode==="joute"&&c.compJoute)initMod+=2;
+    if(mode==="melee"&&c.compMelee)initMod+=2;
+    if(mode==="joute"&&c.montBon)initMod+=(+c.montBon||0);
+    var dmgMod=gm(c.pui)+gm(c.cbt);
+    var armeBon=c.armeBon&&((mode==="joute"&&c.armeJoute)||(mode==="melee"&&c.armeMelee))?(+c.armeBon||0):0;
+    var armureBon=+c.armureBon||0;
+    var res=Math.max(0,gm(c.con)+gm(c.tai)+armureBon);
+    var selA=TC.a===c.id?" sel-a":"",selB=TC.b===c.id?" sel-b":"";
+    var isPerso=combattants_perso.some(function(p){return p.id===c.id;});
+    // Badges
+    var badges="";
+    if(c.compJoute)badges+="<span class='badge badge-joute'>🏇 Tournoi</span>";
+    if(c.compMelee)badges+="<span class='badge badge-melee'>⚔ Mêlée</span>";
+    if(c.armeNom&&c.armeBon>0)badges+="<span class='badge badge-equip'>🗡 "+h(c.armeNom)+" +"+c.armeBon+"</span>";
+    if(c.armureNom&&c.armureBon>0)badges+="<span class='badge badge-equip'>🛡 +"+c.armureBon+" Rés</span>";
+    if(c.montNom&&c.montBon>0)badges+="<span class='badge badge-equip'>🐴 +"+c.montBon+" Init</span>";
+    return "<div class='fiche"+selA+selB+"'>"+
+      "<div class='fn'>"+h(c.nom)+"</div>"+
+      "<div class='fd'>"+h(c.titre||"")+"</div>"+
+      (badges?"<div style='margin-bottom:.3rem'>"+badges+"</div>":"")+
+      "<div class='fstats'>"+
+        ["att","def","agi","end","con","tai","jou","mel","cbt","pui"].map(function(k){
+          var labels={att:"Att",def:"Déf",agi:"Agi",end:"End",con:"Con",tai:"Tai",jou:"Jou",mel:"Mél",cbt:"Cbt",pui:"Pui"};
+          return "<div class='fs'><div class='fsl'>"+labels[k]+"</div><div class='fsv'>"+(c[k]||1)+"</div></div>";
+        }).join("")+
+      "</div>"+
+      "<div class='fpv'>PV "+(c.con*c.tai)+" &nbsp;|&nbsp; Init "+ms(initMod)+
+        (mode==="joute"&&c.compJoute?" <span style='color:var(--gl2);font-size:.85em'>+2✦</span>":"")+
+        (mode==="melee"&&c.compMelee?" <span style='color:#e07070;font-size:.85em'>+2✦</span>":"")+
+        " &nbsp;|&nbsp; Dég "+ms(dmgMod+(armeBon>0?"+"+armeBon:"")).replace("++","+")+
+        " &nbsp;|&nbsp; Rés "+res+"</div>"+
+      "<div class='fbtns'>"+
+        "<button class='fbtn fa' onclick='selD(\"a\",\""+c.id+"\")'>⚔ A</button>"+
+        "<button class='fbtn fb' onclick='selD(\"b\",\""+c.id+"\")'>⚔ B</button>"+
+        "<button class='fbtn' onclick='openModal(\""+c.id+"\")'>✎</button>"+
+        (isPerso?"<button class='fbtn' style='color:var(--red2)' onclick='delCombattant(\""+c.id+"\")'>✕</button>":"")+
+      "</div>"+
+    "</div>";
+  }).join("");
+}
+
+// ================================================================
+// MODAL
+// ================================================================
+function openModal(id){
+  editId=null;
+  document.getElementById("m-del").style.display="none";
+  var c=id?getC(id):null;
+  if(c){editId=c.id;if(combattants_perso.some(function(p){return p.id===c.id;}))document.getElementById("m-del").style.display="block";}
+  document.getElementById("mo-title").textContent=c?"Modifier — "+c.nom:"Nouveau combattant";
+  document.getElementById("m-nom").value=c?c.nom:"";
+  document.getElementById("m-titre").value=c?c.titre:"";
+  STATS_LIST.forEach(function(k){document.getElementById("m-"+k).value=c?(c[k]||6):6;});
+  document.getElementById("m-comp-joute").checked=c?!!c.compJoute:false;
+  document.getElementById("m-comp-melee").checked=c?!!c.compMelee:false;
+  document.getElementById("m-arme-nom").value=c?c.armeNom||"":"";
+  document.getElementById("m-arme-bon").value=c?c.armeBon||0:0;
+  document.getElementById("m-arme-joute").checked=c?!!c.armeJoute:true;
+  document.getElementById("m-arme-melee").checked=c?!!c.armeMelee:true;
+  document.getElementById("m-armure-nom").value=c?c.armureNom||"":"";
+  document.getElementById("m-armure-bon").value=c?c.armureBon||0:0;
+  document.getElementById("m-mont-nom").value=c?c.montNom||"":"";
+  document.getElementById("m-mont-bon").value=c?c.montBon||0:0;
+  document.getElementById("m-desc").value=c?c.desc||"":"";
+  updModal();
+  document.getElementById("mo").classList.add("open");
+}
+function closeModal(){document.getElementById("mo").classList.remove("open");editId=null;}
+
+function updModal(){
+  var total=STATS_LIST.reduce(function(s,k){return s+(+document.getElementById("m-"+k).value||1);},0);
+  document.getElementById("m-total").textContent=total;
+  STATS_LIST.forEach(function(k){
+    var v=+document.getElementById("m-"+k).value||1;
+    var m=gm(v);
+    var el=document.getElementById("mod-"+k);
+    if(el){el.textContent=ms(m);el.className="stat-mod "+(m>0?"mod-pos":m<0?"mod-neg":"mod-zer");}
+  });
+}
+
+function saveCombattant(){
+  var nom=document.getElementById("m-nom").value.trim();
+  if(!nom){alert("Nom obligatoire.");return;}
+  var c={id:editId||("cb_"+Date.now()),nom:nom,titre:document.getElementById("m-titre").value.trim()};
+  STATS_LIST.forEach(function(k){c[k]=+document.getElementById("m-"+k).value||1;});
+  c.compJoute=document.getElementById("m-comp-joute").checked;
+  c.compMelee=document.getElementById("m-comp-melee").checked;
+  c.armeNom=document.getElementById("m-arme-nom").value.trim();
+  c.armeBon=+document.getElementById("m-arme-bon").value||0;
+  c.armeJoute=document.getElementById("m-arme-joute").checked;
+  c.armeMelee=document.getElementById("m-arme-melee").checked;
+  c.armureNom=document.getElementById("m-armure-nom").value.trim();
+  c.armureBon=+document.getElementById("m-armure-bon").value||0;
+  c.montNom=document.getElementById("m-mont-nom").value.trim();
+  c.montBon=+document.getElementById("m-mont-bon").value||0;
+  c.desc=document.getElementById("m-desc").value.trim();
+  if(editId){
+    var idx=combattants_perso.findIndex(function(p){return p.id===editId;});
+    if(idx>=0)combattants_perso[idx]=c; else combattants_perso.push(c);
+  } else combattants_perso.push(c);
+  closeModal();renderFiches();popSelects();
+  ["a","b"].forEach(function(side){if(TC[side]===c.id){renderSlot(side);updMods();updPvArena();}});
+  if(window.fbSaveCombattants)window.fbSaveCombattants();
+}
+
+function delCombattant(forcedId){
+  var id=forcedId||editId;
+  if(!id)return;
+  if(!confirm("Supprimer ce combattant personnalisé ?"))return;
+  combattants_perso=combattants_perso.filter(function(p){return p.id!==id;});
+  if(TC.a===id){TC.a=null;renderSlot("a");}
+  if(TC.b===id){TC.b=null;renderSlot("b");}
+  if(!forcedId)closeModal();
+  renderFiches();popSelects();
+  if(window.fbSaveCombattants)window.fbSaveCombattants();
+}
+
+// ================================================================
+// SÉLECTION & SLOTS
+// ================================================================
+function popSelects(){
+  var all=allC();
+  ["a","b"].forEach(function(side){
+    var sel=document.getElementById("sel-"+side);var cur=TC[side];
+    sel.innerHTML="<option value=''>-- Choisir --</option>";
+    all.forEach(function(c){
+      var o=document.createElement("option");o.value=c.id;
+      o.textContent=c.nom+(c.titre?" — "+c.titre:"");
+      if(c.id===cur)o.selected=true;sel.appendChild(o);
+    });
+  });
+}
+
+function selD(side,id){
+  TC[side]=id;var c=getC(id);
+  if(c){TC.pvMax[side]=c.con*c.tai;TC.pv[side]=c.con*c.tai;}
+  document.getElementById("sel-"+side).value=id;
+  renderSlot(side);updMods();updPvArena();renderFiches();
+  showMain("joute",document.querySelectorAll(".nav-tab")[1]);
+}
+
+function selC(side,id){
+  TC[side]=id||null;var c=getC(id);
+  if(c){TC.pvMax[side]=c.con*c.tai;TC.pv[side]=c.con*c.tai;}
+  else{TC.pvMax[side]=0;TC.pv[side]=0;}
+  renderSlot(side);updMods();updPvArena();renderFiches();
+}
+
+function renderSlot(side){
+  var el=document.getElementById("slot-"+side+"-info");if(!el)return;
+  var c=getC(TC[side]);
+  if(!c){el.innerHTML="<div style='font-size:.78rem;color:var(--txt3);font-style:italic;text-align:center;padding:.7rem 0'>Choisir un combattant</div>";return;}
+  var mode=document.getElementById("mode-sel")?document.getElementById("mode-sel").value:"joute";
+  var initMod=gm(c.agi)+(mode==="joute"?gm(c.jou):gm(c.mel));
+  if(mode==="joute"&&c.compJoute)initMod+=2;
+  if(mode==="melee"&&c.compMelee)initMod+=2;
+  if(mode==="joute"&&c.montBon)initMod+=(+c.montBon||0);
+  var armeBon=c.armeBon&&((mode==="joute"&&c.armeJoute)||(mode==="melee"&&c.armeMelee))?(+c.armeBon||0):0;
+  var armureBon=+c.armureBon||0;
+  var dmgMod=gm(c.pui)+gm(c.cbt)+armeBon;
+  var res=Math.max(0,gm(c.con)+gm(c.tai)+armureBon);
+  var pv=TC.pv[side]||0,pvMax=TC.pvMax[side]||1;
+  var pct=Math.round(pv/pvMax*100);
+  var barColor=side==="a"?"linear-gradient(90deg,#8B1A1A,#e07070)":"linear-gradient(90deg,#1a4a7a,#87CEEB)";
+  var badges="";
+  if(mode==="joute"&&c.compJoute)badges+="<span class='badge badge-joute'>🏇+2 init</span>";
+  if(mode==="melee"&&c.compMelee)badges+="<span class='badge badge-melee'>⚔+2 init</span>";
+  if(armeBon>0)badges+="<span class='badge badge-equip'>🗡+"+armeBon+" dég</span>";
+  if(armureBon>0)badges+="<span class='badge badge-equip'>🛡+"+armureBon+" rés</span>";
+  if(mode==="joute"&&c.montBon>0)badges+="<span class='badge badge-joute'>🐴+"+c.montBon+" init</span>";
+  el.innerHTML=
+    "<div class='slot-name' style='border-color:"+(side==="a"?"#e07070":"#87CEEB")+"'>"+h(c.nom)+"</div>"+
+    "<div class='slot-sub'>"+h(c.titre||"")+"</div>"+
+    (badges?"<div style='margin:.18rem 0'>"+badges+"</div>":"")+
+    "<div class='pairs'>"+
+      "<div class='pair-box'><div class='pair-lbl'>Init</div><div class='pair-val'>"+ms(initMod)+"</div><div class='pair-sub'>D20+mod</div></div>"+
+      "<div class='pair-box'><div class='pair-lbl'>Dég</div><div class='pair-val'>"+ms(dmgMod)+"</div><div class='pair-sub'>D20+mod</div></div>"+
+      "<div class='pair-box'><div class='pair-lbl'>PV/Rés</div><div class='pair-val'>"+pv+"</div><div class='pair-sub'>Rés "+res+"</div></div>"+
+    "</div>"+
+    "<div class='pv-bar-wrap' style='height:6px;margin-bottom:.2rem'><div style='height:100%;border-radius:2px;background:"+barColor+";width:"+pct+"%'></div></div>";
+}
+
+// ================================================================
+// MODIFICATEURS & CALCULS
+// ================================================================
+function getInitMod(side){
+  var c=getC(TC[side]);if(!c)return 0;
+  var mode=document.getElementById("mode-sel").value;
+  var m=gm(c.agi)+(mode==="joute"?gm(c.jou):gm(c.mel));
+  if(mode==="joute"&&c.compJoute)m+=2;
+  if(mode==="melee"&&c.compMelee)m+=2;
+  if(mode==="joute"&&c.montBon)m+=(+c.montBon||0);
+  return m;
+}
+function getDmgMod(side){
+  var c=getC(TC[side]);if(!c)return 0;
+  var mode=document.getElementById("mode-sel").value;
+  var armeBon=c.armeBon&&((mode==="joute"&&c.armeJoute)||(mode==="melee"&&c.armeMelee))?(+c.armeBon||0):0;
+  return gm(c.pui)+gm(c.cbt)+armeBon;
+}
+function getResDef(side){
+  var c=getC(TC[side]);if(!c)return 0;
+  return Math.max(0,gm(c.con)+gm(c.tai)+(+c.armureBon||0));
+}
+
+function updMods(){
+  var mode=document.getElementById("mode-sel").value;
+  ["a","b"].forEach(function(side){
+    var c=getC(TC[side]);
+    var im=getInitMod(side);
+    var nm=c?c.nom:"Combattant "+side.toUpperCase();
+    document.getElementById("in-n"+side).textContent=nm;
+    document.getElementById("in-f"+side).textContent="D20 "+(mode==="joute"?"(Agi+Joute":"(Agi+Mêlée")+
+      (mode==="joute"&&c&&c.compJoute?" +Comp.Tournoi":"")+(mode==="melee"&&c&&c.compMelee?" +Comp.Mêlée":"")+
+      (mode==="joute"&&c&&c.montBon>0?" +Monture":"")+")";
+    var mel=document.getElementById("in-m"+side);mel.textContent=ms(im);mel.className="jmod "+(im>0?"mod-pos":im<0?"mod-neg":"mod-zer");
+    renderSlot(side);
+  });
+  updStepBanners();
+}
+
+function updPvArena(){
+  var cA=getC(TC.a),cB=getC(TC.b);
+  var arena=document.getElementById("pv-arena");
+  if(!cA||!cB){arena.style.display="none";return;}
+  arena.style.display="";
+  document.getElementById("pvna").textContent=cA.nom;
+  document.getElementById("pvnb").textContent=cB.nom;
+  updPV("a");updPV("b");
+}
+function updPV(s){
+  var pv=Math.max(0,TC.pv[s]||0),pvM=TC.pvMax[s]||1,pct=Math.round(pv/pvM*100);
+  document.getElementById("pv"+s).textContent=pv;
+  document.getElementById("pvm"+s).textContent=pvM;
+  document.getElementById("pvb"+s).style.width=pct+"%";
+  var b=document.getElementById("st"+s);
+  if(pv<=0){b.textContent="Hors combat";b.className="sbadge st-dead";}
+  else if(pct<=25){b.textContent="Critique";b.className="sbadge st-crit";}
+  else if(pct<=50){b.textContent="Blessé";b.className="sbadge st-low";}
+  else{b.textContent="En lice";b.className="sbadge st-ok";}
+}
+
+// ================================================================
+// COMBAT
+// ================================================================
+function calcInit(){
+  var da=+document.getElementById("in-a").value,db=+document.getElementById("in-b").value;
+  var mA=getInitMod("a"),mB=getInitMod("b");
+  var tA=da?da+mA:null,tB=db?db+mB:null;
+  function fmt(v,d20,mod){
+    if(v===null)return "—";
+    return "<span style='font-size:.72rem;color:var(--txt3)'>"+d20+(mod!==0?(mod>0?"+":"")+mod:"")+"</span><b> "+v+"</b>";
+  }
+  document.getElementById("in-ta").innerHTML=fmt(tA,da,mA);
+  document.getElementById("in-tb").innerHTML=fmt(tB,db,mB);
+  var res=document.getElementById("in-res");
+  if(tA===null||tB===null){res.style.display="none";document.getElementById("dmg-blk").style.display="none";document.getElementById("att-lbl").style.display="none";chkBtn();updStepBanners();return;}
+  res.style.display="block";
+  var ecart=Math.abs(tA-tB);var bon=gBon(ecart);TC.eB=bon;
+  if(tA>tB)TC.att="a";else if(tB>tA)TC.att="b";else TC.att=null;
+  if(TC.att===null){
+    document.getElementById("in-win").innerHTML="<span style='color:var(--gl)'>Égalité — aucun avantage</span>";
+    document.getElementById("in-sub").textContent="Écart : 0";document.getElementById("in-bon").textContent="";
+    document.getElementById("dmg-blk").style.display="none";document.getElementById("att-lbl").style.display="none";document.getElementById("bon-box").style.display="none";
+    chkBtn();updStepBanners();return;
+  }
+  var att=TC.att,def=att==="a"?"b":"a";
+  var cAtt=getC(TC[att]),cDef=getC(TC[def]);
+  var dm=getDmgMod(att);var res2=getResDef(def);
+  document.getElementById("jb-init-a").className="jb jb-a"+(att==="a"?" jb-att":"");
+  document.getElementById("jb-init-b").className="jb jb-b"+(att==="b"?" jb-att":"");
+  document.getElementById("in-win").innerHTML="<span style='color:"+(att==="a"?"#e07070":"#87CEEB")+"'>"+(cAtt?h(cAtt.nom):"?")+"</span> attaque";
+  document.getElementById("in-sub").textContent="Écart : "+ecart;
+  document.getElementById("in-bon").textContent=bon.maxDe>0?bon.label:"";
+  document.getElementById("dmg-n").textContent=cAtt?cAtt.nom:"Attaquant";
+  var mode=document.getElementById("mode-sel").value;
+  var armeLabel=cAtt&&cAtt.armeNom&&cAtt.armeBon>0&&((mode==="joute"&&cAtt.armeJoute)||(mode==="melee"&&cAtt.armeMelee))?" +"+cAtt.armeBon+" arme":"";
+  document.getElementById("dmg-f").textContent="D20 (Pui+Cbt"+armeLabel+")";
+  document.getElementById("dmg-m").textContent=ms(dm);
+  document.getElementById("dmg-m").className="jmod "+(dm>0?"mod-pos":dm<0?"mod-neg":"mod-zer");
+  document.getElementById("dmg-blk").className="jb jb-"+(att==="a"?"a":"b");
+  document.getElementById("dmg-blk").style.display="";
+  document.getElementById("att-lbl").textContent=(cAtt?cAtt.nom:"?")+" attaque — Résistance cible : "+res2;
+  document.getElementById("att-lbl").style.display="";
+  if(bon.maxDe>0){document.getElementById("bon-box").style.display="block";document.getElementById("bon-lbl").textContent="Bonus d'écart : "+bon.label;document.getElementById("bon-type").textContent=bon.de;}
+  else document.getElementById("bon-box").style.display="none";
+  if(!+document.getElementById("dmg-d").value)document.getElementById("dmg-d").value="";
+  document.getElementById("dmg-res").style.display="none";
+  chkBtn();updStepBanners();
+}
+
+function calcDmg(){
+  var att=TC.att;if(!att){chkBtn();return;}
+  var def=att==="a"?"b":"a";
+  var cAtt=getC(TC[att]),cDef=getC(TC[def]);
+  var d20=+document.getElementById("dmg-d").value;
+  if(!d20){document.getElementById("dmg-res").style.display="none";chkBtn();return;}
+  var dm=getDmgMod(att);var res=getResDef(def);
+  var bon=+document.getElementById("bon-d").value||0;
+  var brut=d20+dm+bon,net=Math.max(1,brut-res);
+  document.getElementById("dmg-t").textContent=brut;
+  document.getElementById("dmg-res").style.display="block";
+  document.getElementById("dmg-win").innerHTML=
+    "<span style='color:"+(att==="a"?"#e07070":"#87CEEB")+";'>"+(cAtt?h(cAtt.nom):"?")+"</span> inflige "+
+    "<span style='color:var(--parch);font-size:1rem;font-weight:700'>"+net+"</span> dégâts";
+  document.getElementById("dmg-sub").textContent=
+    "D20 "+d20+(dm!==0?(dm>0?"+":"")+dm:"")+(bon?"+"+bon:"")+" = "+brut+" − Rés. "+res+" = "+net+" PV";
+  TC.rd={tA:+document.getElementById("in-ta").textContent||0,tB:+document.getElementById("in-tb").textContent||0,
+    ecart:Math.abs((+document.getElementById("in-ta").textContent||0)-(+document.getElementById("in-tb").textContent||0)),
+    att:att,def:def,nAtt:cAtt?cAtt.nom:"?",nDef:cDef?cDef.nom:"?",d20:d20,dm:dm,bon:bon,brut:brut,resDef:res,net:net};
+  chkBtn();updStepBanners();
+}
+
+function rollDie(inputId,faces){
+  var btn=event?event.currentTarget:null;
+  if(btn){btn.classList.add("rolling");setTimeout(function(){btn.classList.remove("rolling");btn.disabled=true;},260);}
+  var inp=document.getElementById(inputId);inp.value=Math.floor(Math.random()*faces)+1;inp.disabled=true;
+  if(inputId==="in-a"||inputId==="in-b")calcInit();else calcDmg();
+}
+function rollBonusDie(){
+  var btn=event?event.currentTarget:null;
+  if(btn){btn.classList.add("rolling");setTimeout(function(){btn.classList.remove("rolling");btn.disabled=true;},260);}
+  var inp=document.getElementById("bon-d");inp.value=Math.floor(Math.random()*(TC.eB?TC.eB.maxDe:4))+1;inp.disabled=true;calcDmg();
+}
+
+function chkBtn(){
+  if(!TC.a||!TC.b){document.getElementById("next-btn").disabled=true;return;}
+  var da=+document.getElementById("in-a").value,db=+document.getElementById("in-b").value;
+  var dd=+document.getElementById("dmg-d").value;
+  var hasBon=TC.eB&&TC.eB.maxDe>0,bv=hasBon?+document.getElementById("bon-d").value:0;
+  if(TC.att===null&&da&&db){document.getElementById("next-btn").disabled=false;return;}
+  document.getElementById("next-btn").disabled=!(da&&db&&dd&&(!hasBon||bv>0));
+}
+
+function nextRound(){
+  var rd=TC.rd;
+  if(TC.att===null){
+    addLog("<div class='log-round'>Passe "+TC.round+"</div><div style='color:var(--gl)'>Égalité — aucune touche.</div>");
+    TC.round++;document.getElementById("rlbl").textContent="P"+TC.round;
+    resetRound();if(window.fbSaveCombat)window.fbSaveCombat();return;
+  }
+  if(!rd||!rd.att)return;
+  TC.pv[rd.def]=Math.max(0,TC.pv[rd.def]-rd.net);updPV(rd.def);
+  rounds.push({n:TC.round,att:rd.att,def:rd.def,nAtt:rd.nAtt,nDef:rd.nDef,d20:rd.d20,dm:rd.dm,bon:rd.bon,brut:rd.brut,res:rd.resDef,net:rd.net,pvA:TC.pv.a,pvB:TC.pv.b,pvMA:TC.pvMax.a,pvMB:TC.pvMax.b});
+  addLog("<div class='log-round'>Passe "+TC.round+"</div>"+
+    "<div class='log-"+(rd.att)+"'>→ "+h(rd.nAtt)+" attaque "+h(rd.nDef)+"</div>"+
+    "<div class='log-dmg'>D20 "+rd.d20+(rd.dm!==0?(rd.dm>0?"+":"")+rd.dm:"")+(rd.bon?"+"+rd.bon:"")+" = "+rd.brut+" − Rés. "+rd.resDef+" = <b>"+rd.net+" PV</b></div>"+
+    (TC.pv[rd.def]<=0?"<div class='log-dead log-dead-"+rd.def+"'>"+h(rd.nDef)+" est hors combat !</div>":""));
+  renderRecap();
+  TC.round++;document.getElementById("rlbl").textContent="P"+TC.round;
+  resetRound();if(window.fbSaveCombat)window.fbSaveCombat();
+  if(TC.pv[rd.def]<=0)setTimeout(function(){alert(rd.nDef+" est hors combat !");},200);
+}
+
+function resetRound(){
+  TC.att=null;TC.rd={};TC.eB={maxDe:0,de:"",label:""};
+  ["in-a","in-b","dmg-d","bon-d"].forEach(function(id){
+    var e=document.getElementById(id);if(!e)return;e.value="";e.disabled=false;
+    var btn=e.nextElementSibling;if(btn&&btn.classList.contains("die-btn"))btn.disabled=false;
+  });
+  var bonBtn=document.getElementById("bon-die-btn");if(bonBtn)bonBtn.disabled=false;
+  document.getElementById("in-ta").innerHTML="—";document.getElementById("in-tb").innerHTML="—";
+  ["in-res","dmg-res"].forEach(function(id){document.getElementById(id).style.display="none";});
+  document.getElementById("bon-box").style.display="none";document.getElementById("dmg-blk").style.display="none";document.getElementById("att-lbl").style.display="none";
+  document.getElementById("jb-init-a").className="jb jb-a";document.getElementById("jb-init-b").className="jb jb-b";
+  document.getElementById("next-btn").disabled=true;
+  updStepBanners();renderSlot("a");renderSlot("b");
+}
+
+function resetCombat(){
+  TC.round=1;TC.att=null;TC.rd={};TC.eB={maxDe:0,de:"",label:""};
+  var cA=getC(TC.a),cB=getC(TC.b);
+  TC.pv={a:cA?cA.con*cA.tai:0,b:cB?cB.con*cB.tai:0};
+  TC.pvMax={a:cA?cA.con*cA.tai:0,b:cB?cB.con*cB.tai:0};
+  rounds=[];logs=[];
+  document.getElementById("rlbl").textContent="P1";
+  document.getElementById("recap-panel").style.display="none";
+  resetRound();updPvArena();renderLog();renderRecap();
+  if(window.fbSaveCombat)window.fbSaveCombat();
+}
+
+function addLog(html){
+  var entry=document.createElement("div");entry.className="log-entry";entry.innerHTML=html;
+  var wrap=document.getElementById("log-wrap");
+  if(wrap.querySelector(".log-empty"))wrap.innerHTML="";
+  wrap.appendChild(entry);wrap.scrollTop=wrap.scrollHeight;
+  logs.push(html);
+}
+function renderLog(){
+  var wrap=document.getElementById("log-wrap");
+  if(!logs||!logs.length){wrap.innerHTML="<div class='log-empty'>Aucun combat enregistré.</div>";return;}
+  wrap.innerHTML=logs.map(function(l){return "<div class='log-entry'>"+l+"</div>";}).join("");
+  wrap.scrollTop=wrap.scrollHeight;
+}
+function renderRecap(){
+  var panel=document.getElementById("recap-panel");
+  if(!rounds||!rounds.length){panel.style.display="none";return;}
+  panel.style.display="block";
+  document.getElementById("recap").innerHTML=rounds.map(function(r){
+    var ac=r.att==="a"?"#e07070":"#87CEEB",dc=r.att==="a"?"#87CEEB":"#e07070";
+    return "<div style='display:grid;grid-template-columns:28px 1fr 1fr auto;gap:.4rem;align-items:center;padding:.3rem .4rem;border-bottom:1px solid var(--bdr2);font-size:.73rem'>"+
+      "<span style='font-family:Cinzel,serif;font-size:.54rem;font-weight:700;color:var(--gl)'>P"+r.n+"</span>"+
+      "<span style='color:"+ac+";font-family:Cinzel,serif;font-size:.64rem;font-weight:700'>"+h(r.nAtt)+"</span>"+
+      "<span style='color:"+dc+";font-family:Cinzel,serif;font-size:.64rem'>→ "+h(r.nDef)+"</span>"+
+      "<span style='font-family:Cinzel,serif;font-size:.68rem;font-weight:700;color:"+(r.net>0?"var(--parch)":"var(--txt3)")+"'>"+r.net+" PV</span>"+
+    "</div>";
+  }).join("");
+}
+
+function updStepBanners(){
+  var hasAB=TC.a&&TC.b;
+  var da=+document.getElementById("in-a").value,db=+document.getElementById("in-b").value;
+  var dd=+document.getElementById("dmg-d").value;
+  var initDone=da&&db;
+  var bi=document.getElementById("step-init-banner"),bd=document.getElementById("step-dmg-banner");
+  if(!hasAB){bi.className="step-banner waiting";bd.className="step-banner waiting";return;}
+  bi.className=initDone?"step-banner done":"step-banner";
+  if(!initDone)bd.className="step-banner waiting";
+  else if(TC.att===null)bd.className="step-banner done";
+  else bd.className=dd?"step-banner done":"step-banner";
+}
+
+// THÈME
+function toggleTheme(){
+  var isLight=document.documentElement.classList.toggle("light");
+  document.getElementById("theme-toggle").textContent=isLight?"☀ Clair":"🌙 Sombre";
+  localStorage.setItem("cofas-tournoi-theme",isLight?"light":"dark");
+}
+(function(){
+  var t=localStorage.getItem("cofas-tournoi-theme");
+  if(t==="light"){document.documentElement.classList.add("light");document.addEventListener("DOMContentLoaded",function(){var btn=document.getElementById("theme-toggle");if(btn)btn.textContent="☀ Clair";});}
+})();
+
+renderFiches();popSelects();updMods();updStepBanners();renderLog();
+</script>
+</body>
+</html>
