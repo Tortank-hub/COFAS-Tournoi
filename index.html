@@ -1,0 +1,2571 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>COFAS — Tournoi</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0e0c09;--bg3:#1e1a12;--bg4:#252118;
+  --parch:#E8DCC8;--gl:#D4AF37;--gl2:#F0CC55;--gold:#B8973A;
+  --red2:#e07070;--red3:#8B1A1A;--green2:#6dca8a;--blue2:#87CEEB;
+  --bdr:rgba(184,151,58,.35);--bdr2:rgba(184,151,58,.18);
+  --txt:#c8b98a;--txt2:#a89060;--txt3:#6a5830;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--txt);font-family:"Crimson Text",serif;min-height:100vh;}
+body::before{content:"";position:fixed;inset:0;background:
+  radial-gradient(ellipse at 20% 20%,rgba(139,100,0,.07) 0%,transparent 50%),
+  radial-gradient(ellipse at 80% 80%,rgba(80,50,0,.07) 0%,transparent 50%);
+pointer-events:none;z-index:0;}
+header{text-align:center;padding:1.2rem 1rem .8rem;background:linear-gradient(180deg,rgba(14,12,9,1),rgba(22,19,16,.95));border-bottom:1px solid var(--bdr);}
+.sticky-top{position:sticky;top:0;z-index:50;}
+header h1{font-family:"Cinzel",serif;font-size:1.35rem;font-weight:900;color:var(--gl);letter-spacing:.22em;text-transform:uppercase;text-shadow:0 0 30px rgba(212,175,55,.4);}
+header .sub{font-family:"Cinzel",serif;font-size:.56rem;color:var(--txt3);letter-spacing:.16em;text-transform:uppercase;margin-top:.2rem;}
+.dv{height:1px;background:linear-gradient(to right,transparent,var(--gold),var(--gl2),var(--gold),transparent);margin:.45rem auto 0;max-width:320px;}
+.nav-main{display:flex;justify-content:center;gap:2px;background:rgba(0,0,0,.4);border-bottom:2px solid var(--bdr);padding:.3rem .5rem 0;}
+.nav-tab{font-family:"Cinzel",serif;font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;padding:.5rem 1.3rem;cursor:pointer;color:var(--txt3);background:none;border:none;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s;}
+.nav-tab:hover{color:var(--gl);}
+.nav-tab.active{color:var(--gl);border-bottom-color:var(--gl);}
+.wrap{max-width:1120px;margin:0 auto;padding:1.2rem 1rem;position:relative;z-index:1;}
+.view{display:none;}.view.active{display:block;}
+.panel{background:linear-gradient(145deg,var(--bg3),var(--bg4));border:1px solid var(--bdr);border-radius:3px;padding:.9rem 1rem;margin-bottom:.7rem;position:relative;}
+.panel::before{content:"";position:absolute;inset:3px;border:1px solid var(--bdr2);border-radius:2px;pointer-events:none;}
+.panel-title{font-family:"Cinzel",serif;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--gl);margin-bottom:.65rem;padding-bottom:.32rem;border-bottom:1px solid var(--bdr2);}
+/* FICHES */
+.fiches-ctrl{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-bottom:.9rem;}
+.srch{flex:1;min-width:130px;background:rgba(0,0,0,.3);border:1px solid var(--bdr2);border-radius:2px;padding:.28rem .5rem;font-family:"Crimson Text",serif;font-size:.88rem;color:var(--txt);outline:none;}
+.srch:focus{border-color:var(--gl);}
+.add-btn{font-family:"Cinzel",serif;font-size:.58rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;padding:.28rem .75rem;border-radius:2px;cursor:pointer;border:1px solid var(--bdr);background:rgba(212,175,55,.07);color:var(--gl);white-space:nowrap;}
+.add-btn:hover{background:rgba(212,175,55,.15);}
+.fiches-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:.7rem;}
+.fiche{background:linear-gradient(145deg,var(--bg3),var(--bg4));border:1px solid var(--bdr2);border-radius:3px;padding:.9rem 1rem;position:relative;overflow:hidden;}
+.fiche::before{content:"";position:absolute;inset:3px;border:1px solid var(--bdr2);border-radius:2px;pointer-events:none;}
+.fiche.sel-a{border-color:rgba(192,57,43,.7);}
+.fiche.sel-b{border-color:rgba(36,113,163,.7);}
+.fn{font-family:"Cinzel",serif;font-size:.9rem;font-weight:700;color:var(--parch);margin-bottom:.1rem;}
+.fd{font-size:.7rem;color:var(--txt3);font-style:italic;margin-bottom:.3rem;}
+.fstats{display:grid;grid-template-columns:repeat(6,1fr);gap:.14rem;margin:.3rem 0;}
+.fs{background:rgba(0,0,0,.22);border-radius:2px;padding:.16rem .18rem;text-align:center;}
+.fsl{font-family:"Cinzel",serif;font-size:.34rem;text-transform:uppercase;letter-spacing:.04em;color:var(--txt3);}
+.fsv{font-family:"Cinzel",serif;font-size:.72rem;font-weight:700;color:var(--gl);}
+.fpv{font-family:"Cinzel",serif;font-size:.58rem;color:var(--txt2);margin:.22rem 0;}
+.fbtns{display:flex;gap:.28rem;margin-top:.42rem;justify-content:flex-end;}
+.fbtn{font-family:"Cinzel",serif;font-size:.5rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;padding:.18rem .5rem;border-radius:2px;cursor:pointer;border:1px solid var(--bdr2);background:transparent;color:var(--txt3);transition:all .18s;}
+.fbtn:hover{color:var(--txt);}
+.fbtn.fa{border-color:rgba(192,57,43,.45);color:#e07070;}.fbtn.fa:hover{background:rgba(192,57,43,.1);}
+.fbtn.fb{border-color:rgba(36,113,163,.45);color:#87CEEB;}.fbtn.fb:hover{background:rgba(36,113,163,.1);}
+/* BADGES */
+.badge{font-family:"Cinzel",serif;font-size:.42rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:.06rem .28rem;border-radius:2px;display:inline-block;margin-right:.2rem;margin-bottom:.18rem;}
+.badge-joute{color:var(--gl2);background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.28);}
+.badge-melee{color:#e07070;background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.25);}
+.badge-duel{color:#c8a0e8;background:rgba(140,60,200,.08);border:1px solid rgba(140,60,200,.25);}
+.badge-equip{color:var(--txt2);background:rgba(0,0,0,.18);border:1px solid var(--bdr2);}
+/* ARENE */
+.arena{display:grid;grid-template-columns:1fr 48px 1fr;gap:.7rem;align-items:start;margin-bottom:.7rem;}
+@media(max-width:640px){.arena{grid-template-columns:1fr;}}
+.slot{background:linear-gradient(145deg,var(--bg3),var(--bg4));border:1px solid var(--bdr2);border-radius:3px;padding:.9rem 1rem;position:relative;}
+.slot::before{content:"";position:absolute;inset:3px;border:1px solid var(--bdr2);border-radius:2px;pointer-events:none;}
+.slot-a{border-color:rgba(192,57,43,.4);}
+.slot-b{border-color:rgba(36,113,163,.4);}
+.slot-lbl{font-family:"Cinzel",serif;font-size:.54rem;font-weight:700;text-transform:uppercase;letter-spacing:.11em;padding:.13rem .4rem;border-radius:2px;display:inline-block;margin-bottom:.4rem;}
+.slot-a .slot-lbl{color:#e07070;background:rgba(192,57,43,.1);border:1px solid rgba(192,57,43,.28);}
+.slot-b .slot-lbl{color:#87CEEB;background:rgba(36,113,163,.1);border:1px solid rgba(36,113,163,.28);}
+.slot-sel{width:100%;background:#1a1814;border:1px solid var(--bdr2);border-radius:2px;padding:.28rem .45rem;font-family:"Cinzel",serif;font-size:.78rem;color:var(--txt);margin-bottom:.5rem;outline:none;color-scheme:dark;cursor:pointer;}
+.slot-sel:focus{border-color:var(--gl);}
+.slot-name{font-family:"Cinzel",serif;font-size:.88rem;font-weight:700;color:var(--parch);border-left:3px solid;padding-left:.4rem;margin-bottom:.12rem;}
+.slot-sub{font-size:.7rem;color:var(--txt3);font-style:italic;margin-bottom:.35rem;}
+.pairs{display:grid;grid-template-columns:repeat(3,1fr);gap:.2rem;margin:.32rem 0;}
+.pair-box{background:rgba(0,0,0,.22);border-radius:2px;padding:.2rem .25rem;text-align:center;}
+.pair-lbl{font-family:"Cinzel",serif;font-size:.38rem;text-transform:uppercase;letter-spacing:.04em;color:var(--txt3);}
+.pair-val{font-family:"Cinzel",serif;font-size:.8rem;font-weight:700;color:var(--gl);}
+.pair-sub{font-size:.54rem;color:var(--txt3);}
+.vs-sep{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:.3rem 0;}
+.vs-txt{font-family:"Cinzel",serif;font-size:1.4rem;font-weight:900;color:var(--gl);text-shadow:0 0 18px rgba(212,175,55,.4);}
+.vs-line{width:1px;flex:1;background:linear-gradient(to bottom,transparent,var(--bdr),transparent);}
+/* PV */
+.pv-section{background:rgba(0,0,0,.18);border:1px solid var(--bdr2);border-radius:2px;padding:.5rem .65rem;margin-bottom:.45rem;}
+.pv-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:.25rem;}
+.pv-lbl{font-family:"Cinzel",serif;font-size:.52rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--txt3);}
+.pv-val{font-family:"Cinzel",serif;font-size:.82rem;font-weight:700;color:var(--parch);}
+.pv-bar-wrap{height:8px;background:rgba(0,0,0,.38);border-radius:2px;border:1px solid var(--bdr2);overflow:hidden;}
+.pv-bar{height:100%;border-radius:2px;transition:width .4s,background .3s;}
+.pv-bar-a{background:linear-gradient(90deg,#8B1A1A,#e07070);}
+.pv-bar-b{background:linear-gradient(90deg,#1a4a7a,#87CEEB);}
+.sbadge{font-family:"Cinzel",serif;font-size:.56rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:.1rem .42rem;border-radius:2px;display:inline-block;margin-top:.25rem;}
+.st-ok{color:var(--green2);background:rgba(45,122,62,.1);border:1px solid rgba(45,122,62,.28);}
+.st-low{color:#e0a030;background:rgba(224,160,48,.1);border:1px solid rgba(224,160,48,.28);}
+.st-crit{color:var(--red2);background:rgba(192,57,43,.1);border:1px solid rgba(192,57,43,.28);}
+.st-dead{color:#666;background:rgba(0,0,0,.28);border:1px solid #444;}
+.st-deseq{color:#e0a030;background:rgba(224,160,48,.12);border:1px solid rgba(224,160,48,.35);}
+.log-deseq{font-family:"Cinzel",serif;font-size:.68rem;font-weight:700;text-transform:uppercase;padding:.3rem;text-align:center;border-radius:2px;margin:.2rem 0;color:#e0a030;background:rgba(224,160,48,.1);border:1px solid rgba(224,160,48,.28);}
+.log-unseat{font-family:"Cinzel",serif;font-size:.72rem;font-weight:700;text-transform:uppercase;padding:.35rem;text-align:center;border-radius:2px;margin:.25rem 0;color:#c8a0e8;background:rgba(140,60,200,.1);border:1px solid rgba(140,60,200,.28);}
+html.light .log-deseq{color:#8a6010;background:rgba(180,130,30,.1);border-color:rgba(180,130,30,.3);}
+html.light .log-unseat{color:#6a30a0;background:rgba(100,30,160,.08);border-color:rgba(100,30,160,.25);}
+/* BOUTON ABANDON */
+.abandon-zone{display:none;margin:.5rem 0;padding:.5rem .75rem;background:rgba(192,57,43,.07);border:1px solid rgba(192,57,43,.3);border-radius:3px;}
+.abandon-zone.visible{display:block;}
+.abandon-zone-title{font-family:"Cinzel",serif;font-size:.52rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--red2);margin-bottom:.4rem;opacity:.8;}
+.btn-abandon{font-family:"Cinzel",serif;font-size:.56rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;padding:.32rem .8rem;border-radius:2px;cursor:pointer;border:1px solid rgba(192,57,43,.55);background:rgba(192,57,43,.1);color:var(--red2);transition:all .2s;width:100%;}
+.btn-abandon:hover{background:rgba(192,57,43,.22);border-color:var(--red2);}
+/* MODAL ABANDON */
+.mo-abandon{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:350;align-items:center;justify-content:center;}
+.mo-abandon.open{display:flex;animation:fadeInBg .25s ease;}
+.mo-abandon-box{background:linear-gradient(145deg,#1e1a12,#252118);border:2px solid rgba(192,57,43,.55);border-radius:4px;padding:1.6rem 1.8rem;width:min(420px,90vw);text-align:center;position:relative;animation:popIn .3s cubic-bezier(.175,.885,.32,1.275);}
+.mo-abandon-box::before{content:"";position:absolute;inset:5px;border:1px solid rgba(192,57,43,.2);border-radius:3px;pointer-events:none;}
+.mo-abandon-icon{font-size:2.2rem;margin-bottom:.5rem;line-height:1;}
+.mo-abandon-title{font-family:"Cinzel",serif;font-size:.95rem;font-weight:900;color:var(--red2);letter-spacing:.18em;text-transform:uppercase;margin-bottom:.3rem;}
+.mo-abandon-sub{font-family:"Crimson Text",serif;font-size:.9rem;color:var(--txt2);line-height:1.5;margin-bottom:1.2rem;}
+.mo-abandon-btns{display:flex;gap:.5rem;justify-content:center;}
+/* MODAL FIN DE COMBAT */
+.mo-end{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:300;align-items:center;justify-content:center;}
+.mo-end.open{display:flex;animation:fadeInBg .3s ease;}
+@keyframes fadeInBg{from{background:rgba(0,0,0,0)}to{background:rgba(0,0,0,.82)}}
+.mo-end-box{background:linear-gradient(145deg,#1e1a12,#252118);border:2px solid var(--bdr);border-radius:4px;padding:1.8rem 2rem;width:min(480px,92vw);text-align:center;position:relative;animation:popIn .35s cubic-bezier(.175,.885,.32,1.275);}
+@keyframes popIn{from{transform:scale(.82);opacity:0}to{transform:scale(1);opacity:1}}
+.mo-end-box::before{content:"";position:absolute;inset:5px;border:1px solid var(--bdr2);border-radius:3px;pointer-events:none;}
+.mo-end-icon{font-size:2.8rem;margin-bottom:.6rem;line-height:1;animation:iconBounce .5s .2s ease both;}
+@keyframes iconBounce{0%{transform:scale(0) rotate(-30deg)}70%{transform:scale(1.15) rotate(5deg)}100%{transform:scale(1) rotate(0)}}
+.mo-end-title{font-family:"Cinzel",serif;font-size:1.05rem;font-weight:900;color:var(--gl);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.35rem;text-shadow:0 0 20px rgba(212,175,55,.4);}
+.mo-end-winner{font-family:"Cinzel",serif;font-size:1.3rem;font-weight:900;margin:.4rem 0 .2rem;}
+.mo-end-sub{font-family:"Cinzel",serif;font-size:.58rem;color:var(--txt2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:1.2rem;line-height:1.6;}
+.mo-end-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin:.8rem 0 1.2rem;}
+.mo-end-stat{background:rgba(0,0,0,.25);border:1px solid var(--bdr2);border-radius:3px;padding:.4rem .3rem;}
+.mo-end-stat-lbl{font-family:"Cinzel",serif;font-size:.38rem;text-transform:uppercase;letter-spacing:.06em;color:var(--txt3);}
+.mo-end-stat-val{font-family:"Cinzel",serif;font-size:.85rem;font-weight:700;color:var(--gl);}
+html.light .mo-end{background:rgba(0,0,0,.6);}
+html.light .mo-end-box{background:linear-gradient(145deg,var(--bg3),var(--bg4));}
+/* JETS */
+.jb{background:rgba(0,0,0,.2);border:1px solid var(--bdr2);border-radius:2px;padding:.5rem .6rem;margin-bottom:.5rem;}
+.jb-a .jbn{color:#e07070;}.jb-b .jbn{color:#87CEEB;}
+.jb.jb-att{border-color:rgba(212,175,55,.45);box-shadow:0 0 12px rgba(212,175,55,.1);}
+.jbn{font-family:"Cinzel",serif;font-size:.54rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;margin-bottom:.28rem;}
+.jf{font-size:.67rem;color:var(--txt3);margin-bottom:.28rem;font-style:italic;}
+.die-wrap{display:flex;align-items:center;gap:.32rem;}
+.jlbl{font-family:"Cinzel",serif;font-size:.56rem;color:var(--txt3);}
+.jinp{width:50px;background:rgba(0,0,0,.32);border:1px solid rgba(212,175,55,.28);border-radius:2px;padding:.2rem .25rem;font-family:"Cinzel",serif;font-size:.92rem;font-weight:700;color:var(--gl);text-align:center;outline:none;}
+.jinp:focus{border-color:var(--gl);}
+.jinp:disabled{opacity:.4;cursor:not-allowed;}
+.jplus{color:var(--txt3);font-size:.72rem;}
+.jmod{font-family:"Cinzel",serif;font-size:.8rem;font-weight:700;}
+.jtw{margin-left:auto;text-align:right;}
+.jtl{font-family:"Cinzel",serif;font-size:.44rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.06em;}
+.jt{font-family:"Cinzel",serif;font-size:1.1rem;font-weight:900;color:var(--parch);}
+.mod-pos{color:var(--green2);}.mod-neg{color:var(--red2);}.mod-zer{color:var(--txt3);}
+.die-btn{background:rgba(212,175,55,.08);border:1px solid rgba(212,175,55,.3);border-radius:3px;color:var(--gl);cursor:pointer;font-size:1rem;padding:.1rem .32rem;line-height:1;transition:all .15s;user-select:none;}
+.die-btn:hover{background:rgba(212,175,55,.2);border-color:var(--gl);transform:rotate(-15deg) scale(1.15);}
+.die-btn:disabled{opacity:.3;cursor:not-allowed;transform:none;}
+.die-btn.rolling{animation:dieRoll .25s ease;}
+@keyframes dieRoll{0%{transform:rotate(0) scale(1)}40%{transform:rotate(-25deg) scale(1.2)}70%{transform:rotate(15deg) scale(1.1)}100%{transform:rotate(0) scale(1)}}
+.res-box{background:rgba(0,0,0,.28);border:1px solid var(--bdr);border-radius:2px;padding:.55rem .75rem;margin:.5rem 0;text-align:center;}
+.res-win{font-family:"Cinzel",serif;font-size:.82rem;font-weight:700;margin-bottom:.13rem;}
+.res-sub{font-family:"Cinzel",serif;font-size:.62rem;color:var(--txt2);}
+.bonus-box{display:none;margin-top:.45rem;background:rgba(0,0,0,.15);border:1px solid rgba(212,175,55,.2);border-radius:2px;padding:.4rem .55rem;}
+.bonus-lbl{font-family:"Cinzel",serif;font-size:.58rem;color:var(--gl);margin-bottom:.28rem;}
+.btn{font-family:"Cinzel",serif;font-size:.6rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;padding:.35rem .85rem;border-radius:2px;cursor:pointer;border:1px solid var(--bdr2);background:transparent;color:var(--txt2);transition:all .18s;}
+.btn:hover{border-color:var(--bdr);color:var(--txt);}
+.btn-pri{border-color:rgba(212,175,55,.45);background:rgba(212,175,55,.08);color:var(--gl);}
+.btn-pri:hover{background:rgba(212,175,55,.18);}
+.btn-pri:disabled{opacity:.35;cursor:not-allowed;}
+.btn-dan{border-color:rgba(192,57,43,.38);background:rgba(192,57,43,.06);color:var(--red2);}
+.miss-hint{font-family:"Cinzel",serif;font-size:.52rem;color:var(--txt3);font-style:italic;margin-top:.25rem;min-height:.9rem;}
+.miss-hint.active{color:#e0a030;}
+/* LOG */
+.log-wrap{background:rgba(0,0,0,.25);border:1px solid var(--bdr2);border-radius:2px;max-height:300px;overflow-y:auto;padding:.45rem .6rem;}
+.log-entry{padding:.3rem 0;border-bottom:1px solid rgba(184,151,58,.06);font-size:.78rem;line-height:1.5;}
+.log-entry:last-child{border-bottom:none;}
+.log-round{font-family:"Cinzel",serif;font-size:.62rem;font-weight:700;color:var(--gl);text-transform:uppercase;letter-spacing:.09em;padding:.3rem 0 .08rem;}
+.log-empty{color:var(--txt3);font-style:italic;font-size:.78rem;text-align:center;padding:.7rem 0;}
+.log-a{color:#e07070;}.log-b{color:#87CEEB;}.log-dmg{color:var(--parch);font-weight:600;}
+.log-dead{font-family:"Cinzel",serif;font-size:.72rem;font-weight:700;text-transform:uppercase;padding:.35rem;text-align:center;border-radius:2px;margin:.25rem 0;}
+.log-dead-a{color:#e07070;background:rgba(192,57,43,.1);border:1px solid rgba(192,57,43,.28);}
+.log-dead-b{color:#87CEEB;background:rgba(36,113,163,.1);border:1px solid rgba(36,113,163,.28);}
+/* STEP BANNERS */
+.step-banner{display:flex;align-items:center;gap:.55rem;background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.2);border-radius:3px;padding:.42rem .75rem;margin-bottom:.6rem;font-family:"Cinzel",serif;font-size:.6rem;color:var(--gl);letter-spacing:.08em;}
+.step-banner .step-num{background:rgba(212,175,55,.15);border:1px solid rgba(212,175,55,.35);border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;flex-shrink:0;}
+.step-banner.done{background:rgba(45,122,62,.06);border-color:rgba(45,122,62,.25);color:var(--green2);}
+.step-banner.done .step-num{background:rgba(45,122,62,.15);border-color:rgba(45,122,62,.35);}
+.step-banner.waiting{background:rgba(0,0,0,.15);border-color:var(--bdr2);color:var(--txt3);}
+.step-banner.waiting .step-num{background:rgba(0,0,0,.2);border-color:var(--bdr2);}
+/* MODAL */
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;align-items:center;justify-content:center;}
+.mo.open{display:flex;}
+.mb{background:linear-gradient(145deg,#1e1a12,#252118);border:1px solid var(--bdr);border-radius:4px;padding:1.3rem 1.5rem;width:min(640px,95vw);max-height:90vh;overflow-y:auto;position:relative;}
+.mb::before{content:"";position:absolute;inset:4px;border:1px solid var(--bdr2);border-radius:3px;pointer-events:none;}
+.mt{font-family:"Cinzel",serif;font-size:.82rem;font-weight:700;color:var(--gl);text-transform:uppercase;letter-spacing:.13em;margin-bottom:.9rem;padding-bottom:.45rem;border-bottom:1px solid var(--bdr2);}
+.fl{font-family:"Cinzel",serif;font-size:.56rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--txt3);display:block;margin-bottom:.22rem;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.6rem;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.45rem;margin-bottom:.6rem;}
+input[type=text],input[type=number],select,textarea{width:100%;background:#1a1814;border:1px solid rgba(184,151,58,.28);border-radius:2px;padding:.28rem .45rem;font-family:"Crimson Text",serif;font-size:.88rem;color:var(--txt);outline:none;color-scheme:dark;}
+input:focus,select:focus,textarea:focus{border-color:var(--gl);}
+textarea{resize:vertical;min-height:55px;}
+.stat-row{display:grid;grid-template-columns:1fr 65px 42px;gap:.35rem;align-items:center;background:rgba(0,0,0,.18);border-radius:2px;padding:.28rem .45rem;margin-bottom:.22rem;}
+.stat-name{font-family:"Cinzel",serif;font-size:.63rem;color:var(--txt2);}
+.stat-mod{font-family:"Cinzel",serif;font-size:.68rem;font-weight:700;text-align:right;}
+.section-title{font-family:"Cinzel",serif;font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gl);margin:.7rem 0 .4rem;padding-bottom:.25rem;border-bottom:1px solid var(--bdr2);}
+.equip-row{background:rgba(0,0,0,.15);border:1px solid var(--bdr2);border-radius:2px;padding:.45rem .6rem;margin-bottom:.35rem;}
+.equip-row-header{display:grid;grid-template-columns:1fr 70px;gap:.5rem;margin-bottom:.3rem;align-items:end;}
+.equip-mode{display:flex;gap:.35rem;align-items:center;flex-wrap:wrap;margin-top:.28rem;}
+.equip-mode label{font-family:"Cinzel",serif;font-size:.52rem;color:var(--txt2);display:flex;align-items:center;gap:.2rem;cursor:pointer;}
+.equip-mode input[type=checkbox]{width:auto;cursor:pointer;}
+.comp-row{display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:.5rem;}
+.comp-item{display:flex;align-items:center;gap:.4rem;background:rgba(0,0,0,.15);border:1px solid var(--bdr2);border-radius:2px;padding:.35rem .55rem;}
+.comp-item label{font-family:"Cinzel",serif;font-size:.58rem;color:var(--txt2);cursor:pointer;}
+.comp-item input[type=checkbox]{width:auto;cursor:pointer;}
+.stat-total{font-family:"Cinzel",serif;font-size:.58rem;color:var(--txt3);margin-top:.45rem;}
+.stat-total span{color:var(--gl);font-weight:700;}
+.mact{display:flex;gap:.5rem;justify-content:flex-end;margin-top:.9rem;padding-top:.6rem;border-top:1px solid var(--bdr2);}
+/* LOGIN */
+#login-screen{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 40%,rgba(30,20,10,.97),rgba(10,8,5,1));}
+.login-box{background:linear-gradient(145deg,var(--bg3),var(--bg4));border:1px solid var(--bdr);border-radius:4px;padding:2rem 2.2rem;width:min(380px,92vw);position:relative;text-align:center;}
+.login-box::before{content:"";position:absolute;inset:4px;border:1px solid var(--bdr2);border-radius:3px;pointer-events:none;}
+.login-icon{font-size:2.8rem;margin-bottom:.6rem;line-height:1;}
+.login-title{font-family:"Cinzel",serif;font-size:1rem;font-weight:900;color:var(--gl);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.2rem;}
+.login-sub{font-family:"Cinzel",serif;font-size:.5rem;color:var(--txt3);letter-spacing:.14em;text-transform:uppercase;margin-bottom:1.6rem;}
+.login-field{margin-bottom:.75rem;text-align:left;}
+.login-field label{font-family:"Cinzel",serif;font-size:.52rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--txt3);display:block;margin-bottom:.3rem;}
+.login-field input{width:100%;background:rgba(0,0,0,.28);border:1px solid var(--bdr2);border-radius:2px;padding:.42rem .6rem;font-family:"Crimson Text",serif;font-size:.95rem;color:var(--txt);outline:none;}
+.login-field input:focus{border-color:var(--gl);}
+.login-btn-main{width:100%;margin-top:.4rem;font-family:"Cinzel",serif;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:.55rem 1rem;border-radius:2px;cursor:pointer;border:1px solid rgba(212,175,55,.5);background:rgba(212,175,55,.12);color:var(--gl);transition:all .2s;}
+.login-btn-main:hover{background:rgba(212,175,55,.22);}
+.login-btn-main:disabled{opacity:.4;cursor:not-allowed;}
+.login-err{font-family:"Cinzel",serif;font-size:.54rem;color:var(--red2);min-height:1.1rem;margin-top:.5rem;text-align:center;}
+#user-bar{position:fixed;bottom:.6rem;left:.75rem;z-index:300;display:flex;align-items:center;gap:.5rem;font-family:"Cinzel",serif;font-size:.48rem;color:var(--txt3);}
+#user-label{color:var(--txt2);}
+#logout-btn{font-family:"Cinzel",serif;font-size:.48rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;padding:.18rem .45rem;border-radius:2px;cursor:pointer;border:1px solid var(--bdr2);background:transparent;color:var(--txt3);transition:all .18s;}
+#logout-btn:hover{color:var(--red2);border-color:rgba(192,57,43,.35);}
+#fb-status{font-family:"Cinzel",serif;font-size:.52rem;letter-spacing:.06em;}
+#theme-toggle{position:fixed;top:.5rem;right:.75rem;z-index:300;font-family:"Cinzel",serif;font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;padding:.35rem .85rem;border-radius:2px;cursor:pointer;border:1px solid var(--bdr);background:rgba(0,0,0,.35);color:var(--txt2);transition:all .2s;backdrop-filter:blur(4px);}
+#theme-toggle:hover{color:var(--gl);}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:rgba(0,0,0,.18);}
+::-webkit-scrollbar-thumb{background:rgba(184,151,58,.28);border-radius:2px;}
+/* HISTORIQUE */
+.hist-card{background:rgba(0,0,0,.18);border:1px solid var(--bdr2);border-radius:3px;margin-bottom:.6rem;overflow:hidden;}
+.hist-hdr{display:flex;align-items:center;gap:.6rem;padding:.5rem .75rem;cursor:pointer;user-select:none;background:rgba(0,0,0,.1);}
+.hist-hdr:hover{background:rgba(212,175,55,.05);}
+.hist-num{font-family:"Cinzel",serif;font-size:.52rem;font-weight:700;color:var(--gl);min-width:32px;}
+.hist-vs{font-family:"Cinzel",serif;font-size:.72rem;font-weight:700;color:var(--parch);flex:1;}
+.hist-result{font-family:"Cinzel",serif;font-size:.58rem;font-weight:700;padding:.1rem .35rem;border-radius:2px;}
+.hist-result.win-a{color:#e07070;background:rgba(192,57,43,.12);border:1px solid rgba(192,57,43,.3);}
+.hist-result.win-b{color:#87CEEB;background:rgba(36,113,163,.12);border:1px solid rgba(36,113,163,.3);}
+.hist-result.draw{color:var(--gl);background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.25);}
+.hist-date{font-family:"Cinzel",serif;font-size:.45rem;color:var(--txt3);white-space:nowrap;}
+.hist-chevron{color:var(--txt3);font-size:.7rem;transition:transform .2s;}
+.hist-chevron.open{transform:rotate(90deg);}
+.hist-body{display:none;padding:.5rem .75rem;border-top:1px solid var(--bdr2);}
+.hist-body.open{display:block;}
+.hist-rounds{margin-top:.3rem;}
+.hist-round-row{display:flex;flex-direction:column;gap:.18rem;padding:.4rem .5rem;border-bottom:1px solid rgba(184,151,58,.08);}
+.hist-round-row:last-child{border-bottom:none;}
+.hist-round-row:hover{background:rgba(212,175,55,.03);}
+.hr-top{display:flex;align-items:center;gap:.45rem;}
+.hr-passe{font-family:"Cinzel",serif;font-size:.5rem;font-weight:700;color:var(--gl);min-width:20px;}
+.hr-att{font-family:"Cinzel",serif;font-size:.68rem;font-weight:700;}
+.hr-arrow{color:var(--txt3);font-size:.6rem;}
+.hr-def{font-family:"Cinzel",serif;font-size:.68rem;}
+.hr-dmg{font-family:"Cinzel",serif;font-size:.72rem;font-weight:700;margin-left:auto;white-space:nowrap;}
+.hr-tag{font-family:"Cinzel",serif;font-size:.44rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:.06rem .25rem;border-radius:2px;}
+.hr-tag-unseat{color:#c8a0e8;background:rgba(140,60,200,.12);border:1px solid rgba(140,60,200,.28);}
+.hr-tag-deseq{color:#e0a030;background:rgba(224,160,48,.1);border:1px solid rgba(224,160,48,.25);}
+.hr-dice{display:flex;gap:1rem;padding-left:1.4rem;flex-wrap:wrap;}
+.hr-dice-blk{display:flex;flex-direction:column;gap:.06rem;}
+.hr-dice-lbl{font-family:"Cinzel",serif;font-size:.38rem;text-transform:uppercase;letter-spacing:.05em;color:var(--txt3);}
+.hr-dice-val{font-size:.65rem;color:var(--txt2);}
+.hr-dice-val b{color:var(--parch);font-weight:700;}
+.hr-dice-val .hi-init{color:var(--gl2);}
+.hr-dice-val .hi-dmg{color:#e07070;}
+html.light .hist-card{background:rgba(255,255,255,.25);}
+html.light .hist-hdr{background:rgba(255,255,255,.15);}
+html.light .hist-hdr:hover{background:rgba(180,130,30,.07);}
+/* MODE CLAIR */
+html.light{--bg:#f5f0e8;--bg3:#ede6d8;--bg4:#e6deca;--parch:#2a1f0e;--gl:#8B6914;--gl2:#A07820;--gold:#7a5a10;--red2:#b03030;--red3:#7a1a1a;--green2:#2d7a42;--blue2:#1a5a8a;--bdr:rgba(100,70,20,.35);--bdr2:rgba(100,70,20,.18);--txt:#3a2a10;--txt2:#6a4820;--txt3:#9a7840;}
+html.light body{background:var(--bg);}
+html.light header{background:linear-gradient(180deg,rgba(240,232,210,1),rgba(230,220,195,.97));}
+html.light .nav-main{background:rgba(255,255,255,.5);}
+html.light .slot-sel,html.light select{background:#ede6d8;color:#3a2a10;color-scheme:light;}
+html.light input[type=text],html.light input[type=number],html.light textarea{background:#ede6d8;color-scheme:light;}
+html.light .jinp{background:rgba(255,255,255,.6);}
+html.light .jb{background:rgba(255,255,255,.25);}
+html.light .panel,html.light .slot,html.light .fiche,html.light .mb{background:linear-gradient(145deg,var(--bg3),var(--bg4));}
+html.light .fs{background:rgba(0,0,0,.06);}
+html.light .pair-box{background:rgba(0,0,0,.06);}
+html.light .equip-row{background:rgba(255,255,255,.3);}
+html.light .stat-row{background:rgba(255,255,255,.3);}
+html.light .die-btn{background:rgba(180,130,30,.1);border-color:rgba(180,130,30,.35);}
+html.light .slot-a .slot-lbl{color:#b03030;}
+html.light .slot-b .slot-lbl{color:#1a5a8a;}
+html.light .jb-a .jbn{color:#b03030;}
+html.light .jb-b .jbn{color:#1a5a8a;}
+html.light #login-screen{background:radial-gradient(ellipse at 50% 40%,rgba(240,232,210,.98),rgba(220,210,185,1));}
+html.light .login-field input{background:rgba(255,255,255,.6);}
+html.light #theme-toggle{background:rgba(255,255,255,.6);border-color:rgba(100,70,20,.35);}
+
+/* ── Mode clair : inputs inline dans les Règles ── */
+html.light input[type=number]{background:#ede6d8;color:#3a2a10;color-scheme:light;}
+html.light #view-regles input[type=number]{background:#f0e8d4 !important;border-color:rgba(100,70,20,.28) !important;color:#3a2a10 !important;color-scheme:light;}
+
+/* ── Mode clair : modale BBCode ── */
+html.light #mo-bbcode > div{background:linear-gradient(145deg,var(--bg3),var(--bg4));border-color:var(--bdr);}
+html.light #bbcode-output{background:#f0e8d4;border-color:var(--bdr2);color:var(--txt);}
+html.light #mo-bbcode [style*="color:#e8dcc8"]{color:var(--txt) !important;}
+html.light #mo-bbcode [style*="color:var(--gl)"]{color:var(--gl) !important;}
+html.light #mo-bbcode{background:rgba(100,70,20,.45) !important;}
+
+/* ── Modale BBCode ── */
+.mo-bbcode-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:400;align-items:center;justify-content:center;}
+.mo-bbcode-box{background:linear-gradient(145deg,#1e1a12,#252118);border:2px solid var(--bdr);border-radius:4px;padding:1.4rem 1.6rem;width:min(680px,95vw);max-height:88vh;display:flex;flex-direction:column;position:relative;}
+.mo-bbcode-inner-border{position:absolute;inset:5px;border:1px solid var(--bdr2);border-radius:3px;pointer-events:none;}
+.mo-bbcode-title{font-family:Cinzel,serif;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:var(--gl);margin-bottom:.8rem;}
+.mo-bbcode-sub{font-size:.72rem;color:var(--txt3);margin-bottom:.5rem;}
+.mo-bbcode-textarea{flex:1;min-height:320px;background:#0e0c09;border:1px solid var(--bdr2);border-radius:2px;padding:.6rem .8rem;font-family:'Courier New',monospace;font-size:.72rem;color:var(--txt);line-height:1.5;resize:vertical;outline:none;}
+html.light .mo-bbcode-overlay{background:rgba(100,70,20,.5);}
+html.light .mo-bbcode-box{background:linear-gradient(145deg,var(--bg3),var(--bg4));}
+html.light .mo-bbcode-textarea{background:#f0e8d4;color:var(--txt);color-scheme:light;}
+
+/* ── Mode clair : compléments ── */
+html.light body::before{background:radial-gradient(ellipse at 20% 20%,rgba(180,130,40,.06) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(40,80,140,.05) 0%,transparent 50%);}
+html.light .log-wrap{background:rgba(255,255,255,.4);}
+html.light .res-box{background:rgba(255,255,255,.35);border-color:rgba(100,70,20,.3);}
+html.light .bonus-box{background:rgba(255,255,255,.35);}
+html.light .pv-section{background:rgba(255,255,255,.35);}
+html.light .pv-bar-wrap{background:rgba(0,0,0,.12);}
+html.light .comp-item{background:rgba(255,255,255,.35);}
+html.light .badge-equip{background:rgba(255,255,255,.4);border-color:rgba(100,70,20,.25);}
+html.light .badge-joute{background:rgba(180,130,30,.12);border-color:rgba(180,130,30,.3);}
+html.light .badge-melee{background:rgba(180,30,30,.08);border-color:rgba(180,30,30,.25);}
+html.light .step-banner{background:rgba(180,130,30,.08);border-color:rgba(180,130,30,.25);}
+html.light .step-banner.done{background:rgba(30,100,50,.07);border-color:rgba(30,100,50,.25);}
+html.light .step-banner.waiting{background:rgba(0,0,0,.04);border-color:rgba(100,70,20,.15);}
+html.light .jb.jb-att{border-color:rgba(100,70,20,.5);box-shadow:0 0 10px rgba(100,70,20,.12);}
+html.light ::-webkit-scrollbar-track{background:rgba(0,0,0,.06);}
+html.light ::-webkit-scrollbar-thumb{background:rgba(100,70,20,.3);}
+html.light .log-a{color:#b03030;}
+html.light .log-b{color:#1a5a8a;}
+html.light .log-dead-a{color:#b03030;background:rgba(180,30,30,.1);border-color:rgba(180,30,30,.28);}
+html.light .log-dead-b{color:#1a5a8a;background:rgba(30,90,160,.1);border-color:rgba(30,90,160,.28);}
+html.light [style*="color:#e07070"]{color:#b03030 !important;}
+html.light [style*="color:#87CEEB"]{color:#1a5a8a !important;}
+html.light [style*="color:#90ee90"]{color:#1a6a30 !important;}
+html.light [style*="color:#e0a030"]{color:#8a6010 !important;}
+html.light .mo{background:rgba(0,0,0,.55);}
+</style>
+
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  const firebaseConfig={apiKey:"AIzaSyB6FT3KQWP-Mysvsshwfi0MispI64qB9TA",authDomain:"cofas-mj.firebaseapp.com",databaseURL:"https://cofas-mj-default-rtdb.europe-west1.firebasedatabase.app",projectId:"cofas-mj",storageBucket:"cofas-mj.firebasestorage.app",messagingSenderId:"48749901019",appId:"1:48749901019:web:6c18e9b4eb7e61ce8688fe"};
+  const app=initializeApp(firebaseConfig);
+  const db=getDatabase(app);
+  const auth=getAuth(app);
+  function setStatus(ok){var el=document.getElementById("fb-status");if(el){el.textContent=ok?"🟢 Connecté":"🔴 Hors ligne";el.style.color=ok?"var(--green2)":"var(--red2)";}}
+  var _saveTimers={},_writingPaths={};
+  window.fbSave=function(path,data){
+    clearTimeout(_saveTimers[path]);
+    _writingPaths[path]=true; // bloquer le listener immédiatement
+    _saveTimers[path]=setTimeout(function(){
+      set(ref(db,path),data).then(function(){
+        setTimeout(function(){delete _writingPaths[path];},2000);
+      }).catch(function(e){console.error(e);delete _writingPaths[path];});
+    },300);
+  };
+  function listenPath(path,cb){onValue(ref(db,path),function(snap){if(_writingPaths[path]||window._combatEnded)return;var v=snap.val();if(v!==null)cb(v);},function(e){setStatus(false);console.error(e);});}
+  window.fbLogin=function(){
+    var email=document.getElementById("login-email").value.trim();
+    var pass=document.getElementById("login-pass").value;
+    var err=document.getElementById("login-err");
+    var btn=document.getElementById("login-btn");
+    if(!email||!pass){err.textContent="Email et mot de passe requis.";return;}
+    btn.disabled=true;btn.textContent="Connexion…";
+    signInWithEmailAndPassword(auth,email,pass).catch(function(e){
+      btn.disabled=false;btn.textContent="Se connecter";
+      var msg;switch(e.code){case"auth/invalid-email":msg="Email invalide.";break;case"auth/user-not-found":msg="Compte introuvable.";break;case"auth/wrong-password":msg="Mot de passe incorrect.";break;case"auth/invalid-credential":msg="Identifiants incorrects.";break;case"auth/too-many-requests":msg="Trop de tentatives.";break;default:msg="Erreur : "+e.code;}
+      err.textContent=msg;console.error("Auth:",e.code,e.message);
+    });
+  };
+  window.fbLogout=function(){signOut(auth);};
+  document.addEventListener("DOMContentLoaded",function(){
+    document.getElementById("login-pass").addEventListener("keydown",function(e){if(e.key==="Enter")window.fbLogin();});
+    document.getElementById("login-email").addEventListener("keydown",function(e){if(e.key==="Enter")document.getElementById("login-pass").focus();});
+  });
+  window.fbInit=function(){
+    setStatus(true);
+    listenPath("tournoi/combattants",function(data){
+      var arr=Array.isArray(data)?data:(data&&typeof data==="object"?Object.values(data).filter(Boolean):[]);
+      window.combattants_perso=arr;if(window.renderFiches)renderFiches();if(window.popSelects)popSelects();
+    });
+    listenPath("tournoi/base_supprimes",function(data){
+      var arr=Array.isArray(data)?data:(data&&typeof data==="object"?Object.values(data).filter(Boolean):[]);
+      window.combattants_base_supprimes=arr;if(window.renderFiches)renderFiches();if(window.popSelects)popSelects();
+    });
+    listenPath("tournoi/historique",function(data){
+      var arr=Array.isArray(data)?data:(data&&typeof data==="object"?Object.values(data).filter(Boolean):[]);
+      window.historique=arr;if(window.renderHistorique)renderHistorique();
+    });
+    listenPath("tournoi/combat",function(data){
+      if(!window.TC)return;
+      TC.round=data.round||1;TC.a=data.a||null;TC.b=data.b||null;
+      TC.att=data.att||null;TC.rd=data.rd||{};
+      TC.etats=data.etats||{a:{deseq_leger:false,deseq_fort:false,blesse_leger:false,blesse_grave:false,blesse_leger_count:0},b:{deseq_leger:false,deseq_fort:false,blesse_leger:false,blesse_grave:false,blesse_leger_count:0}};
+      rounds=data.rounds||[];logs=data.logs||[];
+      document.getElementById("rlbl").textContent="P"+TC.round;
+      popSelects();updMods();updEtatsArena();renderLog();renderRecap();
+      ["a","b"].forEach(function(s){renderSlot(s);});chkBtn();
+    });
+  };
+  window.fbSaveCombattants=function(){var cp=window.combattants_perso||[];window.fbSave("tournoi/combattants",cp.length?cp:null);};
+  window.fbSaveBaseSupprimes=function(){var bs=window.combattants_base_supprimes||[];window.fbSave("tournoi/base_supprimes",bs.length?bs:null);};
+  window.fbSaveCombat=function(){window.fbSave("tournoi/combat",{round:TC.round,a:TC.a,b:TC.b,att:TC.att,rd:TC.rd,etats:TC.etats,rounds:rounds,logs:logs});};
+  window.fbSaveHistorique=function(){var hi=window.historique||[];window.fbSave("tournoi/historique",hi.length?hi:null);};
+  onAuthStateChanged(auth,function(user){
+    var ls=document.getElementById("login-screen"),as=document.getElementById("app-screen"),ul=document.getElementById("user-label"),ub=document.getElementById("user-bar");
+    if(user){if(ls)ls.style.display="none";if(as)as.style.display="";if(ul)ul.textContent=user.email;if(ub)ub.style.display="flex";window.fbInit();}
+    else{if(ls)ls.style.display="flex";if(as)as.style.display="none";if(ub)ub.style.display="none";}
+  });
+</script>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-icon">⚔️</div>
+    <div class="login-title">COFAS</div>
+    <div class="login-sub">Tournoi — Joutes, Duels &amp; Mêlées</div>
+    <div class="login-field"><label for="login-email">Adresse email</label><input type="email" id="login-email" placeholder="votre@email.com" autocomplete="email"></div>
+    <div class="login-field"><label for="login-pass">Mot de passe</label><input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"></div>
+    <button class="login-btn-main" id="login-btn" onclick="fbLogin()">Se connecter</button>
+    <div class="login-err" id="login-err"></div>
+  </div>
+</div>
+
+<div id="app-screen" style="display:none">
+<div class="sticky-top">
+<header>
+  <h1>⚔ Tournoi</h1>
+  <div class="sub">Joutes · Duels · Mêlées — COFAS</div>
+  <div class="dv"></div>
+  <div style="position:absolute;top:.5rem;left:.75rem" id="fb-status">⏳ Connexion...</div>
+</header>
+<nav class="nav-main">
+  <button class="nav-tab active" onclick="showMain('fiches',this)">📜 Combattants</button>
+  <button class="nav-tab" onclick="showMain('joute',this)">🏇 Combat</button>
+  <button class="nav-tab" onclick="showMain('log',this)">📖 Journal</button>
+  <button class="nav-tab" onclick="showMain('historique',this)">🏆 Historique</button>
+  <button class="nav-tab" onclick="showMain('regles',this)">⚙ Règles</button>
+</nav>
+</div>
+<div class="wrap">
+
+<!-- FICHES -->
+<div class="view active" id="view-fiches">
+  <div class="fiches-ctrl">
+    <input class="srch" id="srch" placeholder="Rechercher..." oninput="renderFiches()">
+    <button class="add-btn" onclick="openModal(null)">+ Nouveau combattant</button>
+  </div>
+  <div class="fiches-grid" id="fiches-grid"></div>
+</div>
+
+<!-- COMBAT -->
+<div class="view" id="view-joute">
+  <div class="arena" id="pv-arena" style="display:none;margin-bottom:.7rem">
+    <div class="pv-section">
+      <div class="pv-hdr"><span class="pv-lbl" id="pvna">A</span><span class="sbadge st-ok" id="sta">En lice</span></div>
+      <div class="abandon-zone" id="abandon-zone-a">
+        <div class="abandon-zone-title">🩸 Blessure grave — abandon possible</div>
+        <button class="btn-abandon" onclick="demanderAbandon('a')">🏳 Demander l'abandon</button>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center"><span style="font-family:Cinzel,serif;font-size:.55rem;color:var(--txt3)">PV</span></div>
+    <div class="pv-section">
+      <div class="pv-hdr"><span class="pv-lbl" id="pvnb">B</span><span class="sbadge st-ok" id="stb">En lice</span></div>
+      <div class="abandon-zone" id="abandon-zone-b">
+        <div class="abandon-zone-title">🩸 Blessure grave — abandon possible</div>
+        <button class="btn-abandon" onclick="demanderAbandon('b')">🏳 Demander l'abandon</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="arena">
+    <div class="slot slot-a">
+      <div class="slot-lbl">Combattant A</div>
+      <select class="slot-sel" id="sel-a" onchange="selC('a',this.value)"><option value="">-- Choisir --</option></select>
+      <div id="slot-a-info"></div>
+      <div id="etats-a" style="margin-top:.3rem;min-height:1.2rem"></div>
+    </div>
+    <div class="vs-sep"><div class="vs-line"></div><div class="vs-txt">VS</div><div class="vs-line"></div></div>
+    <div class="slot slot-b">
+      <div class="slot-lbl">Combattant B</div>
+      <select class="slot-sel" id="sel-b" onchange="selC('b',this.value)"><option value="">-- Choisir --</option></select>
+      <div id="slot-b-info"></div>
+      <div id="etats-b" style="margin-top:.3rem;min-height:1.2rem"></div>
+    </div>
+  </div>
+
+  <div class="panel" style="display:flex;align-items:center;gap:1rem;padding:.6rem 1rem;flex-wrap:wrap">
+    <div style="display:flex;align-items:center;gap:.5rem">
+      <span style="font-family:Cinzel,serif;font-size:.58rem;color:var(--txt3)">Passe</span>
+      <span style="font-family:Cinzel,serif;font-size:1.1rem;font-weight:900;color:var(--gl)" id="rlbl">P1</span>
+    </div>
+    <div id="malus-banner" style="display:none;flex:1;display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;padding:.3rem .5rem;background:rgba(192,57,43,.07);border:1px solid rgba(192,57,43,.25);border-radius:2px">
+      <span style="font-family:Cinzel,serif;font-size:.48rem;text-transform:uppercase;letter-spacing:.07em;color:var(--txt3)">⚠ Malus actifs</span>
+      <div id="malus-banner-body" style="display:flex;gap:.6rem;flex-wrap:wrap;font-family:Cinzel,serif;font-size:.58rem"></div>
+    </div>
+  </div>
+
+  <!-- ÉTAPE 1 : INITIATIVE -->
+  <div class="panel">
+    <div class="panel-title">⚡ Étape 1 — Initiative</div>
+    <div class="step-banner waiting" id="step-init-banner"><span class="step-num">1</span>Lancez le D20 d'initiative pour chaque combattant</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
+      <div class="jb jb-a" id="jb-init-a">
+        <div class="jbn" id="in-na">Combattant A</div>
+        <div class="jf" id="in-fa">D20 + mod(Agi+Adresse)</div>
+        <div class="die-wrap">
+          <span class="jlbl">D20</span>
+          <div style="display:flex;align-items:center;gap:.28rem;flex:1">
+            <input class="jinp" id="in-a" type="number" min="1" max="20" oninput="calcInit()" style="width:46px">
+            <button class="die-btn" onclick="rollDie('in-a',20)">🎲</button>
+          </div>
+          <span class="jplus">+</span><span class="jmod mod-zer" id="in-ma">0</span>
+          <div class="jtw"><div class="jtl">Total</div><div class="jt" id="in-ta">—</div></div>
+        </div>
+      </div>
+      <div class="jb jb-b" id="jb-init-b">
+        <div class="jbn" id="in-nb">Combattant B</div>
+        <div class="jf" id="in-fb">D20 + mod(Agi+Adresse)</div>
+        <div class="die-wrap">
+          <span class="jlbl">D20</span>
+          <div style="display:flex;align-items:center;gap:.28rem;flex:1">
+            <input class="jinp" id="in-b" type="number" min="1" max="20" oninput="calcInit()" style="width:46px">
+            <button class="die-btn" onclick="rollDie('in-b',20)">🎲</button>
+          </div>
+          <span class="jplus">+</span><span class="jmod mod-zer" id="in-mb">0</span>
+          <div class="jtw"><div class="jtl">Total</div><div class="jt" id="in-tb">—</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="res-box" id="in-res" style="display:none">
+      <div class="res-win" id="in-win"></div>
+      <div class="res-sub" id="in-sub"></div>
+    </div>
+  </div>
+
+  <!-- ÉTAPE 2 : IMPACT & RÉSISTANCE -->
+  <div class="panel" id="imp-section" style="display:none">
+    <div class="panel-title">💥 Étape 2 — Impact &amp; Résistance</div>
+    <div class="step-banner" id="step-dmg-banner"><span class="step-num">2</span>Lancez les dés d'impact et de résistance</div>
+    <div style="font-family:Cinzel,serif;font-size:.62rem;color:var(--txt2);margin-bottom:.55rem" id="att-lbl" style="display:none"></div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem">
+      <!-- Impact A -->
+      <div class="jb jb-a" id="imp-a-blk" style="display:none">
+        <div class="jbn" id="imp-na">Impact A</div>
+        <div class="jf" id="imp-fa">D20 + mod(Pui+Cbt)</div>
+        <div class="die-wrap">
+          <span class="jlbl">D20</span>
+          <div style="display:flex;align-items:center;gap:.28rem;flex:1">
+            <input class="jinp" id="imp-da" type="number" min="1" max="20" oninput="calcImpact()" style="width:46px">
+            <button class="die-btn" onclick="rollDie('imp-da',20)">🎲</button>
+          </div>
+          <span class="jplus">+</span><span class="jmod mod-zer" id="imp-ma">0</span>
+        </div>
+      </div>
+      <!-- Impact B -->
+      <div class="jb jb-b" id="imp-b-blk" style="display:none">
+        <div class="jbn" id="imp-nb">Impact B</div>
+        <div class="jf" id="imp-fb">D20 + mod(Pui+Cbt)</div>
+        <div class="die-wrap">
+          <span class="jlbl">D20</span>
+          <div style="display:flex;align-items:center;gap:.28rem;flex:1">
+            <input class="jinp" id="imp-db" type="number" min="1" max="20" oninput="calcImpact()" style="width:46px">
+            <button class="die-btn" onclick="rollDie('imp-db',20)">🎲</button>
+          </div>
+          <span class="jplus">+</span><span class="jmod mod-zer" id="imp-mb">0</span>
+        </div>
+      </div>
+      <!-- Résistance A -->
+      <div class="jb jb-a" id="res-a-blk" style="display:none">
+        <div class="jbn" id="res-na">Résistance A</div>
+        <div class="jf" id="res-fa">D20 + mod(Con+End)</div>
+        <div class="die-wrap">
+          <span class="jlbl">D20</span>
+          <div style="display:flex;align-items:center;gap:.28rem;flex:1">
+            <input class="jinp" id="res-da" type="number" min="1" max="20" oninput="calcImpact()" style="width:46px">
+            <button class="die-btn" onclick="rollDie('res-da',20)">🎲</button>
+          </div>
+          <span class="jplus">+</span><span class="jmod mod-zer" id="res-ma">0</span>
+        </div>
+      </div>
+      <!-- Résistance B -->
+      <div class="jb jb-b" id="res-b-blk" style="display:none">
+        <div class="jbn" id="res-nb">Résistance B</div>
+        <div class="jf" id="res-fb">D20 + mod(Con+End)</div>
+        <div class="die-wrap">
+          <span class="jlbl">D20</span>
+          <div style="display:flex;align-items:center;gap:.28rem;flex:1">
+            <input class="jinp" id="res-db" type="number" min="1" max="20" oninput="calcImpact()" style="width:46px">
+            <button class="die-btn" onclick="rollDie('res-db',20)">🎲</button>
+          </div>
+          <span class="jplus">+</span><span class="jmod mod-zer" id="res-mb">0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="res-box" id="imp-res" style="display:none">
+      <div id="imp-res-body"></div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:.5rem;justify-content:center;align-items:center;margin:.6rem 0;flex-wrap:wrap">
+    <button class="btn btn-pri" id="next-btn" onclick="nextRound()" disabled>Valider la passe ➜</button>
+    <button class="btn" onclick="resetCombat()">↺ Réinitialiser</button>
+  </div>
+
+  <div class="panel" id="recap-panel" style="display:none">
+    <div class="panel-title">📋 Récapitulatif des passes</div>
+    <div id="recap"></div>
+  </div>
+
+</div><!-- /view-joute -->
+
+<!-- LOG -->
+<div class="view" id="view-log">
+  <div class="panel">
+    <div class="panel-title">📖 Journal de combat</div>
+    <div class="log-wrap" id="log-wrap"><div class="log-empty">Aucun combat enregistré.</div></div>
+  </div>
+</div>
+
+<!-- RÈGLES -->
+<div class="view" id="view-regles">
+  <div class="panel">
+    <div class="panel-title" style="display:flex;align-items:center;justify-content:space-between">
+      <span>⚙ Configuration des règles</span>
+      <div style="display:flex;gap:.5rem;align-items:center">
+        <span id="cfg-saved-msg" style="font-family:Cinzel,serif;font-size:.5rem;color:var(--green2);opacity:0;transition:opacity .4s">✔ Sauvegardé</span>
+        <button class="add-btn" onclick="saveCFGManual()" style="font-size:.55rem;padding:.22rem .65rem">💾 Sauvegarder</button>
+        <button class="add-btn" onclick="resetCFG()" style="font-size:.55rem;padding:.22rem .65rem;border-color:rgba(192,57,43,.4);color:var(--red2)">↺ Réinitialiser</button>
+      </div>
+    </div>
+
+    <!-- SECTION INITIATIVE -->
+    <div style="margin-bottom:1.1rem">
+      <div style="font-family:Cinzel,serif;font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gl2);margin-bottom:.65rem;padding-bottom:.3rem;border-bottom:1px solid var(--bdr2);display:flex;align-items:center;gap:.4rem">
+        <span style="font-size:.85rem">⚡</span> Seuils d'Initiative
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.6rem">
+
+        <!-- Simultané -->
+        <div style="background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.2);border-radius:3px;padding:.65rem .8rem">
+          <div style="font-family:Cinzel,serif;font-size:.48rem;text-transform:uppercase;letter-spacing:.08em;color:var(--txt3);margin-bottom:.4rem">Échange simultané</div>
+          <div style="display:flex;align-items:center;gap:.5rem">
+            <span style="font-family:Cinzel,serif;font-size:.65rem;color:var(--txt2);flex:1">Écart ≤</span>
+            <input id="cfg-init-simul" type="number" value="3" min="0" max="10" oninput="onCfgChange()" style="width:52px;background:#1a1814;border:1px solid var(--bdr2);border-radius:2px;padding:.22rem .35rem;color:var(--gl);font-family:Cinzel,serif;font-size:.85rem;text-align:center;outline:none">
+          </div>
+          <div style="font-size:.62rem;color:var(--txt3);font-style:italic;margin-top:.3rem">Les deux combattants frappent en même temps</div>
+        </div>
+
+        <!-- Malus Impact simultané -->
+        <div style="background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.2);border-radius:3px;padding:.65rem .8rem">
+          <div style="font-family:Cinzel,serif;font-size:.48rem;text-transform:uppercase;letter-spacing:.08em;color:var(--gl2);margin-bottom:.4rem">⚔ Malus Impact — Échange simultané</div>
+          <div style="display:flex;align-items:center;gap:.5rem">
+            <span style="font-family:Cinzel,serif;font-size:.65rem;color:var(--txt2);flex:1">Impact</span>
+            <input id="cfg-simul-imp-malus" type="number" value="-1" min="-5" max="0" oninput="onCfgChange()" style="width:52px;background:#1a1814;border:1px solid var(--bdr2);border-radius:2px;padding:.22rem .35rem;color:#e0a030;font-family:Cinzel,serif;font-size:.85rem;text-align:center;outline:none">
+          </div>
+          <div style="font-size:.62rem;color:var(--txt3);font-style:italic;margin-top:.3rem">Le plus bas score d'initiative subit ce malus sur son jet d'Impact</div>
+        </div>
+
+        <!-- Direct -->
+        <div style="background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.2);border-radius:3px;padding:.65rem .8rem">
+          <div style="font-family:Cinzel,serif;font-size:.48rem;text-transform:uppercase;letter-spacing:.08em;color:var(--txt3);margin-bottom:.4rem">Désarçonnement direct</div>
+          <div style="display:flex;align-items:center;gap:.5rem">
+            <span style="font-family:Cinzel,serif;font-size:.65rem;color:var(--txt2);flex:1">Écart ≥</span>
+            <input id="cfg-init-direct" type="number" value="13" min="5" max="25" oninput="onCfgChange()" style="width:52px;background:#1a1814;border:1px solid var(--bdr2);border-radius:2px;padding:.22rem .35rem;color:var(--gl);font-family:Cinzel,serif;font-size:.85rem;text-align:center;outline:none">
+          </div>
+          <div style="font-size:.62rem;color:var(--txt3);font-style:italic;margin-top:.3rem">Sans passer par la phase d'impact</div>
+        </div>
+
+        <!-- Malus résistance selon écart init -->
+        <div style="background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.2);border-radius:3px;padding:.65rem .8rem;grid-column:1/-1">
+          <div style="font-family:Cinzel,serif;font-size:.48rem;text-transform:uppercase;letter-spacing:.08em;color:var(--txt3);margin-bottom:.5rem">Malus résistance défenseur selon écart d'initiative</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem">
+            <div style="background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.2);border-radius:2px;padding:.4rem .5rem;text-align:center">
+              <div style="font-family:Cinzel,serif;font-size:.44rem;color:var(--txt3);margin-bottom:.28rem">Écart 4 – 6</div>
+              <div style="display:flex;align-items:center;justify-content:center;gap:.3rem">
+                <span style="font-family:Cinzel,serif;font-size:.58rem;color:var(--txt3)">Rés.</span>
+                <input id="cfg-init-b1" type="number" value="-1" oninput="onCfgChange()" style="width:48px;background:#1a1814;border:1px solid var(--bdr2);border-radius:2px;padding:.18rem .3rem;color:#e0a030;font-family:Cinzel,serif;font-size:.8rem;text-align:center;outline:none">
+              </div>
+            </div>
+            <div style="background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.2);border-radius:2px;padding:.4rem .5rem;text-align:center">
+              <div style="font-family:Cinzel,serif;font-size:.44rem;color:var(--txt3);margin-bottom:.28rem">Écart 7 – 9</div>
+              <div style="display:flex;align-items:center;justify-content:center;gap:.3rem">
+                <span style="font-family:Cinzel,serif;font-size:.58rem;color:var(--txt3)">Rés.</span>
+                <input id="cfg-init-b2" type="number" value="-2" oninput="onCfgChange()" style="width:48px;background:#1a1814;border:1px solid var(--bdr2);border-radius:2px;padding:.18rem .3rem;color:#e0a030;font-family:Cinzel,serif;font-size:.8rem;text-align:center;outline:none">
+              </div>
+            </div>
+            <div style="background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.2);border-radius:2px;padding:.4rem .5rem;text-align:center">
+              <div id="cfg-init-b3-lbl" style="font-family:Cinzel,serif;font-size:.44rem;color:var(--txt3);margin-bottom:.28rem">Écart 10 – 12</div>
+              <div style="display:flex;align-items:center;justify-content:center;gap:.3rem">
+                <span style="font-family:Cinzel,serif;font-size:.58rem;color:var(--txt3)">Rés.</span>
+                <input id="cfg-init-b3" type="number" value="-3" oninput="onCfgChange()" style="width:48px;background:#1a1814;border:1px solid var(--bdr2);border-radius:2px;padding:.18rem .3rem;color:#e07070;font-family:Cinzel,serif;font-size:.8rem;text-align:center;outline:none">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION IMPACT / RÉSISTANCE -->
+    <div style="margin-bottom:1.1rem">
+      <div style="font-family:Cinzel,serif;font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gl2);margin-bottom:.65rem;padding-bottom:.3rem;border-bottom:1px solid var(--bdr2);display:flex;align-items:center;gap:.4rem">
+        <span style="font-size:.85rem">💥</span> Seuils Impact − Résistance
+        <span style="font-family:Cinzel,serif;font-size:.44rem;color:var(--txt3);font-weight:400;margin-left:.3rem">(écart = Total Impact − Total Résistance)</span>
+      </div>
+      <!-- Tableau visuel des seuils -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.6rem;margin-bottom:.6rem">
+
+        <div style="background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.2);border-radius:3px;padding:.65rem .8rem">
+          <div style="font-family:Cinzel,serif;font-size:.48rem;text-transform:uppercase;letter-spacing:.08em;color:var(--txt3);margin-bottom:.4rem">Lance brisée / sans effet</div>
+          <div style="display:flex;align-items:center;gap:.5rem">
+            <span style="font-family:Cinzel,serif;font-size:.65rem;color:var(--txt2);flex:1">Écart ≤</span>
+            <input id="cfg-imp-rien" type="number" value="2" min="0" max="5" oninput="onCfgChange()" style="width:52px;background:#1a1814;border:1px solid var(--bdr2);border-radius:2px;padding:.22rem .35rem;color:var(--gl);font-family:Cinzel,serif;font-size:.85rem;text-align:center;outline:none">
+          </div>
+        </div>
+
+        <div style="background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.2);border-radius:3px;padding:.65rem .8rem">
+          <div style="font-family:Cinzel,serif;font-size:.48rem;text-transform:uppercase;letter-spacing:.08em;color:var(--txt3);margin-bottom:.4rem">⚠ Déséquilibré léger</div>
+          <div style="display:flex;align-items:center;gap:.5rem">
+            <span style="font-family:Cinzel,serif;font-size:.65rem;color:var(--txt2);flex:1">Écart ≤</span>
+            <input id="cfg-imp-dl" type="number" value="7" min="3" max="12" oninput="onCfgChange()" style="width:52px;background:#1a1814;border:1px solid var(--bdr2);border-radius:2px;padding:.22rem .35rem;color:var(--gl);font-family:Cinzel,serif;font-size:.85rem;text-align:center;outline:none">
+          </div>
+        </div>
+
+        <div style="background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.2);border-radius:3px;padding:.65rem .8rem">
+          <div style="font-family:Cinzel,serif;font-size:.48rem;text-transform:uppercase;letter-spacing:.08em;color:var(--txt3);margin-bottom:.4rem">⚠ Déséquilibré fort</div>
+          <div style="display:flex;align-items:center;gap:.5rem">
+            <span style="font-family:Cinzel,serif;font-size:.65rem;color:var(--txt2);flex:1">Écart ≤</span>
+            <input id="cfg-imp-df" type="number" value="14" min="8" max="20" oninput="onCfgChange()" style="width:52px;background:#1a1814;border:1px solid var(--bdr2);border-radius:2px;padding:.22rem .35rem;color:var(--gl);font-family:Cinzel,serif;font-size:.85rem;text-align:center;outline:none">
+          </div>
+        </div>
+
+        <div style="background:rgba(212,175,55,.05);border:1px solid rgba(212,175,55,.2);border-radius:3px;padding:.65rem .8rem">
+          <div style="font-family:Cinzel,serif;font-size:.48rem;text-transform:uppercase;letter-spacing:.08em;color:var(--txt3);margin-bottom:.4rem">💀 Désarçonné</div>
+          <div style="display:flex;align-items:center;gap:.5rem">
+            <span style="font-family:Cinzel,serif;font-size:.65rem;color:var(--txt2);flex:1">Écart ≥</span>
+            <input id="cfg-imp-desa" type="number" value="15" min="10" max="25" oninput="onCfgChange()" style="width:52px;background:#1a1814;border:1px solid var(--bdr2);border-radius:2px;padding:.22rem .35rem;color:var(--gl);font-family:Cinzel,serif;font-size:.85rem;text-align:center;outline:none">
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION BLESSURES -->
+    <div style="margin-bottom:1.1rem">
+      <div style="font-family:Cinzel,serif;font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gl2);margin-bottom:.65rem;padding-bottom:.3rem;border-bottom:1px solid var(--bdr2);display:flex;align-items:center;gap:.4rem">
+        <span style="font-size:.85rem">🩸</span> Seuils de Blessure
+        <span style="font-family:Cinzel,serif;font-size:.44rem;color:var(--txt3);font-weight:400;margin-left:.3rem">(valeur brute du jet d'impact, hors déséquilibre)</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.6rem">
+
+        <div style="background:rgba(224,160,48,.07);border:1px solid rgba(224,160,48,.2);border-radius:3px;padding:.65rem .8rem">
+          <div style="display:flex;align-items:center;gap:.35rem;margin-bottom:.38rem">
+            <span class="sbadge st-low" style="margin:0">🩸 Blessé léger</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:.5rem">
+            <span style="font-family:Cinzel,serif;font-size:.65rem;color:var(--txt2);flex:1">Impact brut ≥</span>
+            <input id="cfg-bl-leg" type="number" value="16" min="10" max="25" oninput="onCfgChange()" style="width:52px;background:#1a1814;border:1px solid rgba(224,160,48,.3);border-radius:2px;padding:.22rem .35rem;color:#e0a030;font-family:Cinzel,serif;font-size:.85rem;text-align:center;outline:none">
+          </div>
+          <div style="font-size:.62rem;color:var(--txt3);font-style:italic;margin-top:.3rem">Si impact &lt; seuil grave</div>
+        </div>
+
+        <div style="background:rgba(192,57,43,.07);border:1px solid rgba(192,57,43,.25);border-radius:3px;padding:.65rem .8rem">
+          <div style="display:flex;align-items:center;gap:.35rem;margin-bottom:.38rem">
+            <span class="sbadge st-crit" style="margin:0">🩸 Blessé grave</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:.5rem">
+            <span style="font-family:Cinzel,serif;font-size:.65rem;color:var(--txt2);flex:1">Impact brut ≥</span>
+            <input id="cfg-bl-grave" type="number" value="19" min="15" max="30" oninput="onCfgChange()" style="width:52px;background:#1a1814;border:1px solid rgba(192,57,43,.35);border-radius:2px;padding:.22rem .35rem;color:#e07070;font-family:Cinzel,serif;font-size:.85rem;text-align:center;outline:none">
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SECTION MALUS -->
+    <div>
+      <div style="font-family:Cinzel,serif;font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gl2);margin-bottom:.65rem;padding-bottom:.3rem;border-bottom:1px solid var(--bdr2);display:flex;align-items:center;gap:.4rem">
+        <span style="font-size:.85rem">⚠</span> Malus par État
+      </div>
+      <!-- En-tête -->
+      <div style="display:grid;grid-template-columns:1fr 80px 80px 80px;gap:.4rem;align-items:center;margin-bottom:.3rem;padding:0 .5rem">
+        <span></span>
+        <span style="font-family:Cinzel,serif;font-size:.46rem;text-transform:uppercase;letter-spacing:.08em;color:var(--gl);text-align:center">Initiative</span>
+        <span style="font-family:Cinzel,serif;font-size:.46rem;text-transform:uppercase;letter-spacing:.08em;color:var(--gl);text-align:center">Impact</span>
+        <span style="font-family:Cinzel,serif;font-size:.46rem;text-transform:uppercase;letter-spacing:.08em;color:var(--gl);text-align:center">Résistance</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.4rem">
+
+        <div style="display:grid;grid-template-columns:1fr 80px 80px 80px;gap:.4rem;align-items:center;background:rgba(224,160,48,.07);border:1px solid rgba(224,160,48,.18);border-radius:3px;padding:.5rem .6rem">
+          <span class="sbadge st-deseq" style="justify-self:start;margin:0">⚠ Déséq. léger</span>
+          <input id="cfg-ml-di" type="number" value="-2" oninput="onCfgChange()" style="width:100%;background:#1a1814;border:1px solid var(--bdr2);border-radius:2px;padding:.2rem .3rem;color:#e0a030;font-family:Cinzel,serif;font-size:.8rem;text-align:center;outline:none">
+          <input id="cfg-ml-ii" type="number" value="-1" oninput="onCfgChange()" style="width:100%;background:#1a1814;border:1px solid var(--bdr2);border-radius:2px;padding:.2rem .3rem;color:#e0a030;font-family:Cinzel,serif;font-size:.8rem;text-align:center;outline:none">
+          <input id="cfg-ml-ri" type="number" value="0"  oninput="onCfgChange()" style="width:100%;background:#1a1814;border:1px solid var(--bdr2);border-radius:2px;padding:.2rem .3rem;color:#e0a030;font-family:Cinzel,serif;font-size:.8rem;text-align:center;outline:none">
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 80px 80px 80px;gap:.4rem;align-items:center;background:rgba(192,57,43,.06);border:1px solid rgba(192,57,43,.2);border-radius:3px;padding:.5rem .6rem">
+          <span class="sbadge st-deseq" style="justify-self:start;margin:0;color:#e07070;border-color:rgba(192,57,43,.35)">⚠ Déséq. fort</span>
+          <input id="cfg-mf-di" type="number" value="-4" oninput="onCfgChange()" style="width:100%;background:#1a1814;border:1px solid var(--bdr2);border-radius:2px;padding:.2rem .3rem;color:#e07070;font-family:Cinzel,serif;font-size:.8rem;text-align:center;outline:none">
+          <input id="cfg-mf-ii" type="number" value="-2" oninput="onCfgChange()" style="width:100%;background:#1a1814;border:1px solid var(--bdr2);border-radius:2px;padding:.2rem .3rem;color:#e07070;font-family:Cinzel,serif;font-size:.8rem;text-align:center;outline:none">
+          <input id="cfg-mf-ri" type="number" value="-1" oninput="onCfgChange()" style="width:100%;background:#1a1814;border:1px solid var(--bdr2);border-radius:2px;padding:.2rem .3rem;color:#e07070;font-family:Cinzel,serif;font-size:.8rem;text-align:center;outline:none">
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 80px 80px 80px;gap:.4rem;align-items:center;background:rgba(224,160,48,.07);border:1px solid rgba(224,160,48,.2);border-radius:3px;padding:.5rem .6rem">
+          <span class="sbadge st-low" style="justify-self:start;margin:0">🩸 Blessé léger</span>
+          <input id="cfg-bll-di" type="number" value="-2" oninput="onCfgChange()" style="width:100%;background:#1a1814;border:1px solid var(--bdr2);border-radius:2px;padding:.2rem .3rem;color:#e0a030;font-family:Cinzel,serif;font-size:.8rem;text-align:center;outline:none">
+          <input id="cfg-bll-ii" type="number" value="-2" oninput="onCfgChange()" style="width:100%;background:#1a1814;border:1px solid var(--bdr2);border-radius:2px;padding:.2rem .3rem;color:#e0a030;font-family:Cinzel,serif;font-size:.8rem;text-align:center;outline:none">
+          <input id="cfg-bll-ri" type="number" value="-1" oninput="onCfgChange()" style="width:100%;background:#1a1814;border:1px solid var(--bdr2);border-radius:2px;padding:.2rem .3rem;color:#e0a030;font-family:Cinzel,serif;font-size:.8rem;text-align:center;outline:none">
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 80px 80px 80px;gap:.4rem;align-items:center;background:rgba(192,57,43,.07);border:1px solid rgba(192,57,43,.28);border-radius:3px;padding:.5rem .6rem">
+          <span class="sbadge st-crit" style="justify-self:start;margin:0">🩸 Blessé grave</span>
+          <input id="cfg-blg-di" type="number" value="-4" oninput="onCfgChange()" style="width:100%;background:#1a1814;border:1px solid var(--bdr2);border-radius:2px;padding:.2rem .3rem;color:#e07070;font-family:Cinzel,serif;font-size:.8rem;text-align:center;outline:none">
+          <input id="cfg-blg-ii" type="number" value="-3" oninput="onCfgChange()" style="width:100%;background:#1a1814;border:1px solid var(--bdr2);border-radius:2px;padding:.2rem .3rem;color:#e07070;font-family:Cinzel,serif;font-size:.8rem;text-align:center;outline:none">
+          <input id="cfg-blg-ri" type="number" value="-2" oninput="onCfgChange()" style="width:100%;background:#1a1814;border:1px solid var(--bdr2);border-radius:2px;padding:.2rem .3rem;color:#e07070;font-family:Cinzel,serif;font-size:.8rem;text-align:center;outline:none">
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- HISTORIQUE -->
+<div class="view" id="view-historique">
+  <div class="panel">
+    <div class="panel-title" style="display:flex;align-items:center;justify-content:space-between">
+      <span>🏆 Historique des combats</span>
+      <button class="btn btn-dan" onclick="clearHistorique()" style="font-size:.5rem;padding:.2rem .55rem">✕ Effacer tout</button>
+    </div>
+    <div id="hist-empty" style="color:var(--txt3);font-style:italic;font-size:.78rem;text-align:center;padding:1.5rem 0">Aucun combat archivé.</div>
+    <div id="hist-list"></div>
+  </div>
+</div>
+
+</div><!-- wrap -->
+</div><!-- app-screen -->
+
+<!-- MODAL BBCode -->
+<div id="mo-bbcode" class="mo-bbcode-overlay">
+  <div class="mo-bbcode-box">
+    <div class="mo-bbcode-inner-border"></div>
+    <div class="mo-bbcode-title">📋 Export BBCode — Journal de joute</div>
+    <div class="mo-bbcode-sub">Copie ce code et colle-le directement dans un post phpBB.</div>
+    <textarea id="bbcode-output" class="mo-bbcode-textarea" readonly></textarea>
+    <div style="display:flex;gap:.5rem;margin-top:.8rem;justify-content:flex-end">
+      <button class="btn btn-pri" style="font-size:.6rem;padding:.35rem .9rem" onclick="copyBBCode()">📋 Copier</button>
+      <button class="btn" style="font-size:.6rem;padding:.35rem .9rem" onclick="document.getElementById('mo-bbcode').style.display='none'">Fermer</button>
+    </div>
+    <div id="bbcode-copy-msg" style="font-family:Cinzel,serif;font-size:.5rem;color:var(--green2);text-align:right;margin-top:.3rem;opacity:0;transition:opacity .3s">✔ Copié dans le presse-papiers</div>
+  </div>
+</div>
+<!-- MODAL ABANDON -->
+<div class="mo-abandon" id="mo-abandon">
+  <div class="mo-abandon-box">
+    <div class="mo-abandon-icon">🏳</div>
+    <div class="mo-abandon-title">Demande d'abandon</div>
+    <div class="mo-abandon-sub" id="mo-abandon-sub">Le chevalier souhaite se retirer du combat.</div>
+    <div class="mo-abandon-btns">
+      <button class="btn btn-dan" style="font-size:.65rem;padding:.45rem 1.2rem" onclick="confirmerAbandon()">⚔ Confirmer l'abandon</button>
+      <button class="btn" style="font-size:.65rem;padding:.45rem 1.2rem" onclick="annulerAbandon()">✕ Annuler</button>
+    </div>
+  </div>
+</div>
+
+<div class="mo-end" id="mo-end">
+  <div class="mo-end-box">
+    <div class="mo-end-icon" id="mo-end-icon">⚔️</div>
+    <div class="mo-end-title" id="mo-end-title">Combat terminé</div>
+    <div class="mo-end-winner" id="mo-end-winner"></div>
+    <div class="mo-end-sub" id="mo-end-sub"></div>
+    <div class="mo-end-stats">
+      <div class="mo-end-stat"><div class="mo-end-stat-lbl">Passes</div><div class="mo-end-stat-val" id="mo-end-passes">—</div></div>
+      <div class="mo-end-stat" id="mo-end-stat-a"><div class="mo-end-stat-lbl" id="mo-end-lbl-a">A</div><div class="mo-end-stat-val" id="mo-end-pv-a">—</div></div>
+      <div class="mo-end-stat" id="mo-end-stat-b"><div class="mo-end-stat-lbl" id="mo-end-lbl-b">B</div><div class="mo-end-stat-val" id="mo-end-pv-b">—</div></div>
+    </div>
+    <button class="btn btn-pri" style="width:100%;font-size:.68rem;padding:.55rem;margin-bottom:.4rem" onclick="resetCombat()">⚔ Nouveau combat</button>
+    <button class="btn" style="width:100%;font-size:.62rem;padding:.4rem" onclick="resetCombat();showMain('historique',document.querySelectorAll('.nav-tab')[3])">📜 Voir l'historique</button>
+  </div>
+</div>
+
+<div id="user-bar" style="display:none">
+  <span>👤</span><span id="user-label"></span>
+  <button id="logout-btn" onclick="fbLogout()">Déconnexion</button>
+</div>
+
+<!-- MODAL -->
+<div class="mo" id="mo">
+  <div class="mb">
+    <div class="mt" id="mo-title">Nouveau combattant</div>
+    <div class="g2">
+      <div><label class="fl">Nom</label><input type="text" id="m-nom" placeholder="Ser Criston Cole"></div>
+      <div><label class="fl">Titre / Maison</label><input type="text" id="m-titre" placeholder="Chevalier de la Garde Royale"></div>
+    </div>
+
+    <div class="section-title">📊 Caractéristiques (1–10)</div>
+    <div class="stat-total">Total réparti : <span id="m-total">0</span> points &nbsp;·&nbsp; <span id="m-niveau-hint" style="color:var(--txt2)"></span></div>
+    <div style="margin-top:.4rem">
+      <div class="stat-row"><span class="stat-name">🐎 Agilité</span><input type="number" id="m-agi" min="1" max="10" value="6" oninput="updModal()"><span class="stat-mod" id="mod-agi">0</span></div>
+      <div class="stat-row"><span class="stat-name">🎯 Adresse</span><input type="number" id="m-adr" min="1" max="10" value="6" oninput="updModal()"><span class="stat-mod" id="mod-adr">0</span></div>
+      <div class="stat-row"><span class="stat-name">❤ Endurance</span><input type="number" id="m-end" min="1" max="10" value="6" oninput="updModal()"><span class="stat-mod" id="mod-end">0</span></div>
+      <div class="stat-row"><span class="stat-name">🏰 Constitution</span><input type="number" id="m-con" min="1" max="10" value="6" oninput="updModal()"><span class="stat-mod" id="mod-con">0</span></div>
+      <div class="stat-row"><span class="stat-name">💥 Combativité</span><input type="number" id="m-cbt" min="1" max="10" value="6" oninput="updModal()"><span class="stat-mod" id="mod-cbt">0</span></div>
+      <div class="stat-row"><span class="stat-name">⚡ Puissance</span><input type="number" id="m-pui" min="1" max="10" value="6" oninput="updModal()"><span class="stat-mod" id="mod-pui">0</span></div>
+    </div>
+
+    <div class="section-title">🏇 Spécialité</div>
+    <div class="comp-row">
+      <div class="comp-item">
+        <input type="checkbox" id="m-bonus-joute">
+        <label for="m-bonus-joute">🏇 Spécialiste Joute <span style="color:var(--gl2);font-size:.7em">(+2 Init, +2 Impact, +2 Rés)</span></label>
+      </div>
+    </div>
+
+    <div class="section-title">⚡ Bonus &amp; Malus</div>
+    <div style="font-family:Cinzel,serif;font-size:.5rem;color:var(--txt3);margin-bottom:.4rem">Cocher pour activer. Libellé facultatif. +2 = avantage, −2 = faiblesse.</div>
+
+    <div style="font-family:Cinzel,serif;font-size:.48rem;text-transform:uppercase;letter-spacing:.07em;color:var(--gl2);margin-bottom:.25rem">Initiative</div>
+    <div id="bonus-init-list"></div>
+    <div style="display:flex;gap:.35rem;margin-bottom:.5rem">
+      <button class="btn" style="font-size:.5rem;padding:.18rem .5rem" onclick="addBonusRow('init','+2')">+ Bonus +2</button>
+      <button class="btn" style="font-size:.5rem;padding:.18rem .5rem;color:var(--red2);border-color:rgba(192,57,43,.35)" onclick="addBonusRow('init','-2')">+ Malus −2</button>
+    </div>
+
+    <div style="font-family:Cinzel,serif;font-size:.48rem;text-transform:uppercase;letter-spacing:.07em;color:var(--gl2);margin-bottom:.25rem">Impact</div>
+    <div id="bonus-impact-list"></div>
+    <div style="display:flex;gap:.35rem;margin-bottom:.5rem">
+      <button class="btn" style="font-size:.5rem;padding:.18rem .5rem" onclick="addBonusRow('impact','+2')">+ Bonus +2</button>
+      <button class="btn" style="font-size:.5rem;padding:.18rem .5rem;color:var(--red2);border-color:rgba(192,57,43,.35)" onclick="addBonusRow('impact','-2')">+ Malus −2</button>
+    </div>
+
+    <div style="font-family:Cinzel,serif;font-size:.48rem;text-transform:uppercase;letter-spacing:.07em;color:var(--gl2);margin-bottom:.25rem">Résistance</div>
+    <div id="bonus-res-list"></div>
+    <div style="display:flex;gap:.35rem;margin-bottom:.5rem">
+      <button class="btn" style="font-size:.5rem;padding:.18rem .5rem" onclick="addBonusRow('res','+2')">+ Bonus +2</button>
+      <button class="btn" style="font-size:.5rem;padding:.18rem .5rem;color:var(--red2);border-color:rgba(192,57,43,.35)" onclick="addBonusRow('res','-2')">+ Malus −2</button>
+    </div>
+
+    <div style="margin-top:.6rem"><label class="fl">Notes</label><textarea id="m-desc" placeholder="Chevalier renommé..."></textarea></div>
+
+    <div class="mact">
+      <button class="btn btn-dan" id="m-del" style="display:none;margin-right:auto" onclick="delCombattant()">Supprimer</button>
+      <button class="btn" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-pri" onclick="saveCombattant()">Enregistrer</button>
+    </div></div>
+</div>
+
+<button id="theme-toggle" onclick="toggleTheme()">🌙 Sombre</button>
+
+<script>
+// ================================================================
+// TABLE MODIFICATEURS 1-10
+// ================================================================
+var MOD_TABLE={1:-4,2:-3,3:-2,4:-1,5:0,6:0,7:1,8:2,9:3,10:4};
+function gm(v){return MOD_TABLE[+v]||0;}
+function ms(v){return v>0?"+"+v:(v<0?""+v:"0");}
+// ================================================================
+// CONFIGURATION — SEUILS ET MALUS (modifiables)
+// ================================================================
+var CFG = {
+  // Seuils écart d'initiative
+  init: {
+    simultane_max: 3,    // <= : échange simultané
+    direct_min:    13,   // >= : désarçonnement direct sans impact
+    simul_imp_malus: -1, // malus Impact pour le plus bas score en échange simultané
+    // Malus de résistance sur le défenseur selon l'écart d'initiative
+    bonus: [
+      {min:4,  max:6,  res:-1},
+      {min:7,  max:9,  res:-2},
+      {min:10, max:12, res:-3}
+    ]
+  },
+  // Seuils écart Impact − Résistance
+  impact: {
+    rien_max:      2,    // <= : lance déviée ou brisée sans effet
+    deseq_leger_max: 7,  // 3–7 : déséquilibré léger
+    deseq_fort_max: 14,  // 8–14 : déséquilibré fort
+                         // >= 15 : désarçonné
+    desarconne_min: 15
+  },
+  // Seuils blessure sur valeur BRUTE d'impact (seulement si lance non déviée)
+  blessure: {
+    legere_min: 16,  // 16–18
+    grave_min:  19   // 19+
+  },
+  // Malus par état  {init, impact, res}
+  malus: {
+    deseq_leger: { init:-2, impact:-1, res: 0 },
+    deseq_fort:  { init:-4, impact:-2, res:-1 },
+    blesse_leger:{ init:-2, impact:-2, res:-1 },
+    blesse_grave:{ init:-4, impact:-3, res:-2 }
+  }
+};
+
+// ── helpers ──────────────────────────────────────────────────────
+function cfgNum(id){ var el=document.getElementById(id); return el?(+el.value||0):0; }
+
+// Clés des inputs de configuration
+var CFG_INPUTS = [
+  "cfg-init-simul","cfg-init-direct",
+  "cfg-init-b1","cfg-init-b2","cfg-init-b3",
+  "cfg-simul-imp-malus",
+  "cfg-imp-rien","cfg-imp-dl","cfg-imp-df","cfg-imp-desa",
+  "cfg-bl-leg","cfg-bl-grave",
+  "cfg-ml-di","cfg-ml-ii","cfg-ml-ri",
+  "cfg-mf-di","cfg-mf-ii","cfg-mf-ri",
+  "cfg-bll-di","cfg-bll-ii","cfg-bll-ri",
+  "cfg-blg-di","cfg-blg-ii","cfg-blg-ri"
+];
+var CFG_DEFAULTS = {
+  "cfg-init-simul":3,"cfg-init-direct":13,
+  "cfg-init-b1":-1,"cfg-init-b2":-2,"cfg-init-b3":-3,
+  "cfg-simul-imp-malus":-1,
+  "cfg-imp-rien":2,"cfg-imp-dl":7,"cfg-imp-df":14,"cfg-imp-desa":15,
+  "cfg-bl-leg":16,"cfg-bl-grave":19,
+  "cfg-ml-di":-2,"cfg-ml-ii":-1,"cfg-ml-ri":0,
+  "cfg-mf-di":-4,"cfg-mf-ii":-2,"cfg-mf-ri":-1,
+  "cfg-bll-di":-2,"cfg-bll-ii":-2,"cfg-bll-ri":-1,
+  "cfg-blg-di":-4,"cfg-blg-ii":-3,"cfg-blg-ri":-2
+};
+function loadCFGFromStorage(){
+  var saved=localStorage.getItem("cofas-tournoi-cfg");
+  if(!saved)return;
+  try{
+    var data=JSON.parse(saved);
+    CFG_INPUTS.forEach(function(id){
+      if(data[id]!==undefined){
+        var el=document.getElementById(id);
+        if(el)el.value=data[id];
+      }
+    });
+    readCFG();
+  }catch(e){}
+}
+function saveCFGToStorage(){
+  var data={};
+  CFG_INPUTS.forEach(function(id){
+    var el=document.getElementById(id);
+    if(el)data[id]=+el.value;
+  });
+  localStorage.setItem("cofas-tournoi-cfg",JSON.stringify(data));
+}
+function saveCFGManual(){
+  readCFG();
+  saveCFGToStorage();
+  var msg=document.getElementById("cfg-saved-msg");
+  if(msg){msg.style.opacity=1;setTimeout(function(){msg.style.opacity=0;},2000);}
+}
+var _cfgTimer=null;
+function onCfgChange(){
+  readCFG();
+  clearTimeout(_cfgTimer);
+  _cfgTimer=setTimeout(function(){
+    saveCFGToStorage();
+    var msg=document.getElementById("cfg-saved-msg");
+    if(msg){msg.style.opacity=1;setTimeout(function(){msg.style.opacity=0;},1800);}
+  },600);
+}
+function resetCFG(){
+  if(!confirm("Réinitialiser tous les seuils aux valeurs par défaut ?"))return;
+  CFG_INPUTS.forEach(function(id){
+    var el=document.getElementById(id);
+    if(el&&CFG_DEFAULTS[id]!==undefined)el.value=CFG_DEFAULTS[id];
+  });
+  readCFG();
+  saveCFGToStorage();
+  var msg=document.getElementById("cfg-saved-msg");
+  if(msg){msg.style.opacity=1;setTimeout(function(){msg.style.opacity=0;},2000);}
+}
+function readCFG(){
+  CFG.init.simultane_max  = cfgNum("cfg-init-simul");
+  CFG.init.direct_min     = cfgNum("cfg-init-direct");
+  CFG.init.simul_imp_malus = cfgNum("cfg-simul-imp-malus");
+  CFG.impact.rien_max          = cfgNum("cfg-imp-rien");
+  CFG.impact.deseq_leger_max   = cfgNum("cfg-imp-dl");
+  CFG.impact.deseq_fort_max    = cfgNum("cfg-imp-df");
+  CFG.impact.desarconne_min    = cfgNum("cfg-imp-desa");
+  CFG.blessure.legere_min = cfgNum("cfg-bl-leg");
+  CFG.blessure.grave_min  = cfgNum("cfg-bl-grave");
+  CFG.malus.deseq_leger  = { init:cfgNum("cfg-ml-di"), impact:cfgNum("cfg-ml-ii"), res:cfgNum("cfg-ml-ri") };
+  CFG.malus.deseq_fort   = { init:cfgNum("cfg-mf-di"), impact:cfgNum("cfg-mf-ii"), res:cfgNum("cfg-mf-ri") };
+  CFG.malus.blesse_leger = { init:cfgNum("cfg-bll-di"),impact:cfgNum("cfg-bll-ii"),res:cfgNum("cfg-bll-ri") };
+  CFG.malus.blesse_grave = { init:cfgNum("cfg-blg-di"),impact:cfgNum("cfg-blg-ii"),res:cfgNum("cfg-blg-ri") };
+  CFG.init.bonus = [
+    {min:4,  max:6,  res:cfgNum("cfg-init-b1")},
+    {min:7,  max:9,  res:cfgNum("cfg-init-b2")},
+    {min:10, max:CFG.init.direct_min-1, res:cfgNum("cfg-init-b3")}
+  ];
+  // Mettre à jour le label dynamique de la 3e tranche
+  var lbl3=document.getElementById("cfg-init-b3-lbl");
+  if(lbl3) lbl3.textContent="Écart 10 – "+(CFG.init.direct_min-1);
+}
+function h(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+
+var STATS_LIST=["agi","adr","end","con","cbt","pui"];
+
+// ================================================================
+// COMBATTANTS DE BASE — La Danse des Dragons
+// ================================================================
+var COMBATTANTS_BASE=[
+  {id:"criston_cole",nom:"Criston Cole",titre:"Chevalier de la Garde Royale — Le Faiseur de Rois",agi:8,adr:9,end:9,con:8,cbt:9,pui:8,bonusJoute:true,bonusInit:[],bonusImpact:[],bonusRes:[],desc:"Chevalier légendaire de la Garde Royale. Invaincu pendant des années. Faiseur et défaiseur de rois lors de la Danse."},
+  {id:"daemon_t",nom:"Daemon Targaryen",titre:"Prince Rogue — Seigneur des Marches",agi:9,adr:9,end:8,con:7,cbt:10,pui:9,bonusJoute:false,bonusInit:[],bonusImpact:[],bonusRes:[],desc:"Prince Rogue. Combattant redoutable à l'épée valyrian Dame Noire. Préfère la mêlée à la joute."},
+  {id:"aemond_t",nom:"Aemond Targaryen",titre:"Prince — Chevalier de la Garde",agi:8,adr:8,end:9,con:8,cbt:8,pui:9,bonusJoute:true,bonusInit:[],bonusImpact:[],bonusRes:[],desc:"Prince borgne, redoutable guerrier. Pilote de Vhagar."},
+  {id:"aegon_ii",nom:"Aegon II Targaryen",titre:"Roi des Sept Couronnes",agi:6,adr:7,end:7,con:7,cbt:6,pui:7,bonusJoute:true,bonusInit:[],bonusImpact:[],bonusRes:[],desc:"Roi des Verts. Bon chevalier, pas exceptionnel."},
+  {id:"harwin_strong",nom:"Harwin Strong",titre:"Briseur-de-Bonds — Capitaine de la Garde",agi:7,adr:7,end:10,con:10,cbt:9,pui:10,bonusJoute:false,bonusInit:[],bonusImpact:[],bonusRes:[],desc:"L'homme le plus fort de Westeros. Capitaine de la Garde de la Fossedragon. Force brute redoutable en mêlée."},
+  {id:"ser_laenor",nom:"Laenor Velaryon",titre:"Seigneur des Marées — Fils du Seigneur des Marées",agi:8,adr:8,end:6,con:6,cbt:6,pui:6,bonusJoute:true,bonusInit:[],bonusImpact:[],bonusRes:[],desc:"Fils de Corlys Velaryon. Meilleur jouteur que guerrier. Pilote de Seasmoke."},
+  {id:"corlys_v",nom:"Corlys Velaryon",titre:"Le Serpent de Mer — Seigneur du Flot",agi:7,adr:8,end:9,con:8,cbt:8,pui:7,bonusJoute:false,bonusInit:[],bonusImpact:[],bonusRes:[],desc:"Le plus grand amiral de l'histoire. Vieux lion, encore redoutable."},
+  {id:"rhaenys_t",nom:"Rhaenys Targaryen",titre:"La Reine qui n'était pas — Dame des Driftmark",agi:8,adr:8,end:7,con:6,cbt:7,pui:6,bonusJoute:true,bonusInit:[],bonusImpact:[],bonusRes:[],desc:"Cavalière hors pair et pilote de Meleys. À l'aise en lice."},
+  {id:"otto_hight",nom:"Otto Hightower",titre:"Main du Roi — Seigneur de la Citadelle",agi:5,adr:5,end:6,con:6,cbt:5,pui:5,bonusJoute:false,bonusInit:[],bonusImpact:[],bonusRes:[],desc:"Politicien avant tout. Jadis bon chevalier, usé par les années."},
+  {id:"lyonel_strong",nom:"Lyonel Strong",titre:"Lord Harrenhal — Main du Roi",agi:7,adr:8,end:8,con:8,cbt:7,pui:8,bonusJoute:false,bonusInit:[],bonusImpact:[],bonusRes:[],desc:"Lord Harrenhal, homme d'honneur. Chevalier solide et respecté."},
+  {id:"ser_cole_young",nom:"Arryk Cargyll",titre:"Chevalier de la Garde Royale",agi:8,adr:8,end:8,con:8,cbt:8,pui:8,bonusJoute:true,bonusInit:[],bonusImpact:[],bonusRes:[],desc:"Jumeau d'Erryk. Chevalier de la Garde Royale, compétent en tout."},
+  {id:"erryk_cargyll",nom:"Erryk Cargyll",titre:"Chevalier de la Garde Royale — Camp Noir",agi:8,adr:8,end:8,con:8,cbt:8,pui:8,bonusJoute:true,bonusInit:[],bonusImpact:[],bonusRes:[],desc:"Jumeau d'Arryk. A rejoint les Noirs. Destin tragique contre son propre frère."},
+  {id:"lorent_marbrand",nom:"Lorent Marbrand",titre:"Chevalier de la Garde Royale",agi:8,adr:7,end:7,con:7,cbt:7,pui:7,bonusJoute:true,bonusInit:[],bonusImpact:[],bonusRes:[],desc:"Chevalier de la Garde Royale. Spécialisé en joute."},
+  {id:"ser_tyland",nom:"Tyland Lannister",titre:"Maître des Navires — Camp des Verts",agi:7,adr:7,end:6,con:6,cbt:6,pui:6,bonusJoute:true,bonusInit:[],bonusImpact:[],bonusRes:[],desc:"Lannister fidèle aux Verts. Bon jouteur, politique habile."},
+  {id:"jason_lannister",nom:"Jason Lannister",titre:"Seigneur de Castral Roc",agi:7,adr:8,end:7,con:7,cbt:7,pui:7,bonusJoute:true,bonusInit:[],bonusImpact:[],bonusRes:[],desc:"Seigneur de Castral Roc. Excellent jouteur, mort lors de la Danse."},
+  {id:"ser_steffon",nom:"Steffon Darklyn",titre:"Chevalier de la Garde Royale",agi:7,adr:7,end:8,con:8,cbt:7,pui:8,bonusJoute:false,bonusInit:[],bonusImpact:[],bonusRes:[],desc:"Chevalier de la Garde Royale fidèle aux Verts. Solide défenseur."},
+  {id:"cole_richard",nom:"Rickard Thorne",titre:"Chevalier — Camp des Verts",agi:7,adr:7,end:7,con:7,cbt:7,pui:7,bonusJoute:true,bonusInit:[],bonusImpact:[],bonusRes:[],desc:"Chevalier vert solide. Compétence équilibrée, sans point faible."},
+  {id:"daeron_t",nom:"Daeron Targaryen",titre:"Le Courageux — Prince cadet",agi:8,adr:8,end:7,con:7,cbt:7,pui:7,bonusJoute:true,bonusInit:[],bonusImpact:[],bonusRes:[],desc:"Le plus jeune fils d'Alicent. Courageux et loyal aux Verts. Pilote de Tessarion."},
+  {id:"ser_royce",nom:"Ser Cregan Stark",titre:"Lord de Winterfell — L'Ancien du Nord",agi:7,adr:6,end:10,con:9,cbt:9,pui:9,bonusJoute:false,bonusInit:[],bonusImpact:[],bonusRes:[],desc:"Lord Stark. Pas un jouteur mais redoutable en mêlée. Arrivé trop tard pour la Danse mais imposa sa loi à la Cour du Dragon."},
+  {id:"ser_gwayne",nom:"Gwayne Hightower",titre:"Seigneur de la Tour Haute — Camp des Verts",agi:8,adr:9,end:8,con:7,cbt:8,pui:8,bonusJoute:true,bonusInit:[],bonusImpact:[],bonusRes:[],desc:"Fils d'Otto Hightower, excellent jouteur, pilier des Verts."}
+]
+
+window.combattants_perso = window.combattants_perso || [];
+var combattants_perso = window.combattants_perso;
+var editId = null;
+var TC = {
+  round:1, a:null, b:null, att:null, rd:{},
+  // états persistants par combattant
+  etats: {
+    a:{ deseq_leger:false, deseq_fort:false, deseq_next_leger:false, deseq_next_fort:false, blesse_leger:false, blesse_grave:false },
+    b:{ deseq_leger:false, deseq_fort:false, deseq_next_leger:false, deseq_next_fort:false, blesse_leger:false, blesse_grave:false }
+  }
+};
+var rounds = [], logs = [];
+window.historique = window.historique || [];
+window._combatEnded = false;
+
+function getHistorique(){ return window.historique; }
+
+function saveHistoriqueToStorage(){
+  try{localStorage.setItem("cofas-tournoi-historique",JSON.stringify(window.historique));}catch(e){}
+}
+function loadHistoriqueFromStorage(){
+  try{
+    var saved=localStorage.getItem("cofas-tournoi-historique");
+    if(saved){window.historique=JSON.parse(saved);}
+  }catch(e){}
+}
+
+var combattants_base_supprimes=[];
+window.combattants_base_supprimes=combattants_base_supprimes;
+
+function allC(){
+  // Les perso remplacent les bases si même id ; les bases supprimées sont exclues
+  var baseFiltered=COMBATTANTS_BASE.filter(function(b){
+    return !combattants_perso.some(function(p){return p.id===b.id;})
+        && !(window.combattants_base_supprimes||[]).includes(b.id);
+  });
+  return baseFiltered.concat(combattants_perso);
+}
+function getC(id){return allC().find(function(c){return c.id===id;});}
+
+// ================================================================
+// NAVIGATION
+// ================================================================
+function showMain(v,btn){
+  document.querySelectorAll(".view").forEach(function(e){e.classList.remove("active");});
+  document.getElementById("view-"+v).classList.add("active");
+  document.querySelectorAll(".nav-tab").forEach(function(e){e.classList.remove("active");});
+  if(btn)btn.classList.add("active");
+  if(v==="fiches")renderFiches();
+}
+
+// ================================================================
+// FICHES
+// ================================================================
+function renderFiches(){
+  var q=(document.getElementById("srch").value||"").toLowerCase();
+  var all=allC().filter(function(c){return !q||c.nom.toLowerCase().indexOf(q)>=0||(c.titre||"").toLowerCase().indexOf(q)>=0;});
+  var g=document.getElementById("fiches-grid");
+  if(!all.length){g.innerHTML="<div style='color:var(--txt3);font-style:italic;padding:1.2rem'>Aucun combattant trouvé.</div>";return;}
+  g.innerHTML=all.map(function(c){
+    var initMod=gm(c.agi)+gm(c.adr)+getJouteBonus(c)+getBonusTotal(c,"bonusInit");
+    var impMod=gm(c.pui)+gm(c.cbt)+getJouteBonus(c)+getBonusTotal(c,"bonusImpact");
+    var resMod=Math.max(0,gm(c.con)+gm(c.end||1)+getJouteBonus(c)+getBonusTotal(c,"bonusRes"));
+    var selA=TC.a===c.id?" sel-a":"",selB=TC.b===c.id?" sel-b":"";
+    var isPerso=combattants_perso.some(function(p){return p.id===c.id;});
+    var badges="";
+    if(c.bonusJoute)badges+="<span class='badge badge-joute'>🏇 Joute +2</span>";
+    (c.bonusInit||[]).forEach(function(b){if(b.active)badges+="<span class='badge badge-equip'>⚡"+(b.label||"Init")+"+2</span>";});
+    (c.bonusImpact||[]).forEach(function(b){if(b.active)badges+="<span class='badge badge-equip'>💥"+(b.label||"Impact")+"+2</span>";});
+    (c.bonusRes||[]).forEach(function(b){if(b.active)badges+="<span class='badge badge-equip'>🛡"+(b.label||"Rés")+"+2</span>";});
+    return "<div class='fiche"+selA+selB+"'>"+
+      "<div class='fn'>"+h(c.nom)+"</div>"+
+      "<div class='fd'>"+h(c.titre||"")+"</div>"+
+      (badges?"<div style='margin-bottom:.3rem'>"+badges+"</div>":"")+
+      "<div class='fstats'>"+
+        ["agi","adr","end","con","cbt","pui"].map(function(k){
+          var labels={agi:"Agi",adr:"Adr",end:"End",con:"Con",cbt:"Cbt",pui:"Pui"};
+          return "<div class='fs'><div class='fsl'>"+labels[k]+"</div><div class='fsv'>"+(c[k]||1)+"</div></div>";
+        }).join("")+
+      "</div>"+
+      "<div class='fpv'>Init "+ms(initMod)+" &nbsp;|&nbsp; Impact "+ms(impMod)+" &nbsp;|&nbsp; Rés "+ms(resMod)+"</div>"+
+      "<div class='fbtns'>"+
+        "<button class='fbtn fa' onclick=\"selD('a','"+c.id+"')\">⚔ A</button>"+
+        "<button class='fbtn fb' onclick=\"selD('b','"+c.id+"')\">⚔ B</button>"+
+        "<button class='fbtn' onclick=\"openModal('"+c.id+"')\">✎</button>"+
+        "<button class='fbtn' style='color:var(--red2)' onclick=\"delCombattant('"+c.id+"')\">✕</button>"+
+      "</div>"+
+    "</div>";
+  }).join("");
+}
+
+// ================================================================
+// MODAL
+// ================================================================
+function addBonusRow(type, valStr, active, label){
+  // valStr: '+2' ou '-2' (ou legacy boolean for active)
+  // Handle legacy call: addBonusRow(type, label, active) where label is a string and active is bool
+  if(typeof valStr === 'boolean' || valStr === undefined){
+    // legacy: (type, label, active)
+    active = valStr; label = arguments[1] || ''; valStr = '+2';
+  } else if(typeof valStr === 'string' && valStr !== '+2' && valStr !== '-2'){
+    // called as addBonusRow(type, label, active) from renderBonusRows
+    label = valStr; valStr = (active && active.val) || '+2'; active = (active && active.active) || false;
+  }
+  var val = valStr === '-2' ? -2 : 2;
+  var valColor = val > 0 ? 'var(--green2)' : 'var(--red2)';
+  var bgColor = val > 0 ? 'rgba(0,0,0,.15)' : 'rgba(192,57,43,.08)';
+  var borderColor = val > 0 ? 'var(--bdr2)' : 'rgba(192,57,43,.25)';
+  var list = document.getElementById("bonus-"+type+"-list");
+  var row = document.createElement("div");
+  row.dataset.val = val;
+  row.style.cssText = "display:flex;align-items:center;gap:.4rem;margin-bottom:.3rem;background:"+bgColor+";border:1px solid "+borderColor+";border-radius:2px;padding:.25rem .45rem";
+  row.innerHTML =
+    "<input type='checkbox' class='bchk' "+(active?"checked":"")+" style='cursor:pointer'>"+
+    "<input type='text' class='blbl' value='"+(label||"")+"' placeholder='Libellé (ex: Lance de tournoi)' style='flex:1;background:transparent;border:none;font-family:Crimson Text,serif;font-size:.85rem;color:var(--txt);outline:none'>"+
+    "<span style='font-family:Cinzel,serif;font-size:.65rem;color:"+valColor+";font-weight:700'>"+(val>0?"+2":"−2")+"</span>"+
+    "<button onclick='this.parentNode.remove()' style='background:none;border:none;color:var(--txt3);cursor:pointer;font-size:.75rem;padding:0 .2rem'>✕</button>";
+  list.appendChild(row);
+}
+
+function getBonusRows(type){
+  var list=document.getElementById("bonus-"+type+"-list");
+  var rows=[];
+  Array.from(list.children).forEach(function(row){
+    var chk=row.querySelector(".bchk");
+    var lbl=row.querySelector(".blbl");
+    var val=parseInt(row.dataset.val)||2;
+    rows.push({active:chk&&chk.checked, label:lbl?lbl.value.trim():"", val:val});
+  });
+  return rows;
+}
+
+function renderBonusRows(type, arr){
+  var list=document.getElementById("bonus-"+type+"-list");
+  list.innerHTML="";
+  (arr||[]).forEach(function(b){
+    var vs=(b.val&&b.val<0)?'-2':'+2';
+    addBonusRow(type,vs,b.active,b.label);
+  });
+}
+
+function openModal(id){
+  editId=null;
+  document.getElementById("m-del").style.display="none";
+  var c=id?getC(id):null;
+  if(c){editId=c.id;document.getElementById("m-del").style.display="block";}
+  document.getElementById("mo-title").textContent=c?"Modifier — "+c.nom:"Nouveau combattant";
+  document.getElementById("m-nom").value=c?c.nom:"";
+  document.getElementById("m-titre").value=c?c.titre:"";
+  STATS_LIST.forEach(function(k){document.getElementById("m-"+k).value=c?(c[k]||6):6;});
+  document.getElementById("m-bonus-joute").checked=c?!!c.bonusJoute:false;
+  renderBonusRows("init",   c?c.bonusInit:[]);
+  renderBonusRows("impact", c?c.bonusImpact:[]);
+  renderBonusRows("res",    c?c.bonusRes:[]);
+  document.getElementById("m-desc").value=c?c.desc||"":"";
+  updModal();
+  document.getElementById("mo").classList.add("open");
+}
+
+function closeModal(){document.getElementById("mo").classList.remove("open");editId=null;}
+
+function updModal(){
+  var total=STATS_LIST.reduce(function(s,k){return s+(+document.getElementById("m-"+k).value||1);},0);
+  document.getElementById("m-total").textContent=total;
+  STATS_LIST.forEach(function(k){
+    var v=+document.getElementById("m-"+k).value||1;
+    var m=gm(v);
+    var el=document.getElementById("mod-"+k);
+    if(el){el.textContent=ms(m);el.className="stat-mod "+(m>0?"mod-pos":m<0?"mod-neg":"mod-zer");}
+  });
+  var BUDGETS=[18,21,24,27,30,33,37,41,44,48];
+  var hint=document.getElementById("m-niveau-hint");
+  if(hint){
+    var t=STATS_LIST.reduce(function(s,k){return s+(+document.getElementById("m-"+k).value||1);},0);
+    var niv=1;for(var i=0;i<BUDGETS.length;i++){if(t>=BUDGETS[i])niv=i+1;}
+    hint.textContent="≈ Niveau "+niv+" (budget niv."+niv+" : "+BUDGETS[niv-1]+"pts)";
+  }
+}
+
+function saveCombattant(){
+  var nom=document.getElementById("m-nom").value.trim();
+  if(!nom){alert("Nom obligatoire.");return;}
+  var c={id:editId||("cb_"+Date.now()),nom:nom,titre:document.getElementById("m-titre").value.trim()};
+  STATS_LIST.forEach(function(k){c[k]=+document.getElementById("m-"+k).value||1;});
+  c.bonusJoute=document.getElementById("m-bonus-joute").checked;
+  c.bonusInit=getBonusRows("init");
+  c.bonusImpact=getBonusRows("impact");
+  c.bonusRes=getBonusRows("res");
+  c.desc=document.getElementById("m-desc").value.trim();
+  if(editId){
+    var idx=combattants_perso.findIndex(function(p){return p.id===editId;});
+    if(idx>=0)combattants_perso[idx]=c; else combattants_perso.push(c);
+  } else combattants_perso.push(c);
+  closeModal();renderFiches();popSelects();
+  ["a","b"].forEach(function(side){if(TC[side]===c.id){renderSlot(side);updMods();updEtatsArena();}});
+  if(window.fbSaveCombattants)window.fbSaveCombattants();
+}
+
+function delCombattant(forcedId){
+  var id=forcedId||editId;
+  if(!id)return;
+  if(!confirm("Supprimer ce combattant ?"))return;
+  var isPerso=combattants_perso.some(function(p){return p.id===id;});
+  if(isPerso){
+    combattants_perso=combattants_perso.filter(function(p){return p.id!==id;});
+    if(window.fbSaveCombattants)window.fbSaveCombattants();
+  } else {
+    window.combattants_base_supprimes=window.combattants_base_supprimes||[];
+    window.combattants_base_supprimes.push(id);
+    if(window.fbSaveBaseSupprimes)window.fbSaveBaseSupprimes();
+  }
+  if(TC.a===id){TC.a=null;renderSlot("a");}
+  if(TC.b===id){TC.b=null;renderSlot("b");}
+  if(!forcedId)closeModal();
+  renderFiches();popSelects();
+}
+
+// ================================================================
+// SÉLECTION & SLOTS
+// ================================================================
+function popSelects(){
+  var all=allC();
+  ["a","b"].forEach(function(side){
+    var sel=document.getElementById("sel-"+side);var cur=TC[side];
+    sel.innerHTML="<option value=''>-- Choisir --</option>";
+    all.forEach(function(c){
+      var o=document.createElement("option");o.value=c.id;
+      o.textContent=c.nom+(c.titre?" — "+c.titre:"");
+      if(c.id===cur)o.selected=true;sel.appendChild(o);
+    });
+  });
+}
+
+function selD(side,id){
+  TC[side]=id;var c=getC(id);
+  // états gérés dans TC.etats
+  document.getElementById("sel-"+side).value=id;
+  renderSlot(side);updMods();updEtatsArena();renderFiches();
+  showMain("joute",document.querySelectorAll(".nav-tab")[1]);
+}
+
+function selC(side,id){
+  TC[side]=id||null;var c=getC(id);
+  // états gérés dans TC.etats
+  // état géré dans TC.etats
+  renderSlot(side);updMods();updEtatsArena();renderFiches();
+}
+
+function renderSlot(side){
+  var el=document.getElementById("slot-"+side+"-info");if(!el)return;
+  var c=getC(TC[side]);
+  if(!c){el.innerHTML="<div style='font-size:.78rem;color:var(--txt3);font-style:italic;text-align:center;padding:.7rem 0'>Choisir un combattant</div>";return;}
+  var initMod=gm(c.agi)+gm(c.adr)+getJouteBonus(c)+getBonusTotal(c,"bonusInit");
+  var impMod=gm(c.pui)+gm(c.cbt)+getJouteBonus(c)+getBonusTotal(c,"bonusImpact");
+  var resMod=Math.max(0,gm(c.con)+gm(c.end||1)+getJouteBonus(c)+getBonusTotal(c,"bonusRes"));
+  var badges="";
+  if(c.bonusJoute)badges+="<span class='badge badge-joute'>🏇 Joute +2</span>";
+  (c.bonusInit||[]).forEach(function(b){if(b.active)badges+="<span class='badge badge-equip'>⚡"+(b.label?b.label:"Init")+"+2</span>";});
+  (c.bonusImpact||[]).forEach(function(b){if(b.active)badges+="<span class='badge badge-equip'>💥"+(b.label?b.label:"Impact")+"+2</span>";});
+  (c.bonusRes||[]).forEach(function(b){if(b.active)badges+="<span class='badge badge-equip'>🛡"+(b.label?b.label:"Rés")+"+2</span>";});
+  el.innerHTML=
+    "<div class='slot-name' style='border-color:"+(side==="a"?"#e07070":"#87CEEB")+"'>"+h(c.nom)+"</div>"+
+    "<div class='slot-sub'>"+h(c.titre||"")+"</div>"+
+    (badges?"<div style='margin:.18rem 0'>"+badges+"</div>":"")+
+    "<div class='pairs'>"+
+      "<div class='pair-box'><div class='pair-lbl'>Init</div><div class='pair-val'>"+ms(initMod)+"</div><div class='pair-sub'>D20+mod</div></div>"+
+      "<div class='pair-box'><div class='pair-lbl'>Impact</div><div class='pair-val'>"+ms(impMod)+"</div><div class='pair-sub'>D20+mod</div></div>"+
+      "<div class='pair-box'><div class='pair-lbl'>Résistance</div><div class='pair-val'>"+ms(resMod)+"</div><div class='pair-sub'>D20+mod</div></div>"+
+    "</div>";
+}
+
+// ================================================================
+// MODIFICATEURS & CALCULS
+// ================================================================
+function getMalusTotal(side, stat){
+  var e=TC.etats[side]; var m=0;
+  if(e.deseq_leger) m+=CFG.malus.deseq_leger[stat]||0;
+  if(e.deseq_fort)  m+=CFG.malus.deseq_fort[stat]||0;
+  if(e.blesse_leger)m+=CFG.malus.blesse_leger[stat]||0;
+  if(e.blesse_grave)m+=CFG.malus.blesse_grave[stat]||0;
+  return m;
+}
+function getBonusTotal(c, field){
+  var arr=c&&c[field]?c[field]:[];
+  return arr.reduce(function(s,b){return s+(b.active?(b.val||2):0);},0);
+}
+function getJouteBonus(c){ return c&&c.bonusJoute?2:0; }
+
+function getInitMod(side){
+  var c=getC(TC[side]);if(!c)return 0;
+  var m=gm(c.agi)+gm(c.adr);
+  m+=getJouteBonus(c);
+  m+=getBonusTotal(c,"bonusInit");
+  m+=getMalusTotal(side,"init");
+  return m;
+}
+function getImpactMod(side){
+  var c=getC(TC[side]);if(!c)return 0;
+  var m=gm(c.pui)+gm(c.cbt);
+  m+=getJouteBonus(c);
+  m+=getBonusTotal(c,"bonusImpact");
+  m+=getMalusTotal(side,"impact");
+  return m;
+}
+function getResMod(side){
+  var c=getC(TC[side]);if(!c)return 0;
+  var m=gm(c.con)+gm(c.end||1);
+  m+=getJouteBonus(c);
+  m+=getBonusTotal(c,"bonusRes");
+  m+=getMalusTotal(side,"res");
+  return Math.max(0,m);
+}
+
+function getEtatsLabel(side){
+  var e=TC.etats[side]; var tags=[];
+  if(e.deseq_leger) tags.push("<span class='sbadge st-deseq'>⚠ Déséq. léger (actif)</span>");
+  if(e.deseq_fort)  tags.push("<span class='sbadge st-deseq' style='color:#e07070'>⚠ Déséq. fort (actif)</span>");
+  if(e.deseq_next_leger) tags.push("<span class='sbadge st-deseq' style='opacity:.7'>⚠ Déséq. léger (prochain)</span>");
+  if(e.deseq_next_fort)  tags.push("<span class='sbadge st-deseq' style='color:#e07070;opacity:.7'>⚠ Déséq. fort (prochain)</span>");
+  if(e.blesse_leger){
+    var cnt=e.blesse_leger_count||1;
+    tags.push("<span class='sbadge st-low'>🩸 Blessé léger ("+cnt+"/3)</span>");
+  }
+  if(e.blesse_grave)tags.push("<span class='sbadge st-crit'>🩸 Blessé grave</span>");
+  return tags.join(" ");
+}
+function getMalusLabel(side){
+  var e=TC.etats[side]; var parts=[];
+  if(e.blesse_grave) parts.push("🩸 Blessé grave");
+  else if(e.blesse_leger) parts.push("🩸 Blessé léger");
+  if(e.deseq_fort) parts.push("⚠⚠ Déséq. fort (actif)");
+  else if(e.deseq_leger) parts.push("⚠ Déséq. léger (actif)");
+  if(e.deseq_next_fort) parts.push("⚠⚠ Déséq. fort (prochain)");
+  else if(e.deseq_next_leger) parts.push("⚠ Déséq. léger (prochain)");
+  return parts.length ? " ["+parts.join(", ")+"]" : "";
+}
+
+function buildModFormule(c, side, type){
+  // Construit une formule lisible "D20 + Agi(+3) + Adr(+2) [+ Joute+2] [+ Équip+2] [− Déséq.léger −2]"
+  if(!c) return "D20";
+  function part(label, val){
+    if(val===0) return "";
+    var col=val>0?"#6dca8a":"#e07070";
+    return "<span style='color:"+col+"'> "+(val>0?"+":"")+val+" <span style='font-size:.52rem;opacity:.75'>"+label+"</span></span>";
+  }
+  var base="D20";
+  if(type==="init"){
+    base+=" <span style='color:var(--txt3);font-size:.52rem'>(Agi+Adr)</span>";
+    base+=part("Agi",gm(c.agi));
+    base+=part("Adr",gm(c.adr));
+  } else if(type==="impact"){
+    base+=" <span style='color:var(--txt3);font-size:.52rem'>(Pui+Cbt)</span>";
+    base+=part("Pui",gm(c.pui));
+    base+=part("Cbt",gm(c.cbt));
+  } else if(type==="res"){
+    base+=" <span style='color:var(--txt3);font-size:.52rem'>(Con+End)</span>";
+    base+=part("Con",gm(c.con));
+    base+=part("End",gm(c.end||1));
+  }
+  var jouteB=getJouteBonus(c);
+  if(jouteB) base+=part("Joute",jouteB);
+  var fieldMap={init:"bonusInit",impact:"bonusImpact",res:"bonusRes"};
+  var bTotal=getBonusTotal(c,fieldMap[type]);
+  if(bTotal) base+=part("Équip.",bTotal);
+  // Malus d'état
+  var e=TC.etats[side];
+  var statKey=type==="init"?"init":type==="impact"?"impact":"res";
+  var malParts=[];
+  if(e.deseq_leger){var v=CFG.malus.deseq_leger[statKey]||0;if(v)malParts.push({label:"Déséq.lég.",val:v});}
+  if(e.deseq_fort) {var v=CFG.malus.deseq_fort[statKey]||0; if(v)malParts.push({label:"Déséq.fort",val:v});}
+  if(e.blesse_leger){var v=CFG.malus.blesse_leger[statKey]||0;if(v)malParts.push({label:"Blessé lég.",val:v});}
+  if(e.blesse_grave){var v=CFG.malus.blesse_grave[statKey]||0; if(v)malParts.push({label:"Blessé gr.",val:v});}
+  malParts.forEach(function(mp){ base+=part(mp.label,mp.val); });
+  return base;
+}
+
+function updMods(){
+  ["a","b"].forEach(function(side){
+    var c=getC(TC[side]);
+    var im=getInitMod(side);
+    var impM=getImpactMod(side);
+    var resM=getResMod(side);
+    var nm=c?c.nom:"Combattant "+side.toUpperCase();
+    document.getElementById("in-n"+side).textContent=nm;
+
+    document.getElementById("in-f"+side).innerHTML=buildModFormule(c,side,"init");
+    var mel=document.getElementById("in-m"+side);mel.textContent=ms(im);mel.className="jmod "+(im>0?"mod-pos":im<0?"mod-neg":"mod-zer");
+
+    // Impact
+    var impFEl=document.getElementById("imp-f"+side);
+    if(impFEl) impFEl.innerHTML=buildModFormule(c,side,"impact");
+    var impMEl=document.getElementById("imp-m"+side);
+    if(impMEl){impMEl.textContent=ms(impM);impMEl.className="jmod "+(impM>0?"mod-pos":impM<0?"mod-neg":"mod-zer");}
+    var impNEl=document.getElementById("imp-n"+side);
+    if(impNEl) impNEl.textContent=nm;
+
+    // Résistance
+    var resFEl=document.getElementById("res-f"+side);
+    if(resFEl) resFEl.innerHTML=buildModFormule(c,side,"res");
+    var resMEl=document.getElementById("res-m"+side);
+    if(resMEl){resMEl.textContent=ms(resM);resMEl.className="jmod "+(resM>0?"mod-pos":resM<0?"mod-neg":"mod-zer");}
+    var resNEl=document.getElementById("res-n"+side);
+    if(resNEl) resNEl.textContent=nm;
+
+    var etEl=document.getElementById("etats-"+side);
+    if(etEl)etEl.innerHTML=getEtatsLabel(side);
+    renderSlot(side);
+  });
+
+  // Bandeau malus actifs dans le panneau combat
+  var banner=document.getElementById("malus-banner");
+  var bannerBody=document.getElementById("malus-banner-body");
+  if(banner&&bannerBody){
+    var parts=[];
+    ["a","b"].forEach(function(side){
+      var e=TC.etats[side];
+      var c=getC(TC[side]);
+      var nom=c?c.nom:(side==="a"?"A":"B");
+      var col=side==="a"?"#e07070":"#87CEEB";
+      var malus=[];
+      var mi=getMalusTotal(side,"init"),mImp=getMalusTotal(side,"impact"),mR=getMalusTotal(side,"res");
+      if(e.deseq_leger) malus.push("⚠ Déséq. léger (actif) — Init "+ms(mi)+" / Impact "+ms(mImp)+" / Rés "+ms(mR));
+      if(e.deseq_fort)  malus.push("⚠⚠ Déséq. fort (actif) — Init "+ms(mi)+" / Impact "+ms(mImp)+" / Rés "+ms(mR));
+      if(e.deseq_next_leger) malus.push("⚠ Déséq. léger (s'applique passe suivante)");
+      if(e.deseq_next_fort)  malus.push("⚠⚠ Déséq. fort (s'applique passe suivante)");
+      if(e.blesse_leger){var cnt=e.blesse_leger_count||1;malus.push("🩸 Blessé léger ("+cnt+"/3) — Init "+ms(mi)+" / Impact "+ms(mImp)+" / Rés "+ms(mR));}
+      if(e.blesse_grave) malus.push("🩸 Blessé grave — Init "+ms(mi)+" / Impact "+ms(mImp)+" / Rés "+ms(mR));
+      if(malus.length){
+        parts.push("<span style='color:"+col+";font-weight:700'>"+h(nom)+"</span> : <span style='color:#e0a030'>"+malus.join(", ")+"</span>");
+      }
+    });
+    if(parts.length){
+      banner.style.display="flex";
+      bannerBody.innerHTML=parts.join("<span style='color:var(--bdr)'>|</span>");
+    } else {
+      banner.style.display="none";
+      bannerBody.innerHTML="";
+    }
+  }
+
+  updStepBanners();
+}
+
+function updEtatsArena(){
+  var cA=getC(TC.a),cB=getC(TC.b);
+  var arena=document.getElementById("pv-arena");
+  if(!cA||!cB){arena.style.display="none";return;}
+  arena.style.display="";
+  document.getElementById("pvna").textContent=cA.nom;
+  document.getElementById("pvnb").textContent=cB.nom;
+  updEtatBadge("a"); updEtatBadge("b");
+}
+function updEtatBadge(s){
+  var b=document.getElementById("st"+s);
+  var e=TC.etats[s];
+  if(e.blesse_grave){b.textContent="🩸 Blessé grave";b.className="sbadge st-crit";}
+  else if(e.blesse_leger){
+    var cnt=e.blesse_leger_count||1;
+    b.textContent="🩸 Blessé léger ("+cnt+"/3)";b.className="sbadge st-low";
+  }
+  else if(e.deseq_fort){b.textContent="⚠ Déséq. fort (actif)";b.className="sbadge st-deseq";}
+  else if(e.deseq_leger){b.textContent="⚠ Déséq. léger (actif)";b.className="sbadge st-deseq";}
+  else if(e.deseq_next_fort){b.textContent="⚠ Déséq. fort (prochain)";b.className="sbadge st-deseq";}
+  else if(e.deseq_next_leger){b.textContent="⚠ Déséq. léger (prochain)";b.className="sbadge st-deseq";}
+  else{b.textContent="En lice";b.className="sbadge st-ok";}
+  // Bouton abandon : visible uniquement si blessé grave ET combat non terminé
+  var az=document.getElementById("abandon-zone-"+s);
+  if(az){az.className="abandon-zone"+(e.blesse_grave&&!window._combatEnded?" visible":"");}
+  // Mettre à jour la barre d'états sous le slot
+  var etEl=document.getElementById("etats-"+s);
+  if(etEl)etEl.innerHTML=getEtatsLabel(s);
+}
+
+// ================================================================
+// COMBAT
+// ================================================================
+function calcInit(){
+  readCFG();
+  var da=+document.getElementById("in-a").value,db=+document.getElementById("in-b").value;
+  var mA=getInitMod("a"),mB=getInitMod("b");
+  var tA=da?da+mA:null,tB=db?db+mB:null;
+  function fmt(v,d20,mod){
+    if(v===null)return "—";
+    return "<span style='font-size:.72rem;color:var(--txt3)'>"+d20+(mod!==0?(mod>0?"+":"")+mod:"")+"</span><b> "+v+"</b>";
+  }
+  document.getElementById("in-ta").innerHTML=fmt(tA,da,mA);
+  document.getElementById("in-tb").innerHTML=fmt(tB,db,mB);
+  var res=document.getElementById("in-res");
+  if(tA===null||tB===null){res.style.display="none";document.getElementById("imp-section").style.display="none";document.getElementById("att-lbl").style.display="none";chkBtn();updStepBanners();return;}
+  res.style.display="block";
+  var ecart=Math.abs(tA-tB);
+  if(tA>tB)TC.att="a";else if(tB>tA)TC.att="b";else TC.att=null;
+
+  // Départage égalité
+  if(TC.att===null){
+    var cA2=getC(TC.a),cB2=getC(TC.b);
+    var agiA=cA2?(+cA2.agi||1):1,agiB=cB2?(+cB2.agi||1):1;
+    var tieWinner=null,tieReason="";
+    if(agiA>agiB){tieWinner="a";tieReason="AGI supérieure ("+agiA+" vs "+agiB+")";}
+    else if(agiB>agiA){tieWinner="b";tieReason="AGI supérieure ("+agiB+" vs "+agiA+")";}
+    if(tieWinner){TC.att=tieWinner;}
+    else{
+      document.getElementById("in-win").innerHTML="<span style='color:var(--gl)'>Égalité parfaite — aucun avantage</span>";
+      document.getElementById("in-sub").textContent="AGI identiques";
+      document.getElementById("imp-section").style.display="none";document.getElementById("att-lbl").style.display="none";
+      chkBtn();updStepBanners();return;
+    }
+  }
+
+  var att=TC.att,def=att==="a"?"b":"a";
+  var cAtt=getC(TC[att]),cDef=getC(TC[def]);
+  var simultane=(ecart<=CFG.init.simultane_max);
+  var direct=(ecart>=CFG.init.direct_min);
+
+  document.getElementById("jb-init-a").className="jb jb-a"+(att==="a"&&!simultane?" jb-att":"");
+  document.getElementById("jb-init-b").className="jb jb-b"+(att==="b"&&!simultane?" jb-att":"");
+
+  var initLabel=direct?"💥 Désarçonnement direct":simultane?"⚔ Échange simultané":"→ "+h(cAtt?cAtt.nom:"?")+" attaque";
+  document.getElementById("in-win").innerHTML="<span style='color:"+(simultane?"var(--gl)":att==="a"?"#e07070":"#87CEEB")+"'>"+initLabel+"</span>";
+  document.getElementById("in-sub").textContent="Écart : "+ecart+(direct?" 💥":simultane?" ⚔":"");
+
+  // Stocker pour nextRound
+  TC.rd={d20A:da,mA:mA,tA:tA,d20B:db,mB:mB,tB:tB,ecart:ecart,att:att,def:def,
+    nAtt:cAtt?cAtt.nom:"?",nDef:cDef?cDef.nom:"?",
+    simultane:simultane,direct:direct};
+
+  // Afficher section impact
+  if(direct){
+    document.getElementById("imp-section").style.display="none";
+    document.getElementById("att-lbl").style.display="none";
+  } else {
+    showImpactSection(simultane,att,def,cAtt,cDef);
+  }
+  chkBtn();updStepBanners();
+}
+
+function showImpactSection(simultane,att,def,cAtt,cDef){
+  document.getElementById("imp-section").style.display="";
+  var mImpA=getImpactMod("a"),mImpB=getImpactMod("b");
+  var mResA=getResMod("a"),mResB=getResMod("b");
+  if(simultane){
+    // Deux blocs impact
+    document.getElementById("att-lbl").innerHTML="<span style='color:var(--gl)'>⚔ Échange simultané — les deux lancent impact et résistance</span>";
+    document.getElementById("att-lbl").style.display="";
+    document.getElementById("imp-a-blk").style.display="";
+    document.getElementById("imp-b-blk").style.display="";
+    document.getElementById("res-a-blk").style.display="";
+    document.getElementById("res-b-blk").style.display="";
+  } else {
+    document.getElementById("att-lbl").innerHTML="<span style='color:"+(att==="a"?"#e07070":"#87CEEB")+"'>"+(cAtt?h(cAtt.nom):"?")+"</span> attaque";
+    document.getElementById("att-lbl").style.display="";
+    // Seul l'attaquant lance impact, seul le défenseur lance résistance
+    document.getElementById("imp-a-blk").style.display=att==="a"?"":"none";
+    document.getElementById("imp-b-blk").style.display=att==="b"?"":"none";
+    document.getElementById("res-a-blk").style.display=def==="a"?"":"none";
+    document.getElementById("res-b-blk").style.display=def==="b"?"":"none";
+  }
+  // Labels et mods : déléguer à updMods pour avoir les malus
+  updMods();
+}
+
+function calcImpact(){
+  // Lit tous les jets d'impact/résistance saisis et calcule les résultats
+  var rd=TC.rd; if(!rd||!rd.att)return;
+  var simultane=rd.simultane;
+  var att=rd.att,def=att==="a"?"b":"a";
+  var res=document.getElementById("imp-res");
+
+  function getVal(id){return +document.getElementById(id).value||0;}
+
+  // Rafraîchir les mods affichés (intègre les malus d'état en cours)
+  updMods();
+
+  // Collecter les jets
+  var impA=getVal("imp-da"),impB=getVal("imp-db");
+  var resA=getVal("res-da"),resB=getVal("res-db");
+  var mImpA=getImpactMod("a"),mImpB=getImpactMod("b");
+  var mResA=getResMod("a"),mResB=getResMod("b");
+  var totalImpA=impA?impA+mImpA:null;
+  var totalImpB=impB?impB+mImpB:null;
+  var totalResA=resA?resA+mResA:null;
+  var totalResB=resB?resB+mResB:null;
+
+  // Vérif qu'on a les jets nécessaires
+  var needImpA=simultane||(att==="a");
+  var needImpB=simultane||(att==="b");
+  var needResA=simultane||(def==="a");
+  var needResB=simultane||(def==="b");
+  if((needImpA&&!impA)||(needImpB&&!impB)||(needResA&&!resA)||(needResB&&!resB)){
+    res.style.display="none"; TC.rd.impReady=false; chkBtn(); return;
+  }
+
+  // Résoudre chaque touche
+  var lines=[];
+  function resoudre(atkSide,dfSide,dImp,mImp,tImp,dRes,mRes,tRes,ecartInit){
+    readCFG();
+    var cAtk=getC(TC[atkSide]),cDef=getC(TC[dfSide]);
+    // Malus de résistance lié à l'écart d'initiative (seulement en attaque normale, pas simultané)
+    var initResMalus=0;
+    if(ecartInit>0){
+      for(var _i=0;_i<CFG.init.bonus.length;_i++){
+        var _b=CFG.init.bonus[_i];
+        if(ecartInit>=_b.min&&ecartInit<=_b.max){initResMalus=_b.res;break;}
+      }
+    }
+    var tResAdj=tRes+initResMalus; // malus négatif → réduit la résistance
+    var ecartIR=tImp-tResAdj;
+    var result={atkSide:atkSide,dfSide:dfSide,
+      dImp:dImp,mImp:mImp,tImp:tImp,dRes:dRes,mRes:mRes,tRes:tResAdj,initResMalus:initResMalus,ecartIR:ecartIR,
+      devie:false,bris_rien:false,deseq_leger:false,deseq_fort:false,desarconne:false,
+      blesse_leger:false,blesse_grave:false};
+    if(ecartIR<0){result.devie=true;}
+    else if(ecartIR<=CFG.impact.rien_max){result.bris_rien=true;}
+    else if(ecartIR<=CFG.impact.deseq_leger_max){result.deseq_leger=true;}
+    else if(ecartIR<=CFG.impact.deseq_fort_max){result.deseq_fort=true;}
+    else{result.desarconne=true;}
+    // Blessure (seulement si non dévié)
+    if(!result.devie){
+      if(tImp>=CFG.blessure.grave_min)result.blesse_grave=true;
+      else if(tImp>=CFG.blessure.legere_min)result.blesse_leger=true;
+    }
+    return result;
+  }
+
+  var results=[];
+  if(simultane){
+    // Échange simultané : le combattant avec le score d'initiative le plus bas subit le malus configuré sur son Impact
+    var simulImpMalusA=0, simulImpMalusB=0;
+    if(rd.tA < rd.tB) simulImpMalusA=CFG.init.simul_imp_malus;
+    else if(rd.tB < rd.tA) simulImpMalusB=CFG.init.simul_imp_malus;
+    var tImpA_adj = totalImpA !== null ? totalImpA + simulImpMalusA : null;
+    var tImpB_adj = totalImpB !== null ? totalImpB + simulImpMalusB : null;
+    var rA=resoudre("a","b",impA,mImpA,tImpA_adj,resB,mResB,totalResB,0);
+    rA._simulImpMalus=simulImpMalusA;
+    var rB=resoudre("b","a",impB,mImpB,tImpB_adj,resA,mResA,totalResA,0);
+    rB._simulImpMalus=simulImpMalusB;
+    results.push(rA);
+    results.push(rB);
+  } else {
+    var dImp=att==="a"?impA:impB,mImp=att==="a"?mImpA:mImpB,tImp=att==="a"?totalImpA:totalImpB;
+    var dRes=def==="a"?resA:resB,mRes=def==="a"?mResA:mResB,tRes=def==="a"?totalResA:totalResB;
+    results.push(resoudre(att,def,dImp,mImp,tImp,dRes,mRes,tRes,rd.ecart));
+  }
+
+  TC.rd.impResults=results;
+  TC.rd.impReady=true;
+
+  // Affichage résumé
+  res.style.display="block";
+  var html="";
+  results.forEach(function(r){
+    var ac=r.atkSide==="a"?"#e07070":"#87CEEB",dc=r.atkSide==="a"?"#87CEEB":"#e07070";
+    var cAtk=getC(TC[r.atkSide]);
+    var cDfx=getC(TC[r.dfSide]);
+    var effets=[];
+    if(r.devie)effets.push("<span style='color:var(--green2)'>🛡 Lance déviée</span>");
+    else if(r.bris_rien)effets.push("<span style='color:var(--txt2)'>🏹 Lance brisée</span>");
+    else if(r.deseq_leger)effets.push("<span style='color:#e0a030'>⚠ Déséquilibré léger</span>");
+    else if(r.deseq_fort)effets.push("<span style='color:#e07070'>⚠⚠ Déséquilibré fort</span>");
+    else if(r.desarconne)effets.push("<span style='color:#c8a0e8'>💥 Désarçonné !</span>");
+    if(r.blesse_grave)effets.push("<span style='color:#e07070'>🩸 Blessé grave</span>");
+    else if(r.blesse_leger)effets.push("<span style='color:#e0a030'>🩸 Blessé léger</span>");
+    // Détail des malus d'état appliqués
+    var malusAtkNote="", malusDfNote="";
+    var malusAtk=getMalusTotal(r.atkSide,"impact");
+    var malusDf=getMalusTotal(r.dfSide,"res");
+    if(malusAtk!==0) malusAtkNote="<span style='color:#e0a030;font-size:.58rem'> (dont malus état: "+ms(malusAtk)+")</span>";
+    if(malusDf!==0) malusDfNote="<span style='color:#e0a030;font-size:.58rem'> (dont malus état: "+ms(malusDf)+")</span>";
+    if(r.initResMalus<0) malusDfNote+="<span style='color:#e0a030;font-size:.58rem'> (init: "+r.initResMalus+")</span>";
+    html+="<div style='margin-bottom:.35rem'>"+
+      "<span style='color:"+ac+";font-family:Cinzel,serif;font-size:.65rem;font-weight:700'>"+(cAtk?h(cAtk.nom):"?")+"</span>"+
+      " <span style='color:var(--txt3);font-size:.62rem'>impact</span> "+
+      "<span style='font-family:Cinzel,serif;font-size:.72rem;font-weight:700;color:var(--parch)'>"+r.tImp+(r._simulImpMalus?" <span style='font-size:.6rem;color:#e0a030'>(simul. "+r._simulImpMalus+")</span>":"")+"</span>"+malusAtkNote+
+      " <span style='color:var(--txt3);font-size:.6rem'>vs rés.</span> "+
+      "<span style='font-family:Cinzel,serif;font-size:.72rem;font-weight:700;color:"+dc+"'>"+r.tRes+"</span>"+malusDfNote+
+      " → <b style='font-size:.72rem'>écart "+r.ecartIR+"</b><br>"+
+      "<span style='font-size:.72rem'>"+effets.join(" &nbsp;·&nbsp; ")+"</span>"+
+    "</div>";
+  });
+  document.getElementById("imp-res-body").innerHTML=html;
+  chkBtn();updStepBanners();
+}
+
+function rollDie(inputId,faces){
+  var btn=event?event.currentTarget:null;
+  if(btn){btn.classList.add("rolling");setTimeout(function(){btn.classList.remove("rolling");btn.disabled=true;},260);}
+  var inp=document.getElementById(inputId);inp.value=Math.floor(Math.random()*faces)+1;inp.disabled=true;
+  if(inputId==="in-a"||inputId==="in-b")calcInit();else calcImpact();
+}
+
+function chkBtn(){
+  if(!TC.a||!TC.b){document.getElementById("next-btn").disabled=true;return;}
+  var da=+document.getElementById("in-a").value,db=+document.getElementById("in-b").value;
+  if(!da||!db){document.getElementById("next-btn").disabled=true;return;}
+  // Désarçonnement direct : pas besoin des jets d'impact
+  if(TC.rd&&TC.rd.direct){document.getElementById("next-btn").disabled=false;return;}
+  // Égalité parfaite
+  if(TC.att===null){document.getElementById("next-btn").disabled=false;return;}
+  // Sinon : vérifier que les jets d'impact sont prêts
+  document.getElementById("next-btn").disabled=!(TC.rd&&TC.rd.impReady);
+}
+
+function lockCombat(){
+  document.getElementById("next-btn").disabled=true;
+  ["in-a","in-b","imp-da","imp-db","res-da","res-db"].forEach(function(id){
+    var e=document.getElementById(id);if(e){e.value="";e.disabled=true;}
+  });
+  // no bonus die in v6
+  document.querySelectorAll(".die-btn").forEach(function(b){b.disabled=true;});
+  // Masquer les blocs d'action
+  ["imp-section","att-lbl","in-res","imp-res"].forEach(function(id){
+    var e=document.getElementById(id);if(e)e.style.display="none";
+  });
+}
+
+// ================================================================
+// ABANDON
+// ================================================================
+var _abandonSide=null;
+function demanderAbandon(side){
+  if(window._combatEnded)return;
+  var e=TC.etats[side];
+  if(!e||!e.blesse_grave)return;
+  _abandonSide=side;
+  var c=getC(TC[side]);
+  var nom=c?c.nom:(side==="a"?"Combattant A":"Combattant B");
+  var col=side==="a"?"#e07070":"#87CEEB";
+  document.getElementById("mo-abandon-sub").innerHTML=
+    "<span style='color:"+col+";font-weight:700;font-family:Cinzel,serif'>"+h(nom)+"</span>"+
+    " est gravement blessé et souhaite se retirer du combat.<br>"+
+    "<span style='font-size:.85em;opacity:.8'>Confirmez-vous l'abandon ?</span>";
+  document.getElementById("mo-abandon").classList.add("open");
+}
+function annulerAbandon(){
+  document.getElementById("mo-abandon").classList.remove("open");
+  _abandonSide=null;
+}
+function confirmerAbandon(){
+  document.getElementById("mo-abandon").classList.remove("open");
+  if(!_abandonSide)return;
+  var loser=_abandonSide;
+  var winner=loser==="a"?"b":"a";
+  _abandonSide=null;
+  // Masquer les boutons d'abandon
+  ["a","b"].forEach(function(s){
+    var az=document.getElementById("abandon-zone-"+s);
+    if(az)az.className="abandon-zone";
+  });
+  // Log l'abandon
+  var cL=getC(TC[loser]);
+  var nomL=cL?cL.nom:(loser==="a"?"A":"B");
+  var col=loser==="a"?"#e07070":"#87CEEB";
+  addLog("<div class='log-round'>Passe "+TC.round+" — Abandon</div>"+
+    "<div class='log-dead log-dead-"+(winner==="a"?"a":"b")+"-bg' style='color:"+col+";background:rgba(192,57,43,.1);border:1px solid rgba(192,57,43,.28)'>"+
+    "🏳 "+h(nomL)+" abandonne le combat — blessé grave, hors d'état de combattre</div>");
+  // Archiver et afficher la modale de fin
+  lockCombat();
+  // Ajouter un round d'abandon dans rounds pour l'historique
+  rounds.push({n:TC.round,abandon:true,abandonSide:loser,
+    nAtt:cL?cL.nom:"?",nDef:"",
+    d20A:0,mA:0,tA:0,d20B:0,mB:0,tB:0,ecart:0});
+  TC.round++;
+  document.getElementById("rlbl").textContent="P"+TC.round;
+  updEtatsArena();renderRecap();
+  archiveCombat(winner);
+  setTimeout(function(){showEndModal(winner,"abandon");},250);
+}
+
+function showEndModal(winnerSide, reason){
+  var cA=getC(TC.a), cB=getC(TC.b);
+  var nomWinner = winnerSide==="a"?(cA?cA.nom:"A"):(cB?cB.nom:"B");
+  var nomLoser  = winnerSide==="a"?(cB?cB.nom:"B"):(cA?cA.nom:"A");
+  var coulWinner = winnerSide==="a"?"#e07070":"#87CEEB";
+  var icon, title, sub;
+  if(reason==="unseat"){
+    icon="🐎"; title="Désarçonnement !";
+    sub=h(nomLoser)+" est désarçonné — victoire par désarçonnement";
+  } else if(reason==="abandon"){
+    icon="🏳"; title="Abandon !";
+    sub=h(nomLoser)+" abandonne le combat — blessé grave, hors d'état de combattre";
+  } else if(reason==="blesse_leger_grave"){
+    icon="🩸💀"; title="Hors combat !";
+    sub=h(nomLoser)+" — blessure légère sur blessure grave, hors de combat !";
+  } else if(reason==="dead"){
+    icon="💀"; title="Hors combat !";
+    sub=h(nomLoser)+" — blessures trop graves pour continuer";
+  } else {
+    icon="⚔"; title="Combat terminé";
+    sub="";
+  }
+  document.getElementById("mo-end-icon").textContent = icon;
+  var _ttl=document.getElementById("mo-end-title");if(_ttl)_ttl.textContent=title;
+  document.getElementById("mo-end-winner").innerHTML = "<span style='color:"+coulWinner+"'>"+h(nomWinner)+"</span> remporte la joute !";
+  document.getElementById("mo-end-winner").style.color = "";
+  document.getElementById("mo-end-sub").innerHTML = sub;
+  document.getElementById("mo-end-passes").textContent = TC.round - 1;
+  document.getElementById("mo-end-lbl-a").textContent = cA ? cA.nom : "A";
+  document.getElementById("mo-end-lbl-b").textContent = cB ? cB.nom : "B";
+  function etLabel(e){var t=[];if(e.blesse_grave)t.push("Blessé grave");else if(e.blesse_leger)t.push("Blessé léger");if(!t.length)t.push("Indemne");return t.join(", ");}
+  document.getElementById("mo-end-pv-a").textContent = etLabel(TC.etats.a);
+  document.getElementById("mo-end-pv-b").textContent = etLabel(TC.etats.b);
+  document.getElementById("mo-end-pv-a").style.color = winnerSide==="a"?"var(--gl)":"var(--txt3)";
+  document.getElementById("mo-end-pv-b").style.color = winnerSide==="b"?"var(--gl)":"var(--txt3)";
+  document.getElementById("mo-end").classList.add("open");
+}
+
+function appliquerEtat(side, result){
+  var e=TC.etats[side];
+  // Les déséquilibres sont mis en attente : ils s'appliqueront à la passe SUIVANTE
+  if(result.deseq_leger){ e.deseq_next_leger=true; }
+  if(result.deseq_fort){  e.deseq_next_fort=true; }
+  // Les blessures s'appliquent immédiatement (elles persistent entre les passes)
+  if(result.blesse_grave){ e.blesse_grave=true; }
+  if(result.blesse_leger){
+    e.blesse_leger_count=(e.blesse_leger_count||0)+1;
+    if(e.blesse_leger_count>=3){
+      // 3 blessures légères → blessure grave
+      e.blesse_leger=false;
+      e.blesse_grave=true;
+      result._upgrade_grave=true; // flag pour le log
+    } else {
+      e.blesse_leger=true;
+    }
+  }
+}
+function estFinCombat(side, result){
+  var e=TC.etats[side];
+  // Hors combat si : blessé grave ET reçoit une blessure légère
+  if(e.blesse_grave && result.blesse_leger) return true;
+  return false;
+}
+function effacerDeseq(side){
+  TC.etats[side].deseq_leger=false;
+  TC.etats[side].deseq_fort=false;
+  TC.etats[side].deseq_next_leger=false;
+  TC.etats[side].deseq_next_fort=false;
+}
+
+function nextRound(){
+  readCFG();
+  var rd=TC.rd;
+  if(TC.att===null){
+    addLog("<div class='log-round'>Passe "+TC.round+"</div><div style='color:var(--gl)'>Égalité — aucune touche.</div>");
+    TC.round++;document.getElementById("rlbl").textContent="P"+TC.round;
+    resetRound();return;
+  }
+  if(!rd||!rd.att)return;
+
+  var att=rd.att,def=att==="a"?"b":"a";
+  var cAtt=getC(TC[att]),cDef=getC(TC[def]);
+  var logHtml="<div class='log-round'>Passe "+TC.round+"</div>";
+
+  // Jets d'initiative
+  logHtml+="<div style='font-size:.72rem;color:var(--txt2)'>"+
+    "🎲 Init — <span style='color:#e07070'>"+h(getC(TC.a)?getC(TC.a).nom:"A")+"</span> "+
+    rd.d20A+(rd.mA!==0?(rd.mA>0?"+":"")+rd.mA:"")+" = <b>"+rd.tA+"</b>"+
+    " &nbsp;·&nbsp; <span style='color:#87CEEB'>"+h(getC(TC.b)?getC(TC.b).nom:"B")+"</span> "+
+    rd.d20B+(rd.mB!==0?(rd.mB>0?"+":"")+rd.mB:"")+" = <b>"+rd.tB+"</b>"+
+    " &nbsp;·&nbsp; Écart <b>"+rd.ecart+"</b>"+
+  "</div>";
+
+  // ── Désarçonnement direct ─────────────────────────────────────
+  if(rd.direct){
+    logHtml+="<div class='log-unseat'>💥 Écart "+rd.ecart+" — "+h(cDef?cDef.nom:"?")+" est désarçonné directement !</div>";
+    rounds.push({n:TC.round,att:att,def:def,nAtt:rd.nAtt,nDef:rd.nDef,
+      d20A:rd.d20A,mA:rd.mA,tA:rd.tA,d20B:rd.d20B,mB:rd.mB,tB:rd.tB,ecart:rd.ecart,
+      direct:true});
+    addLog(logHtml);
+    TC.round++;document.getElementById("rlbl").textContent="P"+TC.round;
+    updEtatsArena();renderRecap();lockCombat();
+    ["a","b"].forEach(function(s){var az=document.getElementById("abandon-zone-"+s);if(az)az.className="abandon-zone";});
+    archiveCombat(att);
+    setTimeout(function(){showEndModal(att,"unseat");},250);
+    return;
+  }
+
+  // ── Résolution des impacts ────────────────────────────────────
+  var results=rd.impResults||[];
+  var finCombat=null; // side du perdant
+
+  results.forEach(function(r){
+    var dfSide=r.dfSide;
+    var cA2=getC(TC[r.atkSide]),cD2=getC(TC[dfSide]);
+    var ac=r.atkSide==="a"?"#e07070":"#87CEEB",dc=r.atkSide==="a"?"#87CEEB":"#e07070";
+
+    logHtml+="<div style='margin:.18rem 0'>"+
+      "<span style='color:"+ac+";font-family:Cinzel,serif;font-size:.65rem;font-weight:700'>"+(cA2?h(cA2.nom):"?")+"</span>"+
+      " <span style='color:var(--txt3);font-size:.6rem'>impact</span> "+
+      "<b style='color:var(--parch)'>"+r.tImp+(r._simulImpMalus?" <span style='font-size:.6rem;color:#e0a030'>(simul. "+r._simulImpMalus+")</span>":"")+"</b> <span style='color:var(--txt3);font-size:.6rem'>vs rés.</span> "+
+      "<b style='color:"+dc+"'>"+r.tRes+"</b> → écart <b>"+r.ecartIR+"</b> : ";
+
+    if(r.devie){
+      logHtml+="<span style='color:var(--green2)'>🛡 Lance déviée</span>";
+    } else if(r.bris_rien){
+      logHtml+="<span style='color:var(--txt2)'>🏹 Lance brisée</span>";
+    } else if(r.deseq_leger){
+      logHtml+="<span style='color:#e0a030'>⚠ Déséquilibré léger</span>";
+    } else if(r.deseq_fort){
+      logHtml+="<span style='color:#e07070'>⚠⚠ Déséquilibré fort</span>";
+    } else if(r.desarconne){
+      logHtml+="<span style='color:#c8a0e8'>💥 "+h(cD2?cD2.nom:"?")+" est désarçonné !</span>";
+      finCombat=dfSide;
+    }
+    if(r.blesse_grave || r.blesse_leger){
+      var dejaGrave=TC.etats[dfSide].blesse_grave; // lire AVANT appliquerEtat
+      var dejaLeger=TC.etats[dfSide].blesse_leger;  // lire AVANT appliquerEtat
+      if(dejaGrave){
+        // Toute blessure supplementaire quand deja blesse grave -> hors combat
+        var bTypeLabel=r.blesse_grave
+          ?"<span style=\'color:#e07070\'>🩸 Blessé grave</span>"
+          :"<span style=\'color:#e0a030\'>🩸 Blessé léger</span>";
+        logHtml+=" "+bTypeLabel+" <span style=\'color:#c8a0e8;font-weight:700\'>— déjà blessé grave → hors combat !</span>";
+        if(!finCombat) finCombat=dfSide;
+      } else if(r.blesse_grave){
+        if(dejaLeger){
+          // Blesse leger + blessure grave entrante -> hors combat
+          appliquerEtat(dfSide,r);
+          logHtml+=" <span style=\'color:#e07070\'>🩸 Blessé grave</span> <span style=\'color:#c8a0e8;font-weight:700\'>— déjà blessé léger → hors combat !</span>";
+          if(!finCombat) finCombat=dfSide;
+        } else {
+          appliquerEtat(dfSide,r);
+          logHtml+=" <span style=\'color:#e07070\'>🩸 Blessé grave</span>";
+        }
+      } else {
+        // Blessure legere
+        var compteurAvant=(TC.etats[dfSide].blesse_leger_count||0)+1;
+        appliquerEtat(dfSide,r);
+        if(r._upgrade_grave){
+          logHtml+=" <span style=\'color:#e07070\'>🩸🩸🩸 3e blessure légère → <b>Blessé grave !</b></span>";
+        } else {
+          logHtml+=" <span style=\'color:#e0a030\'>🩸 Blessé léger ("+compteurAvant+"/3)</span>";
+        }
+      }
+    } else if(r.deseq_fort){
+      appliquerEtat(dfSide,r);
+    } else if(r.deseq_leger){
+      appliquerEtat(dfSide,r);
+    }
+    logHtml+="</div>";
+  });
+
+  // Snapshot pris ICI : après appliquerEtat (déseq/blessure de cette passe) + avant effacerDeseq dans resetRound
+  rounds.push({n:TC.round,att:att,def:def,nAtt:rd.nAtt,nDef:rd.nDef,
+    d20A:rd.d20A,mA:rd.mA,tA:rd.tA,d20B:rd.d20B,mB:rd.mB,tB:rd.tB,ecart:rd.ecart,
+    simultane:rd.simultane,impResults:results,
+    etatsA:JSON.stringify(TC.etats.a),etatsB:JSON.stringify(TC.etats.b)});
+
+  addLog(logHtml);
+  // Les déséquilibres sont conservés jusqu'à la passe suivante (ils seront effacés dans resetRound)
+  updEtatsArena();renderRecap();
+  TC.round++;document.getElementById("rlbl").textContent="P"+TC.round;
+  if(finCombat){
+    var winner=finCombat==="a"?"b":"a";
+    var reason;
+    if(results.some(function(r){return r.desarconne && r.dfSide===finCombat;})) reason="unseat";
+    else if(results.some(function(r){return r.dfSide===finCombat && r.blesse_grave;}) &&
+            results.some(function(r){return r.dfSide===finCombat && (r.blesse_leger||r.blesse_grave);})) reason="dead";
+    else reason="dead";
+    lockCombat();archiveCombat(winner);
+    ["a","b"].forEach(function(s){var az=document.getElementById("abandon-zone-"+s);if(az)az.className="abandon-zone";});
+    setTimeout(function(){showEndModal(winner,reason);},250);
+  } else {
+    resetRound();
+  }
+}
+
+function resetRound(){
+  // Transférer les déséquilibres "en attente" vers les actifs pour la passe suivante
+  ["a","b"].forEach(function(side){
+    var e=TC.etats[side];
+    // Appliquer le déséquilibre en attente (subi lors de la passe qui vient de se terminer)
+    e.deseq_leger = e.deseq_next_leger || false;
+    e.deseq_fort  = e.deseq_next_fort  || false;
+    e.deseq_next_leger = false;
+    e.deseq_next_fort  = false;
+  });
+  // Sauvegarder Firebase avec l'état propre APRÈS le transfert
+  if(window.fbSaveCombat)window.fbSaveCombat();
+  TC.att=null;TC.rd={};
+  ["in-a","in-b","imp-da","imp-db","res-da","res-db"].forEach(function(id){
+    var e=document.getElementById(id);if(!e)return;e.value="";e.disabled=false;
+    var btn=e.nextElementSibling;if(btn&&btn.classList.contains("die-btn"))btn.disabled=false;
+  });
+  document.getElementById("in-ta").innerHTML="—";document.getElementById("in-tb").innerHTML="—";
+  document.getElementById("in-res").style.display="none";
+  document.getElementById("imp-section").style.display="none";
+  document.getElementById("imp-res").style.display="none";
+  document.getElementById("att-lbl").style.display="none";
+  document.getElementById("jb-init-a").className="jb jb-a";document.getElementById("jb-init-b").className="jb jb-b";
+  document.getElementById("next-btn").disabled=true;
+  updMods();updStepBanners();renderSlot("a");renderSlot("b");
+}
+
+function archiveCombat(forceWinner){
+  if(!rounds||!rounds.length)return;
+  window._combatEnded=true;
+  var cA=getC(TC.a),cB=getC(TC.b);
+  var winner=forceWinner||null;
+  // Détecter si la fin vient d'un désarçonnement
+  var lastRound=rounds[rounds.length-1];
+  var finType="ko";
+  if(lastRound){
+    if(lastRound.direct) finType="unseat";
+    else if(lastRound.impResults&&lastRound.impResults.some(function(r){return r.desarconne;})) finType="unseat";
+  }
+  window.historique.unshift({
+    id:Date.now(),
+    date:new Date().toLocaleDateString("fr-FR",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit"}),
+    nomA:cA?cA.nom:"?",nomB:cB?cB.nom:"?",
+    winner:winner,
+    finType:finType,
+    etatsFinA:JSON.stringify(TC.etats.a),
+    etatsFinB:JSON.stringify(TC.etats.b),
+    rounds:rounds.slice(),
+    totalRounds:TC.round-1
+  });
+  if(window.historique.length>50)window.historique.length=50;
+  saveHistoriqueToStorage();
+  renderHistorique();
+  if(window.fbSaveHistorique)window.fbSaveHistorique();
+}
+
+function resetCombat(){
+  document.getElementById("mo-end").classList.remove("open");
+  document.getElementById("mo-abandon").classList.remove("open");
+  _abandonSide=null;
+  ["a","b"].forEach(function(s){var az=document.getElementById("abandon-zone-"+s);if(az)az.className="abandon-zone";});
+  TC.round=1;TC.att=null;TC.rd={};
+  TC.etats={
+    a:{deseq_leger:false,deseq_fort:false,deseq_next_leger:false,deseq_next_fort:false,blesse_leger:false,blesse_grave:false,blesse_leger_count:0},
+    b:{deseq_leger:false,deseq_fort:false,deseq_next_leger:false,deseq_next_fort:false,blesse_leger:false,blesse_grave:false,blesse_leger_count:0}
+  };
+  rounds=[];logs=[];
+  document.getElementById("rlbl").textContent="P1";
+  document.getElementById("recap-panel").style.display="none";
+  // Réactiver tous les boutons dés
+  document.querySelectorAll(".die-btn").forEach(function(b){b.disabled=false;});
+  resetRound();updEtatsArena();renderLog();renderRecap();
+  if(window.fbSaveCombat)window.fbSaveCombat();
+  setTimeout(function(){window._combatEnded=false;},2500);
+}
+
+function clearHistorique(){
+  if(!window.historique.length)return;
+  if(!confirm("Effacer tout l'historique des combats ?"))return;
+  window.historique=[];renderHistorique();saveHistoriqueToStorage();
+  if(window.fbSaveHistorique)window.fbSaveHistorique();
+}
+
+function renderHistorique(){
+  var empty=document.getElementById("hist-empty");
+  var list=document.getElementById("hist-list");
+  if(!list)return;
+  if(!window.historique.length){empty.style.display="";list.innerHTML="";return;}
+  empty.style.display="none";
+  list.innerHTML=window.historique.map(function(e,idx){
+    var winClass=e.winner==="a"?"win-a":e.winner==="b"?"win-b":"draw";
+    var unseatIcon=e.finType==="unseat"?"🐎 ":"⚔ ";
+    var winLabel=e.winner==="a"?unseatIcon+h(e.nomA):e.winner==="b"?unseatIcon+h(e.nomB):"Égalité";
+    var rounds=e.rounds||[];
+    var rowsHtml=rounds.map(function(r){
+      // Résumé de la passe pour la ligne du haut
+      var roundOutcome="";
+      if(r.direct){
+        roundOutcome="<span style='color:#c8a0e8'>💥 Direct</span>";
+      } else if(r.impResults&&r.impResults.length){
+        var tags=[];
+        r.impResults.forEach(function(ir){
+          if(ir.desarconne) tags.push("<span style='color:#c8a0e8'>💥 Désarçonné</span>");
+          else if(ir.deseq_fort) tags.push("<span style='color:#e07070'>⚠⚠ Déséq. fort</span>");
+          else if(ir.deseq_leger) tags.push("<span style='color:#e0a030'>⚠ Déséq. léger</span>");
+          else if(ir.bris_rien) tags.push("<span style='color:var(--txt2)'>🏹 Brisée</span>");
+          else if(ir.devie) tags.push("<span style='color:var(--green2)'>🛡 Dévié</span>");
+          if(ir.blesse_grave) tags.push("<span style='color:#e07070'>🩸 Grave</span>");
+          else if(ir.blesse_leger) tags.push("<span style='color:#e0a030'>🩸 Léger</span>");
+        });
+        roundOutcome=tags.join(" ");
+      }
+      // Ligne du haut
+      var ac=r.att==="a"?"#e07070":"#87CEEB",dc=r.att==="a"?"#87CEEB":"#e07070";
+      var midLabel=r.simultane
+        ?"<span style='color:#c8a0e8;font-size:.5rem'>⚔⚔</span>"
+        :"<span class='hr-arrow'>→</span>";
+      var attLabel=r.simultane
+        ?"<span class='hr-att' style='color:#e07070'>"+h(r.nAtt)+"</span>"
+        :"<span class='hr-att' style='color:"+ac+"'>"+h(r.nAtt)+"</span>";
+      var defLabel=r.simultane
+        ?"<span class='hr-def' style='color:#87CEEB'>"+h(r.nDef)+"</span>"
+        :"<span class='hr-def' style='color:"+dc+"'>"+h(r.nDef)+"</span>";
+      var topRow="<div class='hr-top'>"+
+        "<span class='hr-passe'>P"+r.n+"</span>"+
+        attLabel+midLabel+defLabel+
+        "<span class='hr-dmg'>"+roundOutcome+"</span>"+
+      "</div>";
+      // Ligne des jets
+      var diceRow="";
+      if(r.d20A!==undefined){
+        var cA="#e07070",cB="#87CEEB";
+        var ecartCol=r.ecart>=13?"#c8a0e8":r.ecart>=8?"#e0a030":"var(--txt2)";
+        function initFmt(d20,mod,total,col){
+          var s="<span style='color:"+col+";font-weight:700'>"+d20+"</span>";
+          if(mod!==0)s+=(mod>0?"+":"")+"<span style='color:var(--txt3)'>"+mod+"</span>";
+          s+=" = <b style='color:var(--parch)'>"+total+"</b>";
+          return s;
+        }
+        var initA=initFmt(r.d20A,r.mA,r.tA,cA);
+        var initB=initFmt(r.d20B,r.mB,r.tB,cB);
+        var ecartStr="<span style='color:"+ecartCol+";font-weight:700'>"+r.ecart+"</span>";
+        // r.d20A/mA/tA sont TOUJOURS les jets du camp A (rouge), r.d20B/mB/tB du camp B (bleu)
+        var nomCampA=e.nomA||"?", nomCampB=e.nomB||"?";
+        diceRow="<div class='hr-dice'>"+
+          "<div class='hr-dice-blk'>"+
+            "<div class='hr-dice-lbl' style='color:#e07070'>🎲 "+h(nomCampA)+"</div>"+
+            "<div class='hr-dice-val'>"+initA+"</div>"+
+          "</div>"+
+          "<div class='hr-dice-blk'>"+
+            "<div class='hr-dice-lbl' style='color:#87CEEB'>🎲 "+h(nomCampB)+"</div>"+
+            "<div class='hr-dice-val'>"+initB+"</div>"+
+          "</div>"+
+          "<div class='hr-dice-blk'>"+
+            "<div class='hr-dice-lbl'>Écart</div>"+
+            "<div class='hr-dice-val'>"+ecartStr+"</div>"+
+          "</div>"+
+        "</div>";
+        if(r.direct){
+          diceRow+="<div style='font-size:.67rem;color:#c8a0e8;padding:.15rem 0'>💥 Désarçonnement direct</div>";
+        } else if(r.impResults&&r.impResults.length){
+          diceRow+="<div style='margin-top:.2rem'>";
+          r.impResults.forEach(function(ir){
+            var ac2=ir.atkSide==="a"?cA:cB, dc2=ir.atkSide==="a"?cB:cA;
+            var effLabel="";
+            if(ir.devie) effLabel="<span style='color:var(--green2)'>🛡 Dévié</span>";
+            else if(ir.bris_rien) effLabel="<span style='color:var(--txt2)'>🏹 Lance brisée</span>";
+            else if(ir.deseq_leger) effLabel="<span style='color:#e0a030'>⚠ Déséq. léger</span>";
+            else if(ir.deseq_fort) effLabel="<span style='color:#e07070'>⚠⚠ Déséq. fort</span>";
+            else if(ir.desarconne) effLabel="<span style='color:#c8a0e8'>💥 Désarçonné</span>";
+            if(ir.blesse_grave) effLabel+=" <span style='color:#e07070'>🩸 Blessé grave</span>";
+            else if(ir.blesse_leger) effLabel+=" <span style='color:#e0a030'>🩸 Blessé léger</span>";
+            // Formatage détaillé : d20 + mod = total, avec mention des bonus/malus d'état
+            function fmtDiceDetail(d20,mod,total,col){
+              if(!d20&&d20!==0)return "<b style='color:"+col+"'>"+total+"</b>";
+              var s="<span style='color:"+col+"'>"+d20+"</span>";
+              if(mod!==0) s+=(mod>0?"<span style='color:#e0a030'>+"+mod+"</span>":"<span style='color:#e07070'>"+mod+"</span>");
+              s+=" = <b style='color:var(--parch)'>"+total+"</b>";
+              return s;
+            }
+            var impDetail=fmtDiceDetail(ir.dImp,ir.mImp,ir.tImp,ac2);
+            var resDetail=fmtDiceDetail(ir.dRes,ir.mRes,ir.tRes,dc2);
+            // Mention malus d'initiative après le dé de résistance
+            var initMalusNote="";
+            if(ir.initResMalus&&ir.initResMalus<0) initMalusNote=" <span style='color:#e0a030;font-size:.6rem'>(init: "+ir.initResMalus+")</span>";
+            var simulMalusNote="";
+            if(ir._simulImpMalus&&ir._simulImpMalus!==0) simulMalusNote=" <span style='color:#e0a030;font-size:.6rem'>(simul. "+ir._simulImpMalus+")</span>";
+            var dfNom=ir.dfSide==="a"?e.nomA:e.nomB;
+            diceRow+="<div style='font-size:.67rem;padding:.18rem 0;border-top:1px solid var(--bdr2);margin-top:.1rem'>"+
+              "<span style='color:"+ac2+";font-weight:700'>"+h(ir.atkSide==="a"?e.nomA:e.nomB)+"</span>"+
+              " <span style='color:var(--txt3)'>💥 impact</span> "+impDetail+simulMalusNote+
+              " <span style='color:var(--txt3)'>vs</span> "+
+              "<span style='color:"+dc2+";font-size:.6rem'>"+h(dfNom)+"</span>"+
+              " <span style='color:var(--txt3)'>rés.</span> "+resDetail+initMalusNote+
+              " → <b>écart "+ir.ecartIR+"</b>"+
+              (effLabel?" &nbsp;·&nbsp; "+effLabel:"")+
+            "</div>";
+          });
+          diceRow+="</div>";
+        }
+      }
+      // Afficher les états des combattants après cette passe
+      var etatsRow="";
+      if(r.etatsA||r.etatsB){
+        var eA=r.etatsA?JSON.parse(r.etatsA):{};
+        var eB=r.etatsB?JSON.parse(r.etatsB):{};
+        // Nom réel de chaque camp (A=rouge, B=bleu), indépendant de qui attaque
+        var nomRealA=e.nomA||r.nAtt, nomRealB=e.nomB||r.nDef;
+        function etatBadge(et,col){
+          var parts=[];
+          if(et.blesse_grave) parts.push("<span style='color:#e07070'>🩸 Blessé grave</span>");
+          else if(et.blesse_leger) parts.push("<span style='color:#e0a030'>🩸 Blessé léger"+(et.blesse_leger_count>1?" ("+et.blesse_leger_count+"/3)":"")+"</span>");
+          if(et.deseq_fort) parts.push("<span style='color:#e07070'>⚠⚠ Déséq. fort</span>");
+          else if(et.deseq_leger) parts.push("<span style='color:#e0a030'>⚠ Déséq. léger</span>");
+          return parts.length?parts.join(" "):"";
+        }
+        var bA=etatBadge(eA,"#e07070"), bB=etatBadge(eB,"#87CEEB");
+        if(bA||bB){
+          etatsRow="<div style='display:flex;gap:.6rem;padding:.15rem 0 .1rem;font-size:.62rem;flex-wrap:wrap'>";
+          if(bA) etatsRow+="<span style='color:#e07070;font-weight:700'>"+h(nomRealA)+"</span> "+bA+" &nbsp;";
+          if(bB) etatsRow+="<span style='color:#87CEEB;font-weight:700'>"+h(nomRealB)+"</span> "+bB;
+          etatsRow+="</div>";
+        }
+      }
+      return "<div class='hist-round-row'>"+topRow+diceRow+etatsRow+"</div>";
+    }).join("");
+    var uid="hc"+e.id;
+    return "<div class='hist-card'>"+
+      "<div class='hist-hdr' onclick='toggleHist(\""+uid+"\",this)'>"+
+        "<span class='hist-num'>#"+(window.historique.length-idx)+"</span>"+
+        "<span class='hist-vs'>"+h(e.nomA)+" <span style='color:var(--txt3)'>vs</span> "+h(e.nomB)+"</span>"+
+        "<span class='hist-result "+winClass+"'>"+winLabel+"</span>"+
+        "<span class='hist-date'>"+h(e.date)+"</span>"+
+        "<span class='hist-chevron' id='chv-"+uid+"'>›</span>"+
+      "</div>"+
+      "<div class='hist-body' id='"+uid+"'>"+
+        "<div style='display:grid;grid-template-columns:1fr 1fr 1fr;gap:.5rem;margin-bottom:.5rem;text-align:center'>"+
+          "<div style='background:rgba(0,0,0,.15);border-radius:2px;padding:.3rem'><div style='font-family:Cinzel,serif;font-size:.42rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.05em'>Passes</div><div style='font-family:Cinzel,serif;font-size:.8rem;font-weight:700;color:var(--gl)'>"+e.totalRounds+"</div></div>"+
+          "<div style='background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.2);border-radius:2px;padding:.3rem'><div style='font-family:Cinzel,serif;font-size:.42rem;color:#e07070;text-transform:uppercase;letter-spacing:.05em'>"+h(e.nomA)+"</div><div style='font-family:Cinzel,serif;font-size:.75rem;font-weight:700;color:#e07070'>"+(e.etatsFinA?(JSON.parse(e.etatsFinA).blesse_grave?'Blessé grave':JSON.parse(e.etatsFinA).blesse_leger?'Blessé léger':'Indemne'):'—')+"</div></div>"+
+          "<div style='background:rgba(36,113,163,.08);border:1px solid rgba(36,113,163,.2);border-radius:2px;padding:.3rem'><div style='font-family:Cinzel,serif;font-size:.42rem;color:#87CEEB;text-transform:uppercase;letter-spacing:.05em'>"+h(e.nomB)+"</div><div style='font-family:Cinzel,serif;font-size:.75rem;font-weight:700;color:#87CEEB'>"+(e.etatsFinB?(JSON.parse(e.etatsFinB).blesse_grave?'Blessé grave':JSON.parse(e.etatsFinB).blesse_leger?'Blessé léger':'Indemne'):'—')+"</div></div>"+
+        "</div>"+
+        "<div class='hist-rounds'>"+rowsHtml+"</div>"+
+        "<div style='margin-top:.6rem;text-align:right'>"+
+          "<button class='btn' style='font-size:.5rem;padding:.2rem .6rem;color:var(--gl);border-color:rgba(212,175,55,.35)' onclick='exportBBCode("+idx+",event)'>📋 Export BBCode forum</button>"+
+        "</div>"+
+      "</div>"+
+    "</div>";
+  }).join("");
+}
+
+function toggleHist(uid,hdr){
+  var body=document.getElementById(uid);
+  var chv=document.getElementById("chv-"+uid);
+  if(!body)return;
+  var open=body.classList.toggle("open");
+  if(chv)chv.classList.toggle("open",open);
+}
+
+function addLog(html){
+  var entry=document.createElement("div");entry.className="log-entry";entry.innerHTML=html;
+  var wrap=document.getElementById("log-wrap");
+  if(wrap.querySelector(".log-empty"))wrap.innerHTML="";
+  wrap.appendChild(entry);wrap.scrollTop=wrap.scrollHeight;
+  logs.push(html);
+}
+function renderLog(){
+  var wrap=document.getElementById("log-wrap");
+  if(!logs||!logs.length){wrap.innerHTML="<div class='log-empty'>Aucun combat enregistré.</div>";return;}
+  wrap.innerHTML=logs.map(function(l){return "<div class='log-entry'>"+l+"</div>";}).join("");
+  wrap.scrollTop=wrap.scrollHeight;
+}
+function renderRecap(){
+  var panel=document.getElementById("recap-panel");
+  if(!rounds||!rounds.length){panel.style.display="none";return;}
+  panel.style.display="block";
+  document.getElementById("recap").innerHTML=rounds.map(function(r){
+    var ac=r.att==="a"?"#e07070":"#87CEEB",dc=r.att==="a"?"#87CEEB":"#e07070";
+    return "<div style='display:grid;grid-template-columns:28px 1fr 1fr auto;gap:.4rem;align-items:center;padding:.3rem .4rem;border-bottom:1px solid var(--bdr2);font-size:.73rem'>"+
+      "<span style='font-family:Cinzel,serif;font-size:.54rem;font-weight:700;color:var(--gl)'>P"+r.n+"</span>"+
+      "<span style='color:"+ac+";font-family:Cinzel,serif;font-size:.64rem;font-weight:700'>"+h(r.nAtt)+"</span>"+
+      "<span style='color:"+dc+";font-family:Cinzel,serif;font-size:.64rem'>→ "+h(r.nDef)+"</span>"+
+      "<span style='font-family:Cinzel,serif;font-size:.68rem;font-weight:700;color:"+(r.net>0?"var(--parch)":"var(--txt3)")+"'>"+r.net+" PV</span>"+
+    "</div>";
+  }).join("");
+}
+
+function updStepBanners(){
+  var hasAB=TC.a&&TC.b;
+  var da=+document.getElementById("in-a").value,db=+document.getElementById("in-b").value;
+  var initDone=da&&db;
+  var bi=document.getElementById("step-init-banner"),bd=document.getElementById("step-dmg-banner");
+  if(!hasAB){bi.className="step-banner waiting";bd.className="step-banner waiting";return;}
+  bi.className=initDone?"step-banner done":"step-banner";
+  if(!initDone){bd.className="step-banner waiting";}
+  else if(TC.rd&&TC.rd.direct){bd.className="step-banner done";}
+  else if(TC.rd&&TC.rd.impReady){bd.className="step-banner done";}
+  else{bd.className="step-banner";}
+}
+
+// THÈME
+function toggleTheme(){
+  var isLight=document.documentElement.classList.toggle("light");
+  document.getElementById("theme-toggle").textContent=isLight?"☀ Clair":"🌙 Sombre";
+  localStorage.setItem("cofas-tournoi-theme",isLight?"light":"dark");
+}
+(function(){
+  var t=localStorage.getItem("cofas-tournoi-theme");
+  if(t==="light"){document.documentElement.classList.add("light");document.addEventListener("DOMContentLoaded",function(){var btn=document.getElementById("theme-toggle");if(btn)btn.textContent="☀ Clair";});}
+})();
+
+// ================================================================
+// EXPORT BBCODE FORUM phpBB
+// ================================================================
+function exportBBCode(idx, evt){
+  if(evt){evt.stopPropagation();}
+  var e=window.historique[idx];
+  if(!e)return;
+  var bb=genBBCode(e);
+  document.getElementById("bbcode-output").value=bb;
+  document.getElementById("mo-bbcode").style.display="flex";
+  document.getElementById("bbcode-copy-msg").style.opacity="0";
+}
+
+function copyBBCode(){
+  var ta=document.getElementById("bbcode-output");
+  ta.select();
+  try{
+    document.execCommand("copy");
+    var msg=document.getElementById("bbcode-copy-msg");
+    msg.style.opacity="1";
+    setTimeout(function(){msg.style.opacity="0";},2200);
+  }catch(e){}
+}
+
+function genBBCode(e){
+  var nomA=e.nomA||"?", nomB=e.nomB||"?";
+  var winner=e.winner==="a"?nomA:e.winner==="b"?nomB:"—";
+  var loser =e.winner==="a"?nomB:e.winner==="b"?nomA:"—";
+  var finTypeLabel=e.finType==="unseat"?"Désarçonnement":"Blessures";
+  var etA=e.etatsFinA?JSON.parse(e.etatsFinA):{};
+  var etB=e.etatsFinB?JSON.parse(e.etatsFinB):{};
+  function etatLabel(et){return et.blesse_grave?"Blessé grave":et.blesse_leger?"Blessé léger":"Indemne";}
+  var colorA="#e07070", colorB="#87CEEB";
+
+  // Ligne d'en-tête résultat
+  var s="";
+  s+="[center][b][size=18]⚔ Joute : "+nomA+" vs "+nomB+"[/size][/b][/center]\n\n";
+
+  // Bloc résultat global (HTML inline pour phpBB)
+  s+="<div style=\"background:#1e1608;border:1px solid #8a6530;border-left:4px solid #D4AF37;border-radius:2px;padding:.6rem .9rem;margin:0 0 .6em 0;font-family:Georgia,serif;font-size:.9em;color:#c4b494\">";
+  s+="<div style=\"font-family:Georgia,serif;font-weight:bold;color:#D4AF37;margin-bottom:.4em;font-size:1.05em\">🏆 Résultat — "+e.date+"</div>";
+  s+="<table style=\"border-collapse:collapse;width:100%;font-family:Georgia,serif;font-size:.9em\">";
+  s+="<tr style=\"background:#3a2f1e;color:#e8dcc8\">";
+  s+="<th style=\"padding:.35rem .7rem;border:1px solid #6b5535;text-align:left\">Combattant</th>";
+  s+="<th style=\"padding:.35rem .7rem;border:1px solid #6b5535;text-align:center\">Résultat</th>";
+  s+="<th style=\"padding:.35rem .7rem;border:1px solid #6b5535;text-align:center\">État final</th>";
+  s+="</tr>";
+  s+="<tr style=\"background:#2e2416\">";
+  s+="<td style=\"padding:.35rem .7rem;border:1px solid #6b5535;color:"+colorA+";font-weight:bold\">"+nomA+"</td>";
+  s+="<td style=\"padding:.35rem .7rem;border:1px solid #6b5535;text-align:center;color:"+(e.winner==="a"?"#D4AF37":"#9a8c78")+"\">"+( e.winner==="a"?"🏆 Vainqueur":"❌ Vaincu")+"</td>";
+  s+="<td style=\"padding:.35rem .7rem;border:1px solid #6b5535;text-align:center;color:"+(etA.blesse_grave?"#e07070":etA.blesse_leger?"#e0a030":"#6dca8a")+"\">"+etatLabel(etA)+"</td>";
+  s+="</tr>";
+  s+="<tr style=\"background:#261e12\">";
+  s+="<td style=\"padding:.35rem .7rem;border:1px solid #6b5535;color:"+colorB+";font-weight:bold\">"+nomB+"</td>";
+  s+="<td style=\"padding:.35rem .7rem;border:1px solid #6b5535;text-align:center;color:"+(e.winner==="b"?"#D4AF37":"#9a8c78")+"\">"+( e.winner==="b"?"🏆 Vainqueur":"❌ Vaincu")+"</td>";
+  s+="<td style=\"padding:.35rem .7rem;border:1px solid #6b5535;text-align:center;color:"+(etB.blesse_grave?"#e07070":etB.blesse_leger?"#e0a030":"#6dca8a")+"\">"+etatLabel(etB)+"</td>";
+  s+="</tr>";
+  s+="<tr style=\"background:#2a1e0e\">";
+  s+="<td colspan=\"3\" style=\"padding:.38rem .7rem;border:1px solid #8a6530;color:#e8dcc8\">Fin en <strong style=\"color:#D4AF37\">"+e.totalRounds+" passe"+(e.totalRounds>1?"s":"")+"</strong> — <em>"+finTypeLabel+"</em></td>";
+  s+="</tr>";
+  s+="</table></div>\n\n";
+
+  // Une carte par passe
+  var rounds=e.rounds||[];
+  rounds.forEach(function(r){
+    var attColor=r.att==="a"?colorA:colorB;
+    var defColor=r.att==="a"?colorB:colorA;
+    var nAtt=r.nAtt||"?", nDef=r.nDef||"?";
+
+    s+="<div style=\"background:#1e1608;border:1px solid #8a6530;border-left:3px solid #8a6530;border-radius:2px;padding:.5rem .85rem;margin:0 0 .45em 0;font-family:Georgia,serif;font-size:.88em;color:#c4b494\">";
+    s+="<div style=\"font-family:Georgia,serif;font-weight:bold;color:#D4AF37;margin-bottom:.35em\">Passe "+r.n;
+
+    // Résumé de la passe dans le titre
+    var passeSummary="";
+    if(r.direct){
+      passeSummary=" — <span style=\"color:#c8a0e8\">💥 Désarçonnement direct</span>";
+    } else if(r.impResults&&r.impResults.length){
+      var tags=[];
+      r.impResults.forEach(function(ir){
+        var vic=ir.dfSide==="a"?nomA:nomB;
+        if(ir.desarconne) tags.push("<span style=\"color:#c8a0e8\">💥 "+vic+" désarçonné</span>");
+        else if(ir.deseq_fort) tags.push("<span style=\"color:#e07070\">⚠⚠ "+vic+" déséq. fort</span>");
+        else if(ir.deseq_leger) tags.push("<span style=\"color:#e0a030\">⚠ "+vic+" déséq. léger</span>");
+        else if(ir.bris_rien) tags.push("<span style=\"color:#9a8c78\">🏹 Lance brisée</span>");
+        else if(ir.devie) tags.push("<span style=\"color:#6dca8a\">🛡 Lance déviée</span>");
+        if(ir.blesse_grave) tags.push("<span style=\"color:#e07070\">🩸 "+vic+" blessé grave</span>");
+        else if(ir.blesse_leger) tags.push("<span style=\"color:#e0a030\">🩸 "+vic+" blessé léger</span>");
+      });
+      if(tags.length) passeSummary=" — "+tags.join(" · ");
+    }
+    s+=passeSummary+"</div>";
+
+    // Tableau jets — colonnes toujours dans l'ordre A (rouge) puis B (bleu)
+    s+="<table style=\"border-collapse:collapse;width:100%;font-family:Georgia,serif;font-size:.85em\">";
+    s+="<tr style=\"background:#3a2f1e;color:#e8dcc8\">";
+    s+="<th style=\"padding:.3rem .6rem;border:1px solid #6b5535;text-align:left\">Phase</th>";
+    s+="<th style=\"padding:.3rem .6rem;border:1px solid #6b5535;text-align:center;color:"+colorA+"\">"+nomA+"</th>";
+    s+="<th style=\"padding:.3rem .6rem;border:1px solid #6b5535;text-align:center;color:"+colorB+"\">"+nomB+"</th>";
+    s+="<th style=\"padding:.3rem .6rem;border:1px solid #6b5535;text-align:center\">Écart</th>";
+    s+="</tr>";
+
+    // Ligne initiative — d20A est toujours le jet du camp A, d20B du camp B
+    function fmtJet(d20,mod,total){
+      if(d20===undefined||!d20)return "—";
+      var ms=mod>0?"+"+mod:mod<0?""+mod:"";
+      return d20+ms+" = <strong>"+total+"</strong>";
+    }
+    var ecartCol=r.ecart>=CFG.init.direct_min?"#c8a0e8":r.ecart>=8?"#e0a030":"#c4b494";
+    s+="<tr style=\"background:#261e12;color:#c4b494\">";
+    s+="<td style=\"padding:.28rem .6rem;border:1px solid #6b5535;color:#9a8c78;font-style:italic\">⚡ Initiative</td>";
+    s+="<td style=\"padding:.28rem .6rem;border:1px solid #6b5535;text-align:center\">"+fmtJet(r.d20A,r.mA,r.tA)+"</td>";
+    s+="<td style=\"padding:.28rem .6rem;border:1px solid #6b5535;text-align:center\">"+fmtJet(r.d20B,r.mB,r.tB)+"</td>";
+    s+="<td style=\"padding:.28rem .6rem;border:1px solid #6b5535;text-align:center;color:"+ecartCol+";font-weight:bold\">"+r.ecart+"</td>";
+    s+="</tr>";
+
+    // Lignes impact/résistance — on place chaque jet dans la colonne du bon camp (A ou B)
+    if(!r.direct&&r.impResults){
+      r.impResults.forEach(function(ir){
+        var atkN=ir.atkSide==="a"?nomA:nomB;
+        var atkC=ir.atkSide==="a"?colorA:colorB;
+        // Jet impact dans colonne attaquant, jet résistance dans colonne défenseur
+        var impStr=fmtJet(ir.dImp,ir.mImp,ir.tImp)+(ir._simulImpMalus?"<span style=\"color:#e0a030;font-size:.85em\"> (simul. "+ir._simulImpMalus+")</span>":"");
+        var resStr=fmtJet(ir.dRes,ir.mRes,ir.tRes)+(ir.initResMalus&&ir.initResMalus<0?"<span style=\"color:#e0a030;font-size:.85em\"> (init: "+ir.initResMalus+")</span>":"");
+        // Colonne A = impact si A attaque, résistance si A défend
+        var colA = ir.atkSide==="a" ? impStr : resStr;
+        var colB = ir.atkSide==="b" ? impStr : resStr;
+        // Effet
+        var eff="";
+        if(ir.devie) eff="<span style=\"color:#6dca8a\">🛡 Dévié</span>";
+        else if(ir.bris_rien) eff="<span style=\"color:#9a8c78\">🏹 Brisée</span>";
+        else if(ir.deseq_leger) eff="<span style=\"color:#e0a030\">⚠ Déséq. léger</span>";
+        else if(ir.deseq_fort) eff="<span style=\"color:#e07070\">⚠⚠ Déséq. fort</span>";
+        else if(ir.desarconne) eff="<span style=\"color:#c8a0e8\">💥 Désarçonné</span>";
+        if(ir.blesse_grave) eff+=" <span style=\"color:#e07070\">🩸 Blessé grave</span>";
+        else if(ir.blesse_leger) eff+=" <span style=\"color:#e0a030\">🩸 Blessé léger</span>";
+        s+="<tr style=\"background:#2e2416;color:#c4b494\">";
+        s+="<td style=\"padding:.28rem .6rem;border:1px solid #6b5535;color:#9a8c78;font-style:italic\">💥 Impact <span style=\"color:"+atkC+"\">"+atkN+"</span></td>";
+        s+="<td style=\"padding:.28rem .6rem;border:1px solid #6b5535;text-align:center\">"+colA+"</td>";
+        s+="<td style=\"padding:.28rem .6rem;border:1px solid #6b5535;text-align:center\">"+colB+"</td>";
+        s+="<td style=\"padding:.28rem .6rem;border:1px solid #6b5535;text-align:center\">"+eff+"</td>";
+        s+="</tr>";
+      });
+    }
+    s+="</table></div>\n";
+  });
+
+  return s;
+}
+
+renderFiches();popSelects();updMods();updStepBanners();renderLog();loadHistoriqueFromStorage();renderHistorique();loadCFGFromStorage();
+</script>
+</body>
+</html>
